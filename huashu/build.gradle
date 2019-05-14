@@ -1,0 +1,86 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        config {
+            keyAlias 'fenglang_key'
+            keyPassword 'jww123'
+            storeFile file('C:/Users/43759/Desktop/资料归档/fenglang.jks')
+            storePassword 'jww123'
+        }
+        debug {
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+        release {
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "com.tuodanhuashu.app"
+        minSdkVersion 22
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk {
+
+            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+
+        }
+
+        manifestPlaceholders = [
+                JPUSH_PKGNAME: "com.tuodanhuashu.app",
+                JPUSH_APPKEY : "ef82faed43ac65b7efbd8023", //JPush 上注册的包名对应的 Appkey.
+                JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
+        ]
+    }
+    buildTypes {
+
+        release {
+            signingConfig signingConfigs.config
+
+
+        }
+
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    api project(':common')
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation 'com.github.chaychan:BottomBarLayout:1.2.0'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-19'
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-19'
+    implementation('com.alibaba.android:vlayout:1.2.8@aar') {
+        transitive = true
+    }
+   implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.28'
+   implementation 'com.github.bumptech.glide:glide:4.1.1'
+   implementation 'com.hyman:flowlayout-lib:1.1.2'
+    implementation 'com.github.wenchaosong:Banner:2.2.9'
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
+    implementation 'com.github.ybq:Android-SpinKit:1.2.0'
+
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.hyphenate:kefu-easeui-android:1.1.8'
+    implementation(name: 'alipaySdk-15.6.0-20190226104053', ext: 'aar')
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
+    implementation 'cn.jiguang.sdk:jpush:3.2.0'  // 此处以JPush 3.2.0 版本为例。
+    implementation 'cn.jiguang.sdk:jcore:1.2.7'  // 此处以JCore 1.2.7 版本为例。
+    implementation 'org.greenrobot:eventbus:3.1.1'
+
+    implementation 'com.alibaba:fastjson:1.1.70.android'
+    implementation 'com.lzy.net:okgo:3.0.4'
+
+}
