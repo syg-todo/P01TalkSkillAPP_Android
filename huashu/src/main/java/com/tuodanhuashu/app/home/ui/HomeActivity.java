@@ -76,7 +76,8 @@ public class HomeActivity extends HuaShuBaseActivity implements OnRequestListene
 
     private MemberCenterFragment memberCenterFragment;
 
-    private ZhuanLanFragment zhuanLanFragment;
+//    private ZhuanLanFragment zhuanLanFragment;
+    private CollegeFragment collegeFragment;
 
     private HomeBiz homeBiz;
     @Override
@@ -92,11 +93,13 @@ public class HomeActivity extends HuaShuBaseActivity implements OnRequestListene
         homeFragment = new HomeFragment();
         huaShuFragment = new HuaShuFragment();
         memberCenterFragment = new MemberCenterFragment();
-        zhuanLanFragment = new ZhuanLanFragment();
+//        zhuanLanFragment = new ZhuanLanFragment();
+        collegeFragment = new CollegeFragment();
         mfragmentList.add(homeFragment);
         mfragmentList.add(huaShuFragment);
         mfragmentList.add(memberCenterFragment);
-        mfragmentList.add(zhuanLanFragment);
+//        mfragmentList.add(zhuanLanFragment);
+        mfragmentList.add(collegeFragment);
         mFragmentManager = getSupportFragmentManager();
         mFragmentManager.beginTransaction().add(R.id.main_container_frl, homeFragment)
                 .commitAllowingStateLoss();
@@ -132,7 +135,8 @@ public class HomeActivity extends HuaShuBaseActivity implements OnRequestListene
             @Override
             public void onItemSelected(BottomBarItem bottomBarItem, int i, int i1) {
                 if (i1 == 1) {
-                    if (mCurrentFragment != huaShuFragment && mCurrentFragment != zhuanLanFragment) {
+                    if (mCurrentFragment != huaShuFragment && mCurrentFragment != collegeFragment) {
+//                    if (mCurrentFragment != huaShuFragment && mCurrentFragment != zhuanLanFragment) {
                         switchContent(mCurrentFragment, huaShuFragment);
                         headHuashuTv.setTextColor(getResources().getColor(R.color.colorAccent));
                     }
@@ -153,7 +157,8 @@ public class HomeActivity extends HuaShuBaseActivity implements OnRequestListene
         headZhuanlanTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switchContent(mCurrentFragment, zhuanLanFragment);
+//                switchContent(mCurrentFragment, zhuanLanFragment);
+                switchContent(mCurrentFragment, collegeFragment);
                 bbl.setCurrentItem(1);
                 headZhuanlanTv.setTextColor(getResources().getColor(R.color.colorAccent));
                 headHuashuTv.setTextColor(getResources().getColor(R.color.black));
