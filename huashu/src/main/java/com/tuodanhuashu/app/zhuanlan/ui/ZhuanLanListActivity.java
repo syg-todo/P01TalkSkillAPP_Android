@@ -30,7 +30,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class ZhuanLanListActivity extends HuaShuBaseActivity implements ZhuanLanListView{
+public class ZhuanLanListActivity extends HuaShuBaseActivity implements ZhuanLanListView {
 
     @BindView(R.id.common_head_back_iv)
     ImageView commonHeadBackIv;
@@ -47,7 +47,7 @@ public class ZhuanLanListActivity extends HuaShuBaseActivity implements ZhuanLan
 
     private ZhuanLanListAdapter adapter;
 
-  //  private List<String> zhuanlanList;
+    //  private List<String> zhuanlanList;
 
     private ArticleListPresenter articleListPresenter;
 
@@ -85,44 +85,44 @@ public class ZhuanLanListActivity extends HuaShuBaseActivity implements ZhuanLan
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         zhuanlanListRlv.setLayoutManager(linearLayoutManager);
-        tablayout.setVisibility(enterType==3?View.VISIBLE:View.GONE);
+        tablayout.setVisibility(enterType == 3 ? View.VISIBLE : View.GONE);
 
     }
 
-    private void requestArticleList(boolean isLoadMoreOrRefresh){
-        if(enterType == 1){
-            articleListPresenter.requestNewArticleList(page+"",page_size+"");
-        }else if(enterType == 2){
-            articleListPresenter.requestChoiceArticleList(page+"",page_size+"");
-        }else if(enterType == 3){
+    private void requestArticleList(boolean isLoadMoreOrRefresh) {
+        if (enterType == 1) {
+            articleListPresenter.requestNewArticleList(page + "", page_size + "");
+        } else if (enterType == 2) {
+            articleListPresenter.requestChoiceArticleList(page + "", page_size + "");
+        } else if (enterType == 3) {
             //articleListPresenter.requestClassList();
-            if(isLoadMoreOrRefresh){
-                articleListPresenter.requestArticleListByCatId(classId,page+"",page_size+"");
+            if (isLoadMoreOrRefresh) {
+                articleListPresenter.requestArticleListByCatId(classId, page + "", page_size + "");
 
             }
-        }else {
-            articleListPresenter.requestMyList(page+"",page_size+"");
+        } else {
+            articleListPresenter.requestMyList(page + "", page_size + "");
         }
     }
 
     @Override
     protected void initData() {
         super.initData();
-        articleListPresenter = new ArticleListPresenter(mContext,this);
-        if(enterType==3){
+        articleListPresenter = new ArticleListPresenter(mContext, this);
+        if (enterType == 3) {
             articleListPresenter.requestClassList();
         }
         requestArticleList(false);
         articleListItemBeanList = new ArrayList<>();
 
-        adapter = new ZhuanLanListAdapter(mContext,R.layout.item_zhuanlan_list_layout,articleListItemBeanList);
+        adapter = new ZhuanLanListAdapter(mContext, R.layout.item_zhuanlan_list_layout, articleListItemBeanList);
         adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 ArticleListItemBean bean = articleListItemBeanList.get(position);
                 Bundle bundle = new Bundle();
-                bundle.putString(ZhuanLanDetailActivity.EXTRA_ARTICLE_ID,bean.getId());
-                readyGo(ZhuanLanDetailActivity.class,bundle);
+                bundle.putString(ZhuanLanDetailActivity.EXTRA_ARTICLE_ID, bean.getId());
+                readyGo(ZhuanLanDetailActivity.class, bundle);
             }
         });
         zhuanlanListRlv.setAdapter(adapter);
@@ -140,7 +140,7 @@ public class ZhuanLanListActivity extends HuaShuBaseActivity implements ZhuanLan
             }
         });
         String title = "文章分类";
-        switch (enterType){
+        switch (enterType) {
             case 1:
                 title = "最新文章";
                 break;
@@ -166,17 +166,24 @@ public class ZhuanLanListActivity extends HuaShuBaseActivity implements ZhuanLan
         zhuanlanListRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                page =1;
-               requestArticleList(true);
+                page = 1;
+                requestArticleList(true);
             }
         });
         tablayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
+            public void onTabSelected(final TabLayout.Tab tab) {
                 page = 1;
                 articleListItemBeanList.clear();
                 classId = classBeanList.get(tab.getPosition()).getId();
-                articleListPresenter.requestArticleListByCatId(classId,page+"",page_size+"");
+                articleListPresenter.requestArticleListByCatId(classId, page + "", page_size + "");
+                tablayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                    tab.select();
+                    }
+                }, 100);
+
             }
 
             @Override
@@ -196,19 +203,19 @@ public class ZhuanLanListActivity extends HuaShuBaseActivity implements ZhuanLan
     public void getArticleListSuccess(List<ArticleListItemBean> articleListItemBeanList) {
         zhuanlanListRefreshLayout.finishLoadMore(200);
         zhuanlanListRefreshLayout.finishRefresh(200);
-        if(page==1){
+        if (page == 1) {
             this.articleListItemBeanList.clear();
 
         }
         this.articleListItemBeanList.addAll(articleListItemBeanList);
         adapter.setNewData(this.articleListItemBeanList);
-        if(articleListItemBeanList!=null&&articleListItemBeanList.size()>0){
+        if (articleListItemBeanList != null && articleListItemBeanList.size() > 0) {
 
 
             page++;
-        }else{
+        } else {
 
-           showToast("已无更多");
+            showToast("已无更多");
         }
 
 
@@ -222,11 +229,8 @@ public class ZhuanLanListActivity extends HuaShuBaseActivity implements ZhuanLan
     @Override
     public void getClassListSuccess(final List<ArticleClassBean> classBeanList) {
         this.classBeanList = classBeanList;
-        for(ArticleClassBean bean:classBeanList){
-            Log.e("tab",bean.getClass_name());
-
-            tablayout.addTab(tablayout.newTab().setText(bean.getClass_name()),bean.getId().equals(classId));
-
+        for (ArticleClassBean bean : classBeanList) {
+            tablayout.addTab(tablayout.newTab().setText(bean.getClass_name()), bean.getId().equals(classId));
         }
 
 
@@ -241,8 +245,8 @@ public class ZhuanLanListActivity extends HuaShuBaseActivity implements ZhuanLan
     @Override
     protected void getBundleExtras(Bundle extras) {
         super.getBundleExtras(extras);
-        enterType = extras.getInt(EXTRA_ENTER_TYPE,1);
-        keyWords = extras.getString(EXTRA_KEY_WORDS,"");
-        classId = extras.getString(EXTRA_CLASS_ID,"");
+        enterType = extras.getInt(EXTRA_ENTER_TYPE, 1);
+        keyWords = extras.getString(EXTRA_KEY_WORDS, "");
+        classId = extras.getString(EXTRA_CLASS_ID, "");
     }
 }
