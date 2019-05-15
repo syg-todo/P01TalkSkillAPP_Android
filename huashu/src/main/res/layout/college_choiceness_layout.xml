@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="20dp"
+    android:orientation="vertical">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginLeft="24dp"
+
+        android:layout_marginRight="22dp"
+
+        >
+        <TextView
+            android:id="@+id/college_choiceness_course_top_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:text="精品课程"/>
+        <TextView
+            android:id="@+id/college_choiceness_course_more_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="更多"
+            android:textColor="#ffd1d1d1"
+            android:textSize="13sp"/>
+
+    </FrameLayout>
+
+    <GridView
+        android:id="@+id/college_choiceness_course_gv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="20dp"
+        android:scrollbars="none"
+        android:numColumns="2"
+        android:horizontalSpacing="9dp"
+        android:verticalSpacing="20dp"
+        android:background="@drawable/shape_home_funtion">
+
+    </GridView>
+</LinearLayout>

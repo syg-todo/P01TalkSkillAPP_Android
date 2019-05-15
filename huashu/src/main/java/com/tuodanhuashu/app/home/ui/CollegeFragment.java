@@ -5,14 +5,20 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.VirtualLayoutManager;
+import com.alibaba.android.vlayout.layout.GridLayoutHelper;
 import com.alibaba.android.vlayout.layout.LinearLayoutHelper;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -32,12 +38,14 @@ import com.tuodanhuashu.app.home.adapter.HomeAdapter;
 import com.tuodanhuashu.app.home.adapter.HomeBannerViewHolder;
 import com.tuodanhuashu.app.home.bean.HomeBannerBean;
 import com.tuodanhuashu.app.home.bean.HomeCollegePageBean;
+import com.tuodanhuashu.app.home.bean.HomeCourseBean;
 import com.tuodanhuashu.app.home.bean.HomeZhuanLanPageBean;
 import com.tuodanhuashu.app.home.presenter.HomeCollegePresenter;
 import com.tuodanhuashu.app.home.presenter.HomeZhuanLanPresenter;
 import com.tuodanhuashu.app.home.view.HomeCollegeView;
 import com.tuodanhuashu.app.huashu.ui.HuaShuaListActivity;
 import com.tuodanhuashu.app.zhuanlan.ui.ZhuanLanDetailActivity;
+import com.tuodanhuashu.app.zhuanlan.ui.ZhuanLanListActivity;
 import com.tuodanhuashu.app.zhuanlan.ui.ZhuanLanSearchActivity;
 
 import java.util.ArrayList;
@@ -68,7 +76,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
 
     private static final int TYPE_ACTIVITY = 4;
 
-    private static final int TYPE_BOUTIQUE = 5;
+    private static final int TYPE_CHOICENESS = 5;
 
     private static final int TYPE_RECOMMEND = 6;
 
@@ -130,7 +138,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
             initBanner();
             initSearch();
             initCourse();
-//            initArticle2();
+            initChoicenessCourses();
 //            initCategory();
 //            initAD();
 //            initArticleList();
@@ -141,12 +149,86 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         }
     }
 
+    private void initChoicenessCourses() {
+        GridLayoutHelper gridLayoutHelper = new GridLayoutHelper(2);
+//        gridLayoutHelper.setHGap(9);
+//        gridLayoutHelper.setVGap(20);
+//        gridLayoutHelper.setMarginLeft(10);
+//        gridLayoutHelper.setMarginTop(20);
+//        gridLayoutHelper.setMarginRight(10);
+//        gridLayoutHelper.setMarginBottom(20);
+        HomeAdapter ChoicenessAdapter = new HomeAdapter(mContext,new LinearLayoutHelper(), 1, TYPE_CHOICENESS, R.layout.college_choiceness_layout) {
+            @Override
+            public void onBindViewHolder(BaseViewHolder holder, final int position) {
+                super.onBindViewHolder(holder, position);
+
+                if (position != 0) {
+                    TextView tv = holder.getView(R.id.college_choiceness_course_top_tv);
+                    tv.setVisibility(View.GONE);
+                }
+
+                TextView moreTv = holder.getView(R.id.college_choiceness_course_more_tv);
+                moreTv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(mContext, "more", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                final List<HomeCourseBean> choicenessCourses = collegePageBean.getChoicenessCourses();
+                GridView gridView = holder.getView(R.id.college_choiceness_course_gv);
+                gridView.setAdapter(new BaseAdapter() {
+                    @Override
+                    public int getCount() {
+                        return choicenessCourses.size();
+                    }
+
+                    @Override
+                    public Object getItem(int i) {
+                        return choicenessCourses.get(i);
+                    }
+
+                    @Override
+                    public long getItemId(int i) {
+                        return position;
+                    }
+
+                    @Override
+                    public View getView(int i, View view, ViewGroup viewGroup) {
+                        HomeCourseBean homeCourseBean = choicenessCourses.get(i);
+                        view = LayoutInflater.from(mContext).inflate(R.layout.item_college_course_layout, viewGroup, false);
+                        ImageView imgImage = view.findViewById(R.id.img_course_image);
+                        TextView txtCourseName = view.findViewById(R.id.tv_course_name);
+                        TextView txtCourseMasterName =view.findViewById(R.id.tv_course_master_name);
+                        TextView txtCoursePrice = view.findViewById(R.id.tv_course_price);
+
+                        Glide.with(mContext).load(homeCourseBean.getImage_url()).into(imgImage);
+                        txtCourseName.setText(homeCourseBean.getCourse_name());
+                        txtCourseMasterName.setText(homeCourseBean.getMaster_name());
+                        txtCoursePrice.setText("￥" + homeCourseBean.getPrice());
+                        return view;
+                    }
+                });
+//
+//                ImageView imgImage = holder.getView(R.id.img_course_image);
+//                TextView txtCourseName = holder.getView(R.id.tv_course_name);
+//                TextView txtCourseMasterName = holder.getView(R.id.tv_course_master_name);
+//                TextView txtCoursePrice = holder.getView(R.id.tv_course_price);
+//                for (HomeCourseBean bean : choicenessCourses) {
+//                    Glide.with(mContext).load(bean.getImage_url()).into(imgImage);
+//                    txtCourseName.setText(bean.getCourse_name());
+//                    txtCourseMasterName.setText(bean.getMaster_name());
+//                    txtCoursePrice.setText("￥" + bean.getPrice());
+//                }
+            }
+        };
+        adapterList.add(ChoicenessAdapter);
+    }
+
     private void initCourse() {
-        HomeAdapter courseAdapter = new HomeAdapter(mContext,new LinearLayoutHelper(),1,TYPE_COURSE,R.layout.college_course_layout){
+        HomeAdapter courseAdapter = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_COURSE, R.layout.college_course_layout) {
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
-
 
                 final ImageView iv1 = holder.getView(R.id.college_course_iv_1);
                 final TextView tv1 = holder.getView(R.id.college_course_tv_1);
@@ -191,7 +273,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                     public void onBannerClick(int position) {
                         Intent i = new Intent();
                         Bundle b = new Bundle();
-                        switch (homeBannerBeanList.get(position).getBanner_type()){
+                        switch (homeBannerBeanList.get(position).getBanner_type()) {
                             case "2":
                                 i.setClass(mContext, HuaShuaListActivity.class);
                                 b.putString(HuaShuaListActivity.EXTRA_KEY_WORDS, homeBannerBeanList.get(position).getKeyword());
@@ -224,15 +306,15 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                         if (i == EditorInfo.IME_ACTION_SEARCH) {
                             String keywords = et.getText().toString();
-                            if(StringUtils.isEmpty(keywords)){
+                            if (StringUtils.isEmpty(keywords)) {
                                 showToast("请输入搜索内容");
 
-                            }else{
+                            } else {
                                 KeyboardUtils.hideSoftInput(getActivity());
                                 Bundle bundle = new Bundle();
 
-                                bundle.putString(ZhuanLanSearchActivity.EXTRA_KEY_WORDS,keywords);
-                                readyGo(ZhuanLanSearchActivity.class,bundle);
+                                bundle.putString(ZhuanLanSearchActivity.EXTRA_KEY_WORDS, keywords);
+                                readyGo(ZhuanLanSearchActivity.class, bundle);
                             }
 
                             return true;
@@ -247,8 +329,6 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         adapterList.add(searchAdapter);
 
     }
-
-
 
 
 }

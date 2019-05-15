@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="163dp"
+    android:layout_height="192dp"
+    android:orientation="vertical"
+    android:background="@drawable/shape_college_course">
+
+    <ImageView
+        android:id="@+id/img_course_image"
+        android:layout_width="match_parent"
+        android:layout_height="93dp"
+        />
+
+    <TextView
+        android:id="@+id/tv_course_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="高情商进阶丨胡慎之的关系心理学课"
+        android:textColor="#000000"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:textSize="13sp"
+        />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="18dp">
+        <TextView
+            android:id="@+id/tv_course_master_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="许梦然"
+
+            android:textColor="#ff999999"
+            android:textSize="12sp"
+            />
+
+        <TextView
+            android:id="@+id/tv_course_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="￥99.00"
+            android:layout_marginLeft="50dp"
+            android:textColor="#fffe4c6c"
+            android:textSize="14sp"
+            />
+
+    </LinearLayout>
+</LinearLayout>
