@@ -4,13 +4,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.VirtualLayoutManager;
 import com.alibaba.android.vlayout.layout.LinearLayoutHelper;
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.company.common.utils.KeyboardUtils;
 import com.company.common.utils.RandomUntil;
+import com.company.common.utils.StringUtils;
 import com.ms.banner.Banner;
 import com.ms.banner.BannerConfig;
 import com.ms.banner.holder.BannerViewHolder;
@@ -30,9 +38,13 @@ import com.tuodanhuashu.app.home.presenter.HomeZhuanLanPresenter;
 import com.tuodanhuashu.app.home.view.HomeCollegeView;
 import com.tuodanhuashu.app.huashu.ui.HuaShuaListActivity;
 import com.tuodanhuashu.app.zhuanlan.ui.ZhuanLanDetailActivity;
+import com.tuodanhuashu.app.zhuanlan.ui.ZhuanLanSearchActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -117,7 +129,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         if (isFirstRefresh) {
             initBanner();
             initSearch();
-//            initArticle();
+            initCourse();
 //            initArticle2();
 //            initCategory();
 //            initAD();
@@ -127,6 +139,32 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         } else {
 
         }
+    }
+
+    private void initCourse() {
+        HomeAdapter courseAdapter = new HomeAdapter(mContext,new LinearLayoutHelper(),1,TYPE_COURSE,R.layout.college_course_layout){
+            @Override
+            public void onBindViewHolder(BaseViewHolder holder, int position) {
+                super.onBindViewHolder(holder, position);
+
+
+                final ImageView iv1 = holder.getView(R.id.college_course_iv_1);
+                final TextView tv1 = holder.getView(R.id.college_course_tv_1);
+                final ImageView iv2 = holder.getView(R.id.college_course_iv_2);
+                final TextView tv2 = holder.getView(R.id.college_course_tv_2);
+                final ImageView iv3 = holder.getView(R.id.college_course_iv_3);
+                final TextView tv3 = holder.getView(R.id.college_course_tv_3);
+
+                Glide.with(mContext).load(R.mipmap.sorting_classes).into(iv1);
+                tv1.setText("课程分类");
+                Glide.with(mContext).load(R.mipmap.community_class).into(iv2);
+                tv2.setText("社群课");
+                Glide.with(mContext).load(R.mipmap.private_class).into(iv3);
+                tv3.setText("私教课");
+
+            }
+        };
+        adapterList.add(courseAdapter);
     }
 
     private void initBanner() {
@@ -176,6 +214,38 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
     }
 
     private void initSearch() {
+        HomeAdapter searchAdapter = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_SEARCH, R.layout.college_search_layout) {
+            @Override
+            public void onBindViewHolder(BaseViewHolder holder, int position) {
+                super.onBindViewHolder(holder, position);
+                final EditText et = holder.getView(R.id.zhuanlan_search_et);
+                et.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                        if (i == EditorInfo.IME_ACTION_SEARCH) {
+                            String keywords = et.getText().toString();
+                            if(StringUtils.isEmpty(keywords)){
+                                showToast("请输入搜索内容");
+
+                            }else{
+                                KeyboardUtils.hideSoftInput(getActivity());
+                                Bundle bundle = new Bundle();
+
+                                bundle.putString(ZhuanLanSearchActivity.EXTRA_KEY_WORDS,keywords);
+                                readyGo(ZhuanLanSearchActivity.class,bundle);
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+
+
+            }
+        };
+        adapterList.add(searchAdapter);
+
     }
 
 
