@@ -6,38 +6,34 @@
     android:layout_height="match_parent"
     tools:context=".home.ui.HomeFragment">
 
-    <TextView
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/college_refreshlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="200sp"
-        android:text="college"/>
-    <!--<com.scwang.smartrefresh.layout.SmartRefreshLayout-->
-        <!--android:id="@+id/college_refreshLayout"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="@android:color/white"-->
-        <!--app:srlAccentColor="@android:color/white"-->
-        <!--app:srlEnableHeaderTranslationContent="false"-->
-        <!--app:srlEnableLoadMore="false"-->
-        <!--app:srlPrimaryColor="@color/colorPrimary">-->
+        android:background="@android:color/white"
+        app:srlAccentColor="@android:color/white"
+        app:srlEnableHeaderTranslationContent="false"
+        app:srlEnableLoadMore="false"
+        app:srlPrimaryColor="@color/colorPrimary">
 
 
-        <!--<com.scwang.smartrefresh.header.MaterialHeader-->
-            <!--android:id="@+id/college_refresheader"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content" />-->
-        <!--<android.support.v7.widget.RecyclerView-->
-            <!--android:id="@+id/college_rlv"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:clipToPadding="true"-->
-            <!--android:paddingLeft="0dp"-->
-            <!--android:paddingRight="0dp"-->
-            <!--android:requiresFadingEdge="none"-->
-            <!--android:scrollbars="vertical"-->
-            <!--android:background="@color/color_main_bg">-->
+        <com.scwang.smartrefresh.header.MaterialHeader
+            android:id="@+id/college_refresheader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/college_rlv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="true"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:requiresFadingEdge="none"
+            android:scrollbars="vertical"
+            android:background="@color/color_main_bg">
 
-        <!--</android.support.v7.widget.RecyclerView>-->
+        </android.support.v7.widget.RecyclerView>
 
-    <!--</com.scwang.smartrefresh.layout.SmartRefreshLayout>-->
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 </FrameLayout>

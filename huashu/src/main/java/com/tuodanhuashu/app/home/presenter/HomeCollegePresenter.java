@@ -32,8 +32,8 @@ public class HomeCollegePresenter extends BasePresenter {
     @Override
     public void OnSuccess(ServerResponse serverResponse, int tag) {
         super.OnSuccess(serverResponse, tag);
-        HomeCollegePageBean zhuanLanPageBean = JsonUtils.getJsonToBean(serverResponse.getData(), HomeCollegePageBean.class);
-        collegeView.getCollegeDataSuccess(zhuanLanPageBean);
+        HomeCollegePageBean collegePageBean = JsonUtils.getJsonToBean(serverResponse.getData(), HomeCollegePageBean.class);
+        collegeView.getCollegeDataSuccess(collegePageBean);
     }
 
     @Override

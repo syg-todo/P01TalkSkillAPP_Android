@@ -21,6 +21,6 @@ public class HomeCollegeFragmentBiz {
 
     public void requestHomeCollegePage(int tag){
         Map<String,String> params = new HashMap<>();
-        OkNetUtils.get(tag, Constants.URL.BASE_URL+Constants.URL.HOME_ZHUANLAN_URL,params,context,listener);
+        OkNetUtils.get(tag, Constants.URL.BASE_URL+Constants.URL.HOME_COLLEGE_URL,params,context,listener);
     }
 }
