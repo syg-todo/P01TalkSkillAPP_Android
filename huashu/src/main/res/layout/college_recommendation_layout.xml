@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginTop="20dp"
     android:orientation="vertical">
@@ -17,15 +17,15 @@
         >
 
         <TextView
-            android:id="@+id/college_choiceness_course_top_tv"
+            android:id="@+id/college_recommendation_top_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="精品课程"
+            android:text="更多推荐"
             android:textColor="@color/black"
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/college_choiceness_course_more_tv"
+            android:id="@+id/college_recommendation_course_more_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
@@ -36,15 +36,14 @@
     </FrameLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/college_choiceness_course_rv"
+        android:id="@+id/college_more_recommendation_rv"
         android:layout_width="match_parent"
-        android:layout_height="444dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/shape_home_funtion"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="20dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="20dp"
-        app:layoutManager="android.support.v7.widget.GridLayoutManager"
-        app:spanCount="2"
+
         />
 </LinearLayout>
