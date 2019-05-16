@@ -44,6 +44,7 @@ import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseFragment;
+import com.tuodanhuashu.app.course.ui.CourseListActivity;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
 import com.tuodanhuashu.app.home.adapter.HomeBannerViewHolder;
 import com.tuodanhuashu.app.home.bean.HomeBannerBean;
@@ -199,9 +200,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                             } else {
                                 outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
                                         DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20));
-
                             }
-
                         }
 
                     }
@@ -369,11 +368,39 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                 final TextView tv3 = holder.getView(R.id.college_course_tv_3);
 
                 Glide.with(mContext).load(R.mipmap.sorting_classes).into(iv1);
-                tv1.setText("课程分类");
+                tv1.setText(R.string.course_sorting);
                 Glide.with(mContext).load(R.mipmap.community_class).into(iv2);
-                tv2.setText("社群课");
+                tv2.setText(R.string.course_community);
                 Glide.with(mContext).load(R.mipmap.private_class).into(iv3);
-                tv3.setText("私教课");
+                tv3.setText(R.string.course_private);
+
+                holder.getView(R.id.college_course_sorting).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(CourseListActivity.EXTRA_ENTER_TYPE, 1);
+                        readyGo(CourseListActivity.class, bundle);
+                    }
+                });
+
+                holder.getView(R.id.college_course_community).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(CourseListActivity.EXTRA_ENTER_TYPE, 2);
+                        readyGo(CourseListActivity.class, bundle);
+                    }
+                });
+
+
+                holder.getView(R.id.college_course_private).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(CourseListActivity.EXTRA_ENTER_TYPE, 3);
+                        readyGo(CourseListActivity.class, bundle);
+                    }
+                });
 
             }
         };

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#F4F4F4"
+    android:orientation="vertical">
+    <include
+        layout="@layout/common_head_layout"/>
+    <com.ms.banner.Banner
+        android:id="@+id/course_list_banner"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"/>
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/course_list_tab"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/white"
+        app:tabIndicatorHeight="1dp"
+        app:tabTextColor="#666666"
+        app:tabMode="scrollable"
+        app:tabIndicatorColor="#FF6969"
+        app:tabSelectedTextColor="@color/colorAccent"/>
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/smart_refresh_course_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_course_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginTop="9dp"
+            android:background="@drawable/shape_home_funtion"/>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+</LinearLayout>
