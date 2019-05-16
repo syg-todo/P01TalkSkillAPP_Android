@@ -1,7 +1,10 @@
 package com.tuodanhuashu.app.home.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -13,6 +16,7 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -175,55 +179,55 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                     }
                 });
                 final List<HomeCourseBean> choicenessCourses = collegePageBean.getChoicenessCourses();
-                GridView gridView = holder.getView(R.id.college_choiceness_course_gv);
-                gridView.setAdapter(new BaseAdapter() {
-                    @Override
-                    public int getCount() {
-                        return choicenessCourses.size();
-                    }
-
-                    @Override
-                    public Object getItem(int i) {
-                        return choicenessCourses.get(i);
-                    }
-
-                    @Override
-                    public long getItemId(int i) {
-                        return position;
-                    }
-
-                    @Override
-                    public View getView(int i, View view, ViewGroup viewGroup) {
-                        HomeCourseBean homeCourseBean = choicenessCourses.get(i);
-                        view = LayoutInflater.from(mContext).inflate(R.layout.item_college_course_layout, viewGroup, false);
-                        ImageView imgImage = view.findViewById(R.id.img_course_image);
-                        TextView txtCourseName = view.findViewById(R.id.tv_course_name);
-                        TextView txtCourseMasterName =view.findViewById(R.id.tv_course_master_name);
-                        TextView txtCoursePrice = view.findViewById(R.id.tv_course_price);
-
-                        Glide.with(mContext).load(homeCourseBean.getImage_url()).into(imgImage);
-                        txtCourseName.setText(homeCourseBean.getCourse_name());
-                        txtCourseMasterName.setText(homeCourseBean.getMaster_name());
-                        txtCoursePrice.setText("￥" + homeCourseBean.getPrice());
-                        return view;
-                    }
-                });
-//
-//                ImageView imgImage = holder.getView(R.id.img_course_image);
-//                TextView txtCourseName = holder.getView(R.id.tv_course_name);
-//                TextView txtCourseMasterName = holder.getView(R.id.tv_course_master_name);
-//                TextView txtCoursePrice = holder.getView(R.id.tv_course_price);
-//                for (HomeCourseBean bean : choicenessCourses) {
-//                    Glide.with(mContext).load(bean.getImage_url()).into(imgImage);
-//                    txtCourseName.setText(bean.getCourse_name());
-//                    txtCourseMasterName.setText(bean.getMaster_name());
-//                    txtCoursePrice.setText("￥" + bean.getPrice());
-//                }
+                RecyclerView recyclerView = holder.getView(R.id.college_choiceness_course_rv);
+                recyclerView.setAdapter(new RVChoicenessAdapter(mContext,choicenessCourses));
             }
         };
         adapterList.add(ChoicenessAdapter);
     }
 
+    class RVChoicenessAdapter extends RecyclerView.Adapter<RVChoicenessAdapter.ChoicenessHolder> {
+        private List<HomeCourseBean> courseBeanList;
+        private Context mContext;
+        public RVChoicenessAdapter(Context context,List<HomeCourseBean> list){
+            this.courseBeanList = list;
+            this.mContext = context;
+        }
+        @NonNull
+        @Override
+        public ChoicenessHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_college_course_layout,parent,false);
+            ChoicenessHolder holder = new ChoicenessHolder(view);
+            return holder;
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ChoicenessHolder holder, int position) {
+            Glide.with(mContext).load(courseBeanList.get(position).getImage_url()).into(holder.imgImage);
+            holder.txtCourseName.setText(courseBeanList.get(position).getCourse_name());
+            holder.txtCourseMasterName.setText(courseBeanList.get(position).getMaster_name());
+            holder.txtCoursePrice.setText("￥"+courseBeanList.get(position).getPrice());
+        }
+
+        @Override
+        public int getItemCount() {
+            return 4;
+        }
+
+        class ChoicenessHolder extends RecyclerView.ViewHolder{
+            ImageView imgImage ;
+            TextView txtCourseName;
+            TextView txtCourseMasterName;
+            TextView txtCoursePrice ;
+            public ChoicenessHolder(View itemView) {
+                super(itemView);
+                imgImage = itemView.findViewById(R.id.img_course_image);
+                txtCourseName = itemView.findViewById(R.id.tv_course_name);
+                txtCourseMasterName = itemView.findViewById(R.id.tv_course_master_name);
+                txtCoursePrice = itemView.findViewById(R.id.tv_course_price);
+            }
+        }
+    }
     private void initCourse() {
         HomeAdapter courseAdapter = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_COURSE, R.layout.college_course_layout) {
             @Override
