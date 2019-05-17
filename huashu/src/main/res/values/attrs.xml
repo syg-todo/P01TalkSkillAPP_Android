@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RoundRectImageView">
+        <attr name="radiusX1" format="integer"/>
+        <attr name="radiusY1" format="integer"/>
+        <attr name="radiusX2" format="integer"/>
+        <attr name="radiusY2" format="integer"/>
+    </declare-styleable>
+</resources>

@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.company.common.CommonConstants;
 import com.company.common.utils.DisplayUtil;
 import com.company.common.utils.PreferencesUtils;
@@ -31,6 +35,7 @@ import com.tuodanhuashu.app.course.bean.MasterBean;
 import com.tuodanhuashu.app.course.presenter.CourseListPresenter;
 import com.tuodanhuashu.app.course.view.CourseListView;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
+import com.tuodanhuashu.app.widget.RoundRectImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +72,6 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
     private List<CourseClassBean> courseClassList;
     private List<MasterBean> masterList;
     private CourseListAdapter adapter;
-
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_course_list;
@@ -292,8 +296,13 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
         }
 
         @Override
-        public void onBindViewHolder(@NonNull CourseListHolder holder, int position) {
-            Glide.with(mContext).load(courseBeanList.get(position).getImage_url()).into(holder.imgItemCourseImage);
+        public void onBindViewHolder(@NonNull final CourseListHolder holder, int position) {
+            Glide.with(mContext).load(courseBeanList.get(position).getImage_url()).into(new SimpleTarget<Drawable>() {
+                @Override
+                public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                    holder.imgItemCourseImage.setDrawable(resource);
+                }
+            });
             holder.tvItemCourseName.setText(courseBeanList.get(position).getCourse_name());
             holder.tvItemCoursePrice.setText(String.valueOf(courseBeanList.get(position).getPrice()));
             holder.tvItemCourseSalePrice.setText(String.valueOf(courseBeanList.get(position).getSale_price()));
@@ -308,7 +317,7 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
         }
 
         class CourseListHolder extends RecyclerView.ViewHolder {
-            ImageView imgItemCourseImage;
+            RoundRectImageView imgItemCourseImage;
             TextView tvItemCourseName;
             TextView tvItemCoursePrice;
             TextView tvItemCourseSalePrice;

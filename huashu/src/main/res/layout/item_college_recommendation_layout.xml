@@ -41,10 +41,14 @@
         android:textSize="14sp"
         />
     
-    <ImageView
+    <com.tuodanhuashu.app.widget.RoundRectImageView
         android:id="@+id/img_recommend_image"
         android:layout_width="158dp"
         android:layout_height="90dp"
+        app:radiusX1="6"
+        app:radiusX2="6"
+        app:radiusY1="6"
+        app:radiusY2="6"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:scaleType="fitXY"

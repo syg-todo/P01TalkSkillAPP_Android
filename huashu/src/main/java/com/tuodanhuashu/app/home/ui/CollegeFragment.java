@@ -6,8 +6,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +32,8 @@ import com.alibaba.android.vlayout.VirtualLayoutManager;
 import com.alibaba.android.vlayout.layout.GridLayoutHelper;
 import com.alibaba.android.vlayout.layout.LinearLayoutHelper;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.company.common.utils.DisplayUtil;
 import com.company.common.utils.KeyboardUtils;
@@ -55,6 +59,7 @@ import com.tuodanhuashu.app.home.presenter.HomeCollegePresenter;
 import com.tuodanhuashu.app.home.presenter.HomeZhuanLanPresenter;
 import com.tuodanhuashu.app.home.view.HomeCollegeView;
 import com.tuodanhuashu.app.huashu.ui.HuaShuaListActivity;
+import com.tuodanhuashu.app.widget.RoundRectImageView;
 import com.tuodanhuashu.app.zhuanlan.ui.ZhuanLanDetailActivity;
 import com.tuodanhuashu.app.zhuanlan.ui.ZhuanLanListActivity;
 import com.tuodanhuashu.app.zhuanlan.ui.ZhuanLanSearchActivity;
@@ -255,8 +260,13 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ChoicenessHolder holder, int position) {
-            Glide.with(mContext).load(courseBeanList.get(position).getImage_url()).into(holder.imgImage);
+        public void onBindViewHolder(@NonNull final ChoicenessHolder holder, int position) {
+            Glide.with(mContext).load(courseBeanList.get(position).getImage_url()).into(new SimpleTarget<Drawable>() {
+                @Override
+                public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                    holder.imgImage.setDrawable(resource);
+                }
+            });
             holder.txtCourseName.setText(courseBeanList.get(position).getCourse_name());
             holder.txtCourseMasterName.setText(courseBeanList.get(position).getMaster_name());
             holder.txtCoursePrice.setText("￥" + courseBeanList.get(position).getPrice());
@@ -268,7 +278,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         }
 
         class ChoicenessHolder extends RecyclerView.ViewHolder {
-            ImageView imgImage;
+            RoundRectImageView imgImage;
             TextView txtCourseName;
             TextView txtCourseMasterName;
             TextView txtCoursePrice;
@@ -301,8 +311,13 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecommendationHolder holder, int position) {
-            Glide.with(mContext).load(courseBeanList.get(position).getImage_url()).into(holder.imgImage);
+        public void onBindViewHolder(@NonNull final RecommendationHolder holder, int position) {
+            Glide.with(mContext).load(courseBeanList.get(position).getImage_url()).into(new SimpleTarget<Drawable>() {
+                @Override
+                public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                    holder.imgImage.setDrawable(resource);
+                }
+            });
             holder.txtCourseName.setText(courseBeanList.get(position).getCourse_name());
             holder.txtCourseMasterName.setText(courseBeanList.get(position).getMaster_name());
             holder.txtCoursePrice.setText("￥" + courseBeanList.get(position).getPrice());
@@ -314,7 +329,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         }
 
         class RecommendationHolder extends RecyclerView.ViewHolder {
-            ImageView imgImage;
+            RoundRectImageView imgImage;
             TextView txtCourseName;
             TextView txtCourseMasterName;
             TextView txtCoursePrice;

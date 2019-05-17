@@ -5,10 +5,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <ImageView
+    <com.tuodanhuashu.app.widget.RoundRectImageView
         android:id="@+id/iv_item_course_list_image"
         android:layout_width="158dp"
         android:layout_height="90dp"
+        app:radiusX1="8"
+        app:radiusX2="8"
+        app:radiusY1="8"
+        app:radiusY2="8"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="@dimen/dp_10"
