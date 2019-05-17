@@ -23,7 +23,6 @@ import com.company.common.utils.DisplayUtil;
 import com.tuodanhuashu.app.R;
 
 
-
 public class RoundRectImageView extends View {
     private float width;
     private float height;
@@ -33,8 +32,8 @@ public class RoundRectImageView extends View {
     Xfermode xfermode = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
     Bitmap bitmap;
     RectF savedArea = new RectF();
-    int radiusX1, radiusX2;
-    int radiusY1, radiusY2;
+    float radiusX1, radiusX2;
+    float radiusY1, radiusY2;
     private float[] radiusArray;
 
 
@@ -50,10 +49,10 @@ public class RoundRectImageView extends View {
     public RoundRectImageView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.RoundRectImageView);
-        radiusX1 = ta.getInt(R.styleable.RoundRectImageView_radiusX1, 0);
-        radiusY1 = ta.getInt(R.styleable.RoundRectImageView_radiusY1, 0);
-        radiusX2 = ta.getInt(R.styleable.RoundRectImageView_radiusX2, 0);
-        radiusY2 = ta.getInt(R.styleable.RoundRectImageView_radiusY2, 0);
+        radiusX1 = ta.getFloat(R.styleable.RoundRectImageView_radiusX1, 0f);
+        radiusY1 = ta.getFloat(R.styleable.RoundRectImageView_radiusY1, 0f);
+        radiusX2 = ta.getFloat(R.styleable.RoundRectImageView_radiusX2, 0f);
+        radiusY2 = ta.getFloat(R.styleable.RoundRectImageView_radiusY2, 0f);
         ta.recycle();
     }
 
@@ -64,7 +63,7 @@ public class RoundRectImageView extends View {
 
         width = w;
         height = h;
-        bitmap = getInitialBitmap((int)width,(int)height);
+        bitmap = getInitialBitmap((int) width, (int) height);
         savedArea.set(0, 0, width, width);
     }
 
@@ -84,8 +83,8 @@ public class RoundRectImageView extends View {
         canvas.restoreToCount(saved);
     }
 
-    Bitmap getInitialBitmap(int width,int height) {
-        return  Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
+    Bitmap getInitialBitmap(int width, int height) {
+        return Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
     }
 

@@ -8,7 +8,8 @@
 
     <LinearLayout
         android:id="@+id/college_course_sorting"
-        android:layout_width="48dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="57dp"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="50dp"
@@ -26,7 +27,7 @@
 
         <TextView
             android:id="@+id/college_course_tv_1"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
@@ -39,7 +40,8 @@
 
     <LinearLayout
         android:id="@+id/college_course_community"
-        android:layout_width="48dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="57dp"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="75dp"
@@ -58,7 +60,7 @@
 
         <TextView
             android:id="@+id/college_course_tv_2"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
@@ -71,7 +73,8 @@
 
     <LinearLayout
         android:id="@+id/college_course_private"
-        android:layout_width="48dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="57dp"
         android:layout_marginTop="20dp"
         android:layout_marginRight="50dp"
@@ -90,7 +93,7 @@
 
         <TextView
             android:id="@+id/college_course_tv_3"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
