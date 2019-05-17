@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -24,10 +23,11 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseActivity;
 import com.tuodanhuashu.app.course.bean.CourseClassBean;
+import com.tuodanhuashu.app.course.bean.CourseWithBannerBean;
+import com.tuodanhuashu.app.course.bean.MasterBean;
 import com.tuodanhuashu.app.course.presenter.CourseListPresenter;
 import com.tuodanhuashu.app.course.view.CourseListView;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
-import com.tuodanhuashu.app.zhuanlan.bean.ArticleClassBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,9 +58,11 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
     private int page_size = 10;
     private int page = 1;
     private int classId;
+    private String masterId;
     private List<HomeCourseBean> courseBeanList;
     private CourseListPresenter courseListPresenter;
     private List<CourseClassBean> courseClassList;
+    private List<MasterBean> masterList;
     private CourseListAdapter adapter;
 
     @Override
@@ -88,7 +90,7 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
                 tablayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
-                        page = 1;
+//                        page = 1;
                         courseBeanList.clear();
                         classId = courseClassList.get(tab.getPosition()).getId();
                         courseListPresenter.requestCourseListByClassId(classId + "", page + "", page_size + "");
@@ -102,18 +104,40 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
 
                     @Override
                     public void onTabReselected(TabLayout.Tab tab) {
-                        courseListPresenter.requestCourseClassList();
+//                        courseListPresenter.requestCourseClassList();
                     }
                 });
                 break;
 
             case 2:
                 commonHeadTitleTv.setText(R.string.course_community);
+                courseListPresenter.requestCommunityCourseList(page + "", page_size + "");
                 tablayout.setVisibility(View.GONE);
                 break;
 
             case 3:
                 commonHeadTitleTv.setText(R.string.course_private);
+                courseListPresenter.requestMasterList();
+                tablayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        courseBeanList.clear();
+                        masterId = masterList.get(tab.getPosition()).getId();
+                        courseListPresenter.requestCourseListByMaterId(masterId + "", page + "", page_size + "");
+
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+
+                    }
+                });
+
 
                 break;
         }
@@ -179,8 +203,6 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
         }
         this.courseBeanList.addAll(courseBeanList);
 
-
-        Log.d("111", "getCourSuccess   size:" + this.courseBeanList.size());
         adapter.setCourseBeanList(this.courseBeanList);
     }
 
@@ -189,7 +211,23 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
     }
 
     @Override
+    public void getCourseWithBannerSuccess(CourseWithBannerBean courseWithBannerBean) {
+//        if (page == 1) {
+            this.courseBeanList.clear();
+
+//        }
+        this.courseBeanList.addAll(courseWithBannerBean.getCourses());
+        adapter.setCourseBeanList(this.courseBeanList);
+    }
+
+    @Override
+    public void getCourseCommunityFail(String msg) {
+
+    }
+
+    @Override
     public void getClassListSuccess(List<CourseClassBean> courseClassList) {
+        tablayout.removeAllTabs();
         this.courseClassList = courseClassList;
         for (CourseClassBean courseClass : courseClassList) {
             tablayout.addTab(tablayout.newTab().setText(courseClass.getClass_name()));
@@ -198,6 +236,20 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
 
     @Override
     public void getClassListFail(String msg) {
+
+    }
+
+    @Override
+    public void getMasterListSuccess(List<MasterBean> masterList) {
+        this.masterList = masterList;
+        tablayout.removeAllTabs();
+        for (MasterBean masterBean : masterList) {
+            tablayout.addTab(tablayout.newTab().setText(masterBean.getName()));
+        }
+    }
+
+    @Override
+    public void getMasterListFail(String msg) {
 
     }
 
@@ -219,7 +271,6 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
 
         public void setCourseBeanList(List<HomeCourseBean> list) {
             this.courseBeanList = list == null ? new ArrayList<HomeCourseBean>() : list;
-            Log.d("111", "CourseAdapter:size:" + list.size() + list.get(0).getCourse_name());
             notifyDataSetChanged();
         }
 
@@ -233,16 +284,17 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
 
         @Override
         public void onBindViewHolder(@NonNull CourseListHolder holder, int position) {
-            Log.d("111", courseBeanList.get(position).getCourse_name());
             Glide.with(mContext).load(courseBeanList.get(position).getImage_url()).into(holder.imgItemCourseImage);
             holder.tvItemCourseName.setText(courseBeanList.get(position).getCourse_name());
             holder.tvItemCoursePrice.setText(String.valueOf(courseBeanList.get(position).getPrice()));
             holder.tvItemCourseSalePrice.setText(String.valueOf(courseBeanList.get(position).getSale_price()));
             holder.tvItemCourseJoinCount.setText(courseBeanList.get(position).getJoin_count() + "人参加");
+            holder.tvItemCoursePrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         }
 
         @Override
         public int getItemCount() {
+            Log.d("111","courseListAdapter.size:"+courseBeanList.size());
             return courseBeanList.size();
         }
 

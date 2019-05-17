@@ -29,7 +29,27 @@ public class CourseListBiz {
         params.put("class_id",class_id);
         params.put("page",page);
         params.put("page_size",page_size);
-        OkNetUtils.get(tag, Constants.URL.BASE_URL+Constants.URL.COLLEGE_ARTICLE_CLASSID_URL,params,context,listener);
+        OkNetUtils.get(tag, Constants.URL.BASE_URL+Constants.URL.COLLEGE_COURSE_CAT_LIST_URL,params,context,listener);
     }
 
+
+    public void requestCourseCommunityList(int tag, String page, String page_size) {
+        Map<String,String> params = new HashMap<>();
+        params.put("page",page);
+        params.put("page_size",page_size);
+        OkNetUtils.get(tag, Constants.URL.BASE_URL+Constants.URL.COLLEGE_COURSE_COMMUNITY_URL,params,context,listener);
+    }
+
+    public void requestMasterList(int tag) {
+        Map<String,String> params = new HashMap<>();
+        OkNetUtils.get(tag, Constants.URL.BASE_URL+Constants.URL.COLLEGE_COURSE_MASTER_LIST_URL,params,context,listener);
+    }
+
+    public void requestCourseListByMasterId(int tag,String master_id,String page,String page_size){
+        Map<String,String> params = new HashMap<>();
+        params.put("master_id",master_id);
+        params.put("page",page);
+        params.put("page_size",page_size);
+        OkNetUtils.get(tag, Constants.URL.BASE_URL+Constants.URL.COLLEGE_COURSE_SJK_LIST_URL,params,context,listener);
+    }
 }
