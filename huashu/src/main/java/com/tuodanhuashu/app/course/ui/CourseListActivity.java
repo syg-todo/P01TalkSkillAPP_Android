@@ -15,9 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.company.common.CommonConstants;
 import com.company.common.utils.DisplayUtil;
+import com.company.common.utils.PreferencesUtils;
 import com.ms.banner.Banner;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.tuodanhuashu.app.R;
@@ -278,7 +281,13 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
         @Override
         public CourseListHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(mContext).inflate(R.layout.item_course_list_layout, parent, false);
-            CourseListHolder holder = new CourseListHolder(view);
+            final CourseListHolder holder = new CourseListHolder(view);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    readyGo(CourseDetailActivity.class);
+                }
+            });
             return holder;
         }
 
@@ -305,7 +314,7 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
             TextView tvItemCourseSalePrice;
             TextView tvItemCourseJoinCount;
 
-            public CourseListHolder(View itemView) {
+            public CourseListHolder(final View itemView) {
                 super(itemView);
 
                 imgItemCourseImage = itemView.findViewById(R.id.iv_item_course_list_image);
@@ -313,6 +322,7 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
                 tvItemCoursePrice = itemView.findViewById(R.id.tv_item_course_list_price);
                 tvItemCourseSalePrice = itemView.findViewById(R.id.tv_item_course_list_sale_price);
                 tvItemCourseJoinCount = itemView.findViewById(R.id.tv_item_course_list_join);
+
             }
         }
     }

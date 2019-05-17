@@ -115,18 +115,18 @@ public class ZhuanLanFragment extends HuaShuBaseFragment implements HomeZhuanLan
     }
 
     @Override
-    protected void initView(View view) {
-        super.initView(view);
-        zhuanLanPresenter = new HomeZhuanLanPresenter(this, mContext);
-        adapterList = new ArrayList<>();
-        zhuanlanRefresheader.setColorSchemeColors(mContext.getResources().getColor(R.color.colorAccent));
-        VirtualLayoutManager layoutManager = new VirtualLayoutManager(mContext);
-        zhuanlanRlv.setLayoutManager(layoutManager);
-        RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
-        zhuanlanRlv.setRecycledViewPool(viewPool);
-        viewPool.setMaxRecycledViews(0, 10);
-        delegateAdapter = new DelegateAdapter(layoutManager, true);
-        zhuanlanRlv.setAdapter(delegateAdapter);
+        protected void initView(View view) {
+            super.initView(view);
+            zhuanLanPresenter = new HomeZhuanLanPresenter(this, mContext);
+            adapterList = new ArrayList<>();
+            zhuanlanRefresheader.setColorSchemeColors(mContext.getResources().getColor(R.color.colorAccent));
+            VirtualLayoutManager layoutManager = new VirtualLayoutManager(mContext);
+            zhuanlanRlv.setLayoutManager(layoutManager);
+            RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
+            zhuanlanRlv.setRecycledViewPool(viewPool);
+            viewPool.setMaxRecycledViews(0, 10);
+            delegateAdapter = new DelegateAdapter(layoutManager, true);
+            zhuanlanRlv.setAdapter(delegateAdapter);
 //        initBanner();
 //        initSearch();
 //        initArticle();

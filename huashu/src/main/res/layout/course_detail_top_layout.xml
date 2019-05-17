@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="20dp"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/iv_course_detail_top"
+        android:layout_width="match_parent"
+        android:layout_height="210dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/test"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_course_detail_course_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="15dp"
+        android:text="施琪嘉创伤30讲：走出心理阴影，重塑强大内心"
+        android:textColor="#ff000000"
+        android:textSize="17sp"
+        app:layout_constraintTop_toBottomOf="@id/iv_course_detail_top" />
+
+    <TextView
+        android:id="@+id/tv_course_detail_course_brief"
+        android:layout_width="180dp"
+        android:layout_height="17dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="一幅画千言万语，一棵树别样人生"
+        android:textColor="#ff999999"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_course_detail_course_name" />
+
+    <TextView
+        android:id="@+id/tv_course_detail_course_audio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/shape_text_red_hollow_border"
+        android:padding="2dp"
+        android:text="音频"
+        android:textColor="#ffff6666"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_course_detail_course_brief" />
+
+    <TextView
+        android:id="@+id/tv_course_detail_course_join"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="20dp"
+        android:text="2361人参加"
+        android:textColor="#ff999999"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toRightOf="@id/tv_course_detail_course_audio"
+        app:layout_constraintTop_toBottomOf="@id/tv_course_detail_course_brief" />
+
+    <TextView
+        android:id="@+id/tv_course_detail_course_price"
+        android:layout_width="30dp"
+        android:layout_height="15dp"
+        android:text="￥199"
+        android:textColor="#ff999999"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="22dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_course_detail_course_brief"
+        app:layout_constraintRight_toLeftOf="@id/tv_course_detail_course_sale_price"
+        android:textSize="11sp" />
+
+    <TextView
+        android:id="@+id/tv_course_detail_course_sale_price"
+        android:layout_width="32dp"
+        android:layout_height="19dp"
+        android:text="￥99"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="5dp"
+        app:layout_constraintRight_toLeftOf="@+id/tv_course_detail_course_buy"
+        app:layout_constraintTop_toBottomOf="@id/tv_course_detail_course_brief"
+        android:textColor="#ffff6666"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tv_course_detail_course_buy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_text_red_solid_border"
+        android:paddingLeft="12dp"
+        android:paddingTop="4dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="4dp"
+        android:text="@string/buy"
+        android:textSize="13sp"
+        android:textColor="#ffffffff"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="18dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_course_detail_course_brief"/>
+
+</android.support.constraint.ConstraintLayout>

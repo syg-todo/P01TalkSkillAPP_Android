@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <include
+        layout="@layout/common_head_layout"/>
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/refresh_course_detail"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/white"
+        app:srlAccentColor="@android:color/white"
+        app:srlEnableHeaderTranslationContent="false"
+        app:srlEnableLoadMore="false"
+        app:srlPrimaryColor="@color/colorPrimary">
+
+        <com.scwang.smartrefresh.header.MaterialHeader
+            android:id="@+id/refresheader_course_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.RecyclerView
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color_main_bg"
+            android:id="@+id/rv_course_detail"/>
+
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <LinearLayout
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:background="#ffffff">
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="15dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="17dp"
+                android:src="@mipmap/audition"
+                />
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="21dp"
+                android:textColor="#ff666666"
+                android:textSize="15sp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="14dp"
+                android:text="@string/audition"/>
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="立即参加：99元"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:textColor="#ffffffff"
+            android:background="@drawable/shape_course_detail_participate_immediately"/>
+    </LinearLayout>
+</LinearLayout>
