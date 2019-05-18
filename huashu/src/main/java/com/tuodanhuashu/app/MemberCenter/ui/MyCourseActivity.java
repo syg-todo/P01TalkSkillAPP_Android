@@ -37,10 +37,10 @@ public class MyCourseActivity extends HuaShuBaseActivity {
         titles.add("我的课程");
         titles.add("我的导师");
         MyCourseFragment fragment = new MyCourseFragment();
-        MyCourseFragment fragment1 = new MyCourseFragment();
+        MyMasterFragment masterFragment = new MyMasterFragment();
 
         fragments.add(fragment);
-        fragments.add(fragment1);
+        fragments.add(masterFragment);
         for (int i = 0; i < titles.size(); i++) {
             tabLayout.addTab(tabLayout.newTab().setText(titles.get(i)));
         }
