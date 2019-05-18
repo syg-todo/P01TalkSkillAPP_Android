@@ -34,6 +34,7 @@
             android:textSize="12sp"
             android:gravity="center"
             android:singleLine="true"
+            android:ellipsize="none"
             android:text="文章推荐1" />
 
     </LinearLayout>

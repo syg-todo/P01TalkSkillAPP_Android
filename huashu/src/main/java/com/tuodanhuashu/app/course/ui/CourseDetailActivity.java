@@ -4,6 +4,10 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -22,6 +26,9 @@ import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseActivity;
+import com.tuodanhuashu.app.course.ui.fragment.CourseDetailAspectFragment;
+import com.tuodanhuashu.app.course.ui.fragment.CourseDetailCommentFragment;
+import com.tuodanhuashu.app.course.ui.fragment.CourseDetailDirectoryFragment;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
 import com.tuodanhuashu.app.widget.RoundRectImageView;
 
@@ -48,7 +55,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
 
     private static final int TYPE_MASTER_ROW = 2;
 
-    private static final int TYPE_ARTICLE = 3;
+    private static final int TYPE_COURSE_TAB = 3;
 
     private static final int TYPE_CATEGORY = 4;
 
@@ -78,9 +85,58 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
 
         initCourseTop();
         initMasterRow();
+        initCourseTab();
         delegateAdapter.setAdapters(adapterList);
 
     }
+
+    private void initCourseTab() {
+        HomeAdapter adapterCourseTab = new HomeAdapter(mContext,new LinearLayoutHelper(),1,TYPE_COURSE_TAB,R.layout.course_detail_tab_layout){
+            @Override
+            public void onBindViewHolder(BaseViewHolder holder, int position) {
+                super.onBindViewHolder(holder, position);
+                TabLayout tabLayout = holder.getView(R.id.tablayout_course_detail);
+
+                ViewPager viewPager = holder.getView(R.id.viewpage_course_detail);
+                final List<String> titles = new ArrayList<>();
+                titles.add("详情");
+                titles.add("目录");
+                titles.add("评论");
+                final List<Fragment> fragments = new ArrayList<>();
+                fragments.add(new CourseDetailAspectFragment());
+                fragments.add(new CourseDetailDirectoryFragment());
+                fragments.add(new CourseDetailCommentFragment());
+
+                for (String title:titles){
+                    tabLayout.addTab(tabLayout.newTab().setText(title));
+                }
+
+                tabLayout.setupWithViewPager(viewPager);
+
+                viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+                    @Override
+                    public Fragment getItem(int position) {
+                        return fragments.get(position);
+                    }
+
+                    @Override
+                    public int getCount() {
+                        return fragments.size();
+                    }
+
+                    @Nullable
+                    @Override
+                    public CharSequence getPageTitle(int position) {
+                        return titles.get(position);
+                    }
+                });
+
+            }
+        };
+        adapterList.add(adapterCourseTab);
+
+    }
+
 
     private void initMasterRow() {
         HomeAdapter adapterMasterRow = new HomeAdapter(mContext,new LinearLayoutHelper(),1,TYPE_MASTER_ROW,R.layout.course_detail_master_row_layout){

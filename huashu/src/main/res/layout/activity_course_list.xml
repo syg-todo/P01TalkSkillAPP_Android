@@ -20,7 +20,7 @@
         app:tabIndicatorHeight="1dp"
         app:tabTextColor="#666666"
         app:tabMode="scrollable"
-        app:tabIndicatorColor="#FF6969"
+        app:tabIndicatorColor="@color/colorAccent"
         app:tabSelectedTextColor="@color/colorAccent"/>
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout

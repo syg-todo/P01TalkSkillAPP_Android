@@ -344,30 +344,6 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         }
     }
 
-    class RecommendationDecoration extends RecyclerView.ItemDecoration {
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            super.getItemOffsets(outRect, view, parent, state);
-            int childCount = parent.getChildCount();
-            int actualCount = parent.getAdapter().getItemCount();
-            for (int i = 0; i < childCount; i++) {
-                View child = parent.getChildAt(i);
-                int index = parent.getChildAdapterPosition(child);
-
-                if (index != actualCount - 1) {
-                    outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
-                            DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 0));
-                } else {
-                    outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
-                            DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20));
-
-                }
-
-
-            }
-
-        }
-    }
 
     private void initCourse() {
         HomeAdapter courseAdapter = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_COURSE, R.layout.college_course_layout) {

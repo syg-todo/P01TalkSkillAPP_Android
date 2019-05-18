@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="144dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tuodanhuashu.app.widget.RoundRectImageView
+        android:id="@+id/iv_item_course_detail_comment_avatar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:radiusX1="15"
+        app:radiusX2="15"
+        app:radiusY1="15"
+        app:radiusY2="15"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:text="悠然自得"
+        android:textColor="#ff999999"
+        android:textSize="13sp"
+        android:id="@+id/tv_item_course_detail_comment_commenter_name"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/iv_item_course_detail_comment_avatar"
+        android:layout_marginTop="21dp"
+        android:layout_marginLeft="10dp"
+        />
+    
+    <ImageView
+        android:id="@+id/iv_item_course_detail_comment_thumb_up"
+        android:layout_width="13dp"
+        android:layout_height="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="23dp"
+        android:layout_marginRight="15dp"
+        android:src="@mipmap/thumb_up"
+        />
+
+    <TextView
+        android:id="@+id/tv_item_course_detail_comment_commenter_like_count"
+        android:layout_width="8dp"
+        android:layout_height="14dp"
+        android:text="8"
+        android:textColor="#ff999999"
+        android:textSize="12sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/iv_item_course_detail_comment_thumb_up"
+        android:layout_marginTop="23dp"
+        android:layout_marginRight="5dp"
+        />
+
+    <TextView
+        android:layout_width="300dp"
+        android:layout_height="58dp"
+        android:text="看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章。"
+        android:textColor="#ff000000"
+        android:textSize="13sp"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_course_detail_comment_commenter_name"
+        app:layout_constraintLeft_toRightOf="@id/iv_item_course_detail_comment_avatar"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/tv_item_course_detail_comment_comment"
+        />
+
+    <TextView
+        android:id="@+id/tv_item_course_detail_comment_time"
+        android:layout_width="57dp"
+        android:layout_height="12dp"
+        android:text="2019-03-27"
+        android:textColor="#ff999999"
+        android:textSize="10sp"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_course_detail_comment_comment"
+        app:layout_constraintLeft_toRightOf="@id/iv_item_course_detail_comment_avatar"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginLeft="10dp"
+        />
+
+
+</android.support.constraint.ConstraintLayout>
