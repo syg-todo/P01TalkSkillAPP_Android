@@ -34,6 +34,7 @@ public class MyMasterFragment extends HuaShuBaseFragment {
     RecyclerView recyclerView;
 
     private List<MasterBean> masterList = new ArrayList<>();
+
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.fragment_my_course;
@@ -122,7 +123,6 @@ public class MyMasterFragment extends HuaShuBaseFragment {
 
         @Override
         public int getItemCount() {
-            Log.d("111","size"+masterList.size());
             return masterList.size();
         }
 

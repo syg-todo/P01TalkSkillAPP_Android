@@ -154,6 +154,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
             initBanner();
             initSearch();
             initCourse();
+            initActivity();
             initChoicenessCourses();
             initRecommendations();
 //            initCategory();
@@ -164,6 +165,18 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         } else {
 
         }
+    }
+
+    private void initActivity() {
+        HomeAdapter activityAdapter = new HomeAdapter(mContext,new LinearLayoutHelper(),1,TYPE_ACTIVITY,R.layout.college_activity_layout){
+            @Override
+            public void onBindViewHolder(BaseViewHolder holder, int position) {
+                super.onBindViewHolder(holder, position);
+                ImageView imageView = holder.getView(R.id.iv_college_activity);
+                imageView.setImageDrawable(getResources().getDrawable(R.mipmap.activity));
+            }
+        };
+        adapterList.add(activityAdapter);
     }
 
     private void initRecommendations() {
