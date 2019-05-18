@@ -17,14 +17,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.company.common.CommonConstants;
 import com.company.common.utils.DisplayUtil;
-import com.company.common.utils.PreferencesUtils;
 import com.ms.banner.Banner;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.tuodanhuashu.app.R;
@@ -286,28 +283,34 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
         public CourseListHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(mContext).inflate(R.layout.item_course_list_layout, parent, false);
             final CourseListHolder holder = new CourseListHolder(view);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    readyGo(CourseDetailActivity.class);
-                }
-            });
             return holder;
         }
 
         @Override
         public void onBindViewHolder(@NonNull final CourseListHolder holder, int position) {
-            Glide.with(mContext).load(courseBeanList.get(position).getImage_url()).into(new SimpleTarget<Drawable>() {
+            final HomeCourseBean course = courseBeanList.get(position);
+
+            Glide.with(mContext).load(course.getImage_url()).into(new SimpleTarget<Drawable>() {
                 @Override
                 public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                     holder.imgItemCourseImage.setDrawable(resource);
                 }
             });
-            holder.tvItemCourseName.setText(courseBeanList.get(position).getCourse_name());
-            holder.tvItemCoursePrice.setText(String.valueOf(courseBeanList.get(position).getPrice()));
-            holder.tvItemCourseSalePrice.setText(String.valueOf(courseBeanList.get(position).getSale_price()));
-            holder.tvItemCourseJoinCount.setText(courseBeanList.get(position).getJoin_count() + "人参加");
+            holder.tvItemCourseName.setText(course.getCourse_name());
+            holder.tvItemCoursePrice.setText(String.valueOf(course.getPrice()));
+            holder.tvItemCourseSalePrice.setText(String.valueOf(course.getSale_price()));
+            holder.tvItemCourseJoinCount.setText(course.getJoin_count() + "人参加");
             holder.tvItemCoursePrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_NAME,course.getCourse_name());
+                    readyGo(CourseDetailActivity.class,bundle);
+                }
+            });
+
         }
 
         @Override

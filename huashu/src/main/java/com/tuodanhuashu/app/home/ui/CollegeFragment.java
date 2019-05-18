@@ -293,7 +293,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         }
     }
 
-    class RVRecommendationAdapter extends RecyclerView.Adapter<RVRecommendationAdapter.RecommendationHolder> {
+    public class RVRecommendationAdapter extends RecyclerView.Adapter<RVRecommendationAdapter.RecommendationHolder> {
         private List<HomeCourseBean> courseBeanList;
         private Context mContext;
 

@@ -2,12 +2,14 @@ package com.tuodanhuashu.app.course.ui;
 
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -26,10 +28,13 @@ import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseActivity;
+import com.tuodanhuashu.app.base.SimpleItemDecoration;
+import com.tuodanhuashu.app.course.ui.adapter.RVRecommendationAdapter;
 import com.tuodanhuashu.app.course.ui.fragment.CourseDetailAspectFragment;
 import com.tuodanhuashu.app.course.ui.fragment.CourseDetailCommentFragment;
 import com.tuodanhuashu.app.course.ui.fragment.CourseDetailDirectoryFragment;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
+import com.tuodanhuashu.app.home.bean.HomeCourseBean;
 import com.tuodanhuashu.app.widget.RoundRectImageView;
 
 import java.util.ArrayList;
@@ -45,11 +50,15 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
     MaterialHeader refresheaderCourseDetail;
     @BindView(R.id.refresh_course_detail)
     SmartRefreshLayout refreshLayoutCourseDetail;
-
+    @BindView(R.id.common_head_title_tv)
+    TextView tvTitle;
     private DelegateAdapter delegateAdapter;
 
     private List<DelegateAdapter.Adapter> adapterList;
 
+    public static final String EXTRA_COURSE_NAME = "course_name";
+
+    private String course_name = "";
 
     private static final int TYPE_TOP = 1;
 
@@ -57,11 +66,8 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
 
     private static final int TYPE_COURSE_TAB = 3;
 
-    private static final int TYPE_CATEGORY = 4;
+    private static final int TYPE_RECOMMEND = 4;
 
-    private static final int TYPE_AD = 5;
-
-    private static final int TYPE_LIST = 6;
     private boolean isFollowed = false;
     @Override
     protected int getContentViewLayoutID() {
@@ -71,7 +77,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
     @Override
     protected void initView() {
         super.initView();
-
+        tvTitle.setText(course_name);
         adapterList = new ArrayList<>();
         refresheaderCourseDetail.setColorSchemeColors(mContext.getResources().getColor(R.color.colorAccent));
         VirtualLayoutManager layoutManager = new VirtualLayoutManager(mContext);
@@ -86,7 +92,63 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
         initCourseTop();
         initMasterRow();
         initCourseTab();
+        initRecommendation();
         delegateAdapter.setAdapters(adapterList);
+
+    }
+
+    private void initRecommendation() {
+
+        HomeAdapter adapterRecommendation = new HomeAdapter(mContext,new LinearLayoutHelper(),1,TYPE_RECOMMEND,R.layout.college_recommendation_layout){
+            @Override
+            public void onBindViewHolder(BaseViewHolder holder, int position) {
+                super.onBindViewHolder(holder, position);
+                if (position != 0) {
+                    TextView tv = holder.getView(R.id.college_recommendation_top_tv);
+                    tv.setVisibility(View.GONE);
+                }
+
+                TextView moreTv = holder.getView(R.id.college_recommendation_course_more_tv);
+                moreTv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(mContext, "more", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+//                final List<HomeCourseBean> recommendCourses = collegePageBean.getRecommendCourses();
+                final List<HomeCourseBean> recommendCourses = new ArrayList<>();
+                HomeCourseBean courseBean = new HomeCourseBean();
+                courseBean.setCourse_name("施琪嘉创伤30讲：走出心理阴影，重塑强大内心");
+                courseBean.setPrice(199f);
+                courseBean.setSale_price(99f);
+                courseBean.setJoin_count(99);
+                courseBean.setImage_url("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg");
+                recommendCourses.add(courseBean);
+
+                HomeCourseBean courseBean1= new HomeCourseBean();
+                courseBean1.setCourse_name("施琪嘉创伤30讲：走出心理阴影，重塑强大内心");
+                courseBean1.setPrice(199f);
+                courseBean1.setSale_price(99f);
+                courseBean1.setJoin_count(99);
+                courseBean1.setImage_url("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg");
+                recommendCourses.add(courseBean1);
+
+                HomeCourseBean courseBean2 = new HomeCourseBean();
+                courseBean2.setCourse_name("施琪嘉创伤30讲：走出心理阴影，重塑强大内心");
+                courseBean2.setPrice(199f);
+                courseBean2.setSale_price(99f);
+                courseBean2.setJoin_count(99);
+                courseBean2.setImage_url("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg");
+                recommendCourses.add(courseBean2);
+
+                RecyclerView recyclerView = holder.getView(R.id.college_more_recommendation_rv);
+                recyclerView.setAdapter(new RVRecommendationAdapter(mContext, recommendCourses));
+                recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+                recyclerView.addItemDecoration(new SimpleItemDecoration());
+            }
+        };
+        adapterList.add(adapterRecommendation);
 
     }
 
@@ -170,7 +232,8 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
                             }
                         });
 
-
+                final TextView txtMasterName = holder.getView(R.id.tv_course_detail_course_master_name);
+                txtMasterName.setText("施琪嘉");
                 final TextView txtFollow = holder.getView(R.id.tv_course_detail_follow);
                 txtFollow.setText(isFollowed== true?"已关注":"关注");
                 txtFollow.setOnClickListener(new View.OnClickListener() {
@@ -198,5 +261,11 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
             }
         };
         adapterList.add(adapterCourseTop);
+    }
+
+    @Override
+    protected void getBundleExtras(Bundle extras) {
+        super.getBundleExtras(extras);
+        course_name = extras.getString(EXTRA_COURSE_NAME);
     }
 }

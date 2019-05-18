@@ -69,14 +69,13 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
         @Override
         public void onBindViewHolder(@NonNull DirectoryHolder holder, int position) {
             DirectoryBean directory = directoryList.get(position);
-            Log.d("111",directory.getName());
             holder.tvName.setText(directory.getName());
             holder.tvTime.setText(directory.getTime());
+
         }
 
         @Override
         public int getItemCount() {
-            Log.d("111","size:"+directoryList.size());
             return directoryList.size();
         }
 

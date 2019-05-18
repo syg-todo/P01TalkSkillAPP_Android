@@ -20,6 +20,18 @@
         app:radiusY1="20.0"
         app:radiusY2="20.0" />
 
+    <TextView
+        android:id="@+id/tv_course_detail_course_master_name"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:text="施琪嘉"
+        android:textColor="#ff000000"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/img_course_detail_master_tag"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:textSize="14sp"
+        />
     <com.tuodanhuashu.app.widget.RoundRectImageView
         android:id="@+id/img_course_detail_master_tag"
         android:layout_width="15dp"
