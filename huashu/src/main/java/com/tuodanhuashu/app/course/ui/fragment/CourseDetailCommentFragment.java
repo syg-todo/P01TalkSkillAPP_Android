@@ -21,6 +21,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.company.common.utils.DisplayUtil;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseFragment;
+import com.tuodanhuashu.app.base.SimpleItemDecoration;
 import com.tuodanhuashu.app.course.bean.CommentBean;
 import com.tuodanhuashu.app.widget.RoundRectImageView;
 
@@ -70,22 +71,7 @@ public class CourseDetailCommentFragment extends HuaShuBaseFragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
-        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-                super.onDraw(c, parent, state);
-                int childCount = parent.getChildCount();
-                Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                paint.setColor(Color.parseColor("#EEEEEE"));
-                paint.setStrokeWidth(DisplayUtil.dip2px(mContext, 1));
-                for (int i = 0; i < childCount; i++) {
-                    View child = parent.getChildAt(i);
-                    c.drawLine(0, child.getBottom(), child.getRight(), child.getBottom(), paint);
-                }
-
-            }
-        });
-
+        recyclerView.addItemDecoration(new SimpleItemDecoration());
 
     }
 

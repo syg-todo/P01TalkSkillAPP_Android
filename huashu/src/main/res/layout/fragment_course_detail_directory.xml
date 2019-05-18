@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_course_detail_directory"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="目录"
-        android:textSize="40sp"
-        android:gravity="center"/>
+        android:layout_height="match_parent" />
 </android.support.constraint.ConstraintLayout>
