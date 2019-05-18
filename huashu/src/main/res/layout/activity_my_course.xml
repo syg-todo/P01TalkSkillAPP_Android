@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#F3F4F5"
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="我的课程"/>
-</android.support.constraint.ConstraintLayout>
+    <include
+        layout="@layout/common_head_layout"/>
+
+  <android.support.design.widget.TabLayout
+      android:id="@+id/tab_my_course"
+      android:layout_width="match_parent"
+      android:layout_height="44dp"
+      app:tabSelectedTextColor="@color/colorAccent"
+      app:tabTextColor="#000000"
+      app:tabIndicatorHeight="0dp"
+      android:background="@color/white"
+      />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_my_course"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>
