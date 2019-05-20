@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/header"
+        layout="@layout/common_head_layout"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_master_detail_image"
+        android:layout_width="match_parent"
+        android:layout_height="210dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/test"
+        app:layout_constraintTop_toBottomOf="@id/header" />
+
+    <TextView
+        android:id="@+id/tv_master_detail_name"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="施琪嘉"
+        android:textColor="#ff000000"
+        android:textSize="17sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_master_detail_image"
+
+        />
+
+    <TextView
+        android:id="@+id/tv_master_detail_brief"
+        android:layout_width="180dp"
+        android:layout_height="17dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:ellipsize="end"
+        android:text="一幅画千言万语，一棵树别样人生"
+        android:textColor="#ff999999"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_master_detail_name" />
+
+
+    <TextView
+        android:id="@+id/tv_master_detail_follow"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="23dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/shape_text_red_hollow_border_clickable"
+        android:gravity="center"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:text="已关注"
+        android:textColor="#ffbfbfbf"
+        android:textSize="13sp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_master_detail_image" />
+
+    <View
+        android:id="@+id/bg_master_detail"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_10"
+        android:background="@color/color_main_bg"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_master_detail_brief" />
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tablayout_master_detail"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bg_master_detail"
+        app:tabIndicatorHeight="0dp"
+    />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager_master_detail"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tablayout_master_detail"
+        app:layout_constraintVertical_weight="1" />
+
+</android.support.constraint.ConstraintLayout>

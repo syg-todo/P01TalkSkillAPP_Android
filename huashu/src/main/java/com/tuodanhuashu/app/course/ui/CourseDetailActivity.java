@@ -1,6 +1,10 @@
 package com.tuodanhuashu.app.course.ui;
 
+import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,7 +15,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +35,6 @@ import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseActivity;
-import com.tuodanhuashu.app.base.SimpleItemDecoration;
 import com.tuodanhuashu.app.course.ui.adapter.RVRecommendationAdapter;
 import com.tuodanhuashu.app.course.ui.fragment.CourseDetailAspectFragment;
 import com.tuodanhuashu.app.course.ui.fragment.CourseDetailCommentFragment;
@@ -69,10 +75,12 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
     private static final int TYPE_RECOMMEND = 4;
 
     private boolean isFollowed = false;
+
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_course_datail;
     }
+
 
     @Override
     protected void initView() {
@@ -99,7 +107,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
 
     private void initRecommendation() {
 
-        HomeAdapter adapterRecommendation = new HomeAdapter(mContext,new LinearLayoutHelper(),1,TYPE_RECOMMEND,R.layout.college_recommendation_layout){
+        HomeAdapter adapterRecommendation = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_RECOMMEND, R.layout.course_detail_recommendation_layout) {
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
@@ -126,11 +134,11 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
                 courseBean.setImage_url("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg");
                 recommendCourses.add(courseBean);
 
-                HomeCourseBean courseBean1= new HomeCourseBean();
+                HomeCourseBean courseBean1 = new HomeCourseBean();
                 courseBean1.setCourse_name("施琪嘉创伤30讲：走出心理阴影，重塑强大内心");
                 courseBean1.setPrice(199f);
                 courseBean1.setSale_price(99f);
-                courseBean1.setJoin_count(99);
+                courseBean1.setJoin_count(924159);
                 courseBean1.setImage_url("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg");
                 recommendCourses.add(courseBean1);
 
@@ -138,14 +146,55 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
                 courseBean2.setCourse_name("施琪嘉创伤30讲：走出心理阴影，重塑强大内心");
                 courseBean2.setPrice(199f);
                 courseBean2.setSale_price(99f);
-                courseBean2.setJoin_count(99);
+                courseBean2.setJoin_count(1151599);
                 courseBean2.setImage_url("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg");
                 recommendCourses.add(courseBean2);
 
                 RecyclerView recyclerView = holder.getView(R.id.college_more_recommendation_rv);
                 recyclerView.setAdapter(new RVRecommendationAdapter(mContext, recommendCourses));
                 recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-                recyclerView.addItemDecoration(new SimpleItemDecoration());
+                recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+                    @Override
+                    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                        super.onDraw(c, parent, state);
+                        int childCount = parent.getChildCount();
+                        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                        paint.setColor(Color.parseColor("#EEEEEE"));
+                        paint.setStrokeWidth(DisplayUtil.dp2px(1));
+                        for (int i = 0; i < childCount; i++) {
+                            View child = parent.getChildAt(i);
+                            c.drawLine(DisplayUtil.dp2px(0), child.getBottom(),
+                                    child.getRight(), child.getBottom(), paint);
+                        }
+
+                    }
+
+//                    @Override
+//                    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+//                        super.getItemOffsets(outRect, view, parent, state);
+//                        int childCount = parent.getChildCount();
+//                        int actualCount = parent.getAdapter().getItemCount();
+//                        for (int i = 0; i < childCount; i++) {
+//                            View child = parent.getChildAt(i);
+//                            int index = parent.getChildAdapterPosition(child);
+//
+//                            outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
+//                                    DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20));
+////
+////                            if (index != actualCount - 1) {
+////                                outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
+////                                        DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 0));
+////                            }
+////                            else {
+////                                outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
+////                                        DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20));
+////                            }
+//                        }
+//
+//                    }
+
+                });
+
             }
         };
         adapterList.add(adapterRecommendation);
@@ -153,7 +202,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
     }
 
     private void initCourseTab() {
-        HomeAdapter adapterCourseTab = new HomeAdapter(mContext,new LinearLayoutHelper(),1,TYPE_COURSE_TAB,R.layout.course_detail_tab_layout){
+        HomeAdapter adapterCourseTab = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_COURSE_TAB, R.layout.course_detail_tab_layout) {
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
@@ -169,7 +218,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
                 fragments.add(new CourseDetailDirectoryFragment());
                 fragments.add(new CourseDetailCommentFragment());
 
-                for (String title:titles){
+                for (String title : titles) {
                     tabLayout.addTab(tabLayout.newTab().setText(title));
                 }
 
@@ -193,34 +242,113 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
                     }
                 });
 
+
+                for (int i = 0; i < titles.size(); i++) {
+                    View customView = getTabView(mContext, titles.get(i), DisplayUtil.dp2px(18), DisplayUtil.dp2px(2));
+                    tabLayout.getTabAt(i).setCustomView(customView);
+                    if (i == 0) {
+                        tabLayout.getTabAt(i).select();
+                    }
+                }
+
+
+                tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        changeTabStatus(tab, true);
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+                        changeTabStatus(tab, false);
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+
+                    }
+                });
+
+                viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                        Log.d("111", "position:" + position);
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+
+                    }
+                });
+
             }
         };
         adapterList.add(adapterCourseTab);
 
     }
 
+    private void changeTabStatus(TabLayout.Tab tab, boolean selected) {
+        View view = tab.getCustomView();
+        TextView txtTabTitle = view.findViewById(R.id.tab_item_text);
+        View indicator = view.findViewById(R.id.tab_item_indicator);
+
+        txtTabTitle.setVisibility(View.VISIBLE);
+        if (selected) {
+            txtTabTitle.setTextColor(Color.parseColor("#FF6666"));
+            indicator.setVisibility(View.VISIBLE);
+//            startPropertyAnim(imgTitle);
+        } else {
+            txtTabTitle.setTextColor(Color.parseColor("#000000"));
+            indicator.setVisibility(View.INVISIBLE);
+//            imgTitle.setVisibility(View.INVISIBLE);
+        }
+    }
+
+
+    public static View getTabView(Context context, String text, int indicatorWidth, int indicatorHeight) {
+        View view = LayoutInflater.from(context).inflate(R.layout.tab_item_layout, null);
+        TextView tabText = view.findViewById(R.id.tab_item_text);
+        if (indicatorWidth > 0) {
+            View indicator = view.findViewById(R.id.tab_item_indicator);
+            ViewGroup.LayoutParams layoutParams = indicator.getLayoutParams();
+            Log.d("111", "indicatorWidth:" + indicatorWidth);
+            layoutParams.width = indicatorWidth;
+            layoutParams.height = indicatorHeight;
+            indicator.setLayoutParams(layoutParams);
+        }
+        Log.d("111", text);
+//        tabText.setTextSize(textSize);
+        tabText.setText(text);
+        return view;
+    }
+
 
     private void initMasterRow() {
-        HomeAdapter adapterMasterRow = new HomeAdapter(mContext,new LinearLayoutHelper(),1,TYPE_MASTER_ROW,R.layout.course_detail_master_row_layout){
+        HomeAdapter adapterMasterRow = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_MASTER_ROW, R.layout.course_detail_master_row_layout) {
             @Override
             public void onBindViewHolder(final BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
                 final RoundRectImageView imgMasterAvatar = holder.getView(R.id.img_course_detail_master);
                 RequestOptions options = new RequestOptions()
-                        .override(DisplayUtil.dp2px(40),DisplayUtil.dp2px(40))
+                        .override(DisplayUtil.dp2px(40), DisplayUtil.dp2px(40))
                         .centerCrop();
                 Glide.with(mContext)
                         .load(R.mipmap.avatar)
                         .apply(options)
                         .into(new SimpleTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                       imgMasterAvatar.setDrawable(resource);
-                    }
-                });
+                            @Override
+                            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                                imgMasterAvatar.setDrawable(resource);
+                            }
+                        });
                 final RoundRectImageView imgMasterTag = holder.getView(R.id.img_course_detail_master_tag);
                 RequestOptions optionsTag = new RequestOptions()
-                        .override(DisplayUtil.dp2px(15),DisplayUtil.dp2px(15))
+                        .override(DisplayUtil.dp2px(15), DisplayUtil.dp2px(15))
                         .centerCrop();
                 Glide.with(mContext)
                         .load(R.mipmap.vip_blue)
@@ -234,16 +362,25 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
 
                 final TextView txtMasterName = holder.getView(R.id.tv_course_detail_course_master_name);
                 txtMasterName.setText("施琪嘉");
+
+                txtMasterName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(MasterDetailActivity.EXTRA_MASTER_NAME, "施琪嘉");
+                        readyGo(MasterDetailActivity.class);
+                    }
+                });
                 final TextView txtFollow = holder.getView(R.id.tv_course_detail_follow);
-                txtFollow.setText(isFollowed== true?"已关注":"关注");
+                txtFollow.setText(isFollowed == true ? "已关注" : "关注");
                 txtFollow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         isFollowed = !isFollowed;
-                        Toast.makeText(mContext,"click"+isFollowed,Toast.LENGTH_SHORT).show();
-                        txtFollow.setText(isFollowed== true?"已关注":"关注");
+                        Toast.makeText(mContext, "click" + isFollowed, Toast.LENGTH_SHORT).show();
+                        txtFollow.setText(isFollowed == true ? "已关注" : "关注");
                         txtFollow.setSelected(isFollowed);
-                        txtFollow.setTextColor(isFollowed == true? Color.parseColor("#BFBFBF"):Color.parseColor("#FF6969"));
+                        txtFollow.setTextColor(isFollowed == true ? Color.parseColor("#BFBFBF") : Color.parseColor("#FF6969"));
                         txtFollow.invalidate();
                     }
                 });
@@ -254,10 +391,13 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
     }
 
     private void initCourseTop() {
-        HomeAdapter adapterCourseTop = new HomeAdapter(mContext,new LinearLayoutHelper(),1,TYPE_TOP,R.layout.course_detail_top_layout){
+        HomeAdapter adapterCourseTop = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_TOP, R.layout.course_detail_top_layout) {
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
+                TextView txtCoursePrice = holder.getView(R.id.tv_course_detail_course_price);
+                txtCoursePrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+
             }
         };
         adapterList.add(adapterCourseTop);

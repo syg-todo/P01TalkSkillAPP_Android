@@ -32,6 +32,7 @@ import com.alibaba.android.vlayout.VirtualLayoutManager;
 import com.alibaba.android.vlayout.layout.GridLayoutHelper;
 import com.alibaba.android.vlayout.layout.LinearLayoutHelper;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -48,7 +49,9 @@ import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseFragment;
+import com.tuodanhuashu.app.course.ui.CourseDetailActivity;
 import com.tuodanhuashu.app.course.ui.CourseListActivity;
+import com.tuodanhuashu.app.course.ui.MasterDetailActivity;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
 import com.tuodanhuashu.app.home.adapter.HomeBannerViewHolder;
 import com.tuodanhuashu.app.home.bean.HomeBannerBean;
@@ -273,7 +276,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final ChoicenessHolder holder, int position) {
+        public void onBindViewHolder(@NonNull final ChoicenessHolder holder, final int position) {
             Glide.with(mContext).load(courseBeanList.get(position).getImage_url()).into(new SimpleTarget<Drawable>() {
                 @Override
                 public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
@@ -283,6 +286,24 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
             holder.txtCourseName.setText(courseBeanList.get(position).getCourse_name());
             holder.txtCourseMasterName.setText(courseBeanList.get(position).getMaster_name());
             holder.txtCoursePrice.setText("￥" + courseBeanList.get(position).getPrice());
+
+            holder.txtCourseMasterName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(MasterDetailActivity.EXTRA_MASTER_NAME,courseBeanList.get(position).getMaster_name());
+                    readyGo(MasterDetailActivity.class,bundle);
+                }
+            });
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_NAME,courseBeanList.get(position).getCourse_name());
+                    readyGo(CourseDetailActivity.class,bundle);
+                }
+            });
         }
 
         @Override
@@ -324,8 +345,17 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final RecommendationHolder holder, int position) {
-            Glide.with(mContext).load(courseBeanList.get(position).getImage_url()).into(new SimpleTarget<Drawable>() {
+        public void onBindViewHolder(@NonNull final RecommendationHolder holder, final int position) {
+//            Glide.with(mContext).load(courseBeanList.get(position).getImage_url()).into(new SimpleTarget<Drawable>() {
+//                @Override
+//                public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+//                    holder.imgImage.setDrawable(resource);
+//                }
+//            });
+            RequestOptions options = new RequestOptions()
+                    .override(DisplayUtil.dp2px(158),DisplayUtil.dp2px(90));
+            Glide.with(mContext).load(R.drawable.test)
+                    .apply(options).into(new SimpleTarget<Drawable>() {
                 @Override
                 public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                     holder.imgImage.setDrawable(resource);
@@ -334,6 +364,24 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
             holder.txtCourseName.setText(courseBeanList.get(position).getCourse_name());
             holder.txtCourseMasterName.setText(courseBeanList.get(position).getMaster_name());
             holder.txtCoursePrice.setText("￥" + courseBeanList.get(position).getPrice());
+
+            holder.txtCourseName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(MasterDetailActivity.EXTRA_MASTER_NAME,courseBeanList.get(position).getMaster_name());
+                    readyGo(MasterDetailActivity.class,bundle);
+                }
+            });
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_NAME,courseBeanList.get(position).getCourse_name());
+                    readyGo(CourseDetailActivity.class,bundle);
+                }
+            });
         }
 
         @Override
