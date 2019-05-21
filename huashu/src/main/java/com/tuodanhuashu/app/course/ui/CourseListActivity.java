@@ -300,8 +300,8 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
             holder.tvItemCoursePrice.setText(String.valueOf(course.getPrice()));
             holder.tvItemCourseSalePrice.setText(String.valueOf(course.getSale_price()));
             holder.tvItemCourseJoinCount.setText(course.getJoin_count() + "人参加");
-            holder.tvItemCoursePrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
 
+            holder.tvItemCoursePrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

@@ -2,18 +2,11 @@ package com.tuodanhuashu.app.course.bean;
 
 public class CommentBean {
     private String avatar;
-    private String name;
+    private String nickname;
     private String time;
     private String comment;
     private int like_count;
 
-    public CommentBean(String avatar, String name, String time, String comment, int like_count) {
-        this.avatar = avatar;
-        this.name = name;
-        this.time = time;
-        this.comment = comment;
-        this.like_count = like_count;
-    }
 
     public String getAvatar() {
         return avatar;
@@ -23,12 +16,12 @@ public class CommentBean {
         this.avatar = avatar;
     }
 
-    public String getName() {
-        return name;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getTime() {

@@ -300,10 +300,10 @@ public class MemberCenterFragment extends HuaShuBaseFragment implements MemberCe
         userLevelTv.setVisibility(View.VISIBLE);
         memberCenterLoginBtn.setVisibility(View.GONE);
         userLevelTv.setText(memberCenterBean.getUserinfo().getLevel());
-        if (StringUtils.isEmpty(memberCenterBean.getUserinfo().getNickname())) {
+        if (StringUtils.isEmpty(memberCenterBean.getUserinfo().getname())) {
             userNameTv.setText(memberCenterBean.getUserinfo().getMobile());
         } else {
-            userNameTv.setText(memberCenterBean.getUserinfo().getNickname());
+            userNameTv.setText(memberCenterBean.getUserinfo().getname());
         }
 
         Glide.with(mContext).load(memberCenterBean.getUserinfo().getHeade_img()).into(userAvatarIv);

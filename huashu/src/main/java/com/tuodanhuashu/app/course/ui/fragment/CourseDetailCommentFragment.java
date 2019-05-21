@@ -1,13 +1,16 @@
 package com.tuodanhuashu.app.course.ui.fragment;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +26,11 @@ import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseFragment;
 import com.tuodanhuashu.app.base.SimpleItemDecoration;
 import com.tuodanhuashu.app.course.bean.CommentBean;
+import com.tuodanhuashu.app.course.bean.CourseDetailBean;
+import com.tuodanhuashu.app.course.bean.CourseDetailModel;
 import com.tuodanhuashu.app.widget.RoundRectImageView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +42,9 @@ public class CourseDetailCommentFragment extends HuaShuBaseFragment {
     @BindView(R.id.rv_course_detail_comment)
     RecyclerView recyclerView;
 
+    private CourseDetailModel model;
+    private List<CourseDetailBean.CommentsBean> commentsBeanList = new ArrayList<>();
+
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.fragment_course_detail_comment;
@@ -43,31 +53,33 @@ public class CourseDetailCommentFragment extends HuaShuBaseFragment {
     @Override
     protected void initView(View view) {
         super.initView(view);
-        List<CommentBean> commentList = new ArrayList<>();
-        commentList.add(new CommentBean("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg",
-                "风浪科技", "2018-02-05", "看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章。",
-                20));
 
-        commentList.add(new CommentBean("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg",
-                "风浪科技", "2018-02-05", "看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章。",
-                20));
+        model = ViewModelProviders.of(getActivity()).get(CourseDetailModel.class);
 
-        commentList.add(new CommentBean("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg",
-                "风浪科技", "2018-02-05", "看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章。",
-                20));
+        commentsBeanList = model.getCourseDetail().getValue().getComments();
 
-        commentList.add(new CommentBean("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg",
-                "风浪科技", "2018-02-05", "看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章。",
-                20));
 
-        commentList.add(new CommentBean("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg",
-                "风浪科技", "2018-02-05", "看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章。",
-                20));
 
-        commentList.add(new CommentBean("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg",
-                "风浪科技", "2018-02-05", "看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章。",
-                20));
-        CommentAdapter adapter = new CommentAdapter(commentList);
+        //测试数据
+        for (int i = 0; i < 3; i++) {
+            commentsBeanList.get(i).setContent("看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章。");
+            commentsBeanList.get(i).setCreate_date("2019-03-27");
+            commentsBeanList.get(i).setHeade_img("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg");
+
+        }
+
+
+//        commentsBeanList.get(1).setReply(null);
+        commentsBeanList.get(0).getReply().get(0).setContent("看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章。");
+        //测试数据
+
+
+
+
+
+
+
+        CommentAdapter adapter = new CommentAdapter(commentsBeanList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
@@ -81,9 +93,9 @@ public class CourseDetailCommentFragment extends HuaShuBaseFragment {
 
     class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentHolder> {
 
-        private List<CommentBean> commentList;
+        private List<CourseDetailBean.CommentsBean> commentList;
 
-        public CommentAdapter(List<CommentBean> commentList) {
+        public CommentAdapter(List<CourseDetailBean.CommentsBean> commentList) {
             this.commentList = commentList;
         }
 
@@ -97,11 +109,11 @@ public class CourseDetailCommentFragment extends HuaShuBaseFragment {
 
         @Override
         public void onBindViewHolder(@NonNull final CommentHolder holder, int position) {
-            CommentBean comment = commentList.get(position);
+            CourseDetailBean.CommentsBean comment = commentList.get(position);
             RequestOptions options = new RequestOptions()
                     .override(DisplayUtil.dp2px(30),DisplayUtil.dp2px(30))
                     .centerCrop();
-            Glide.with(mContext).load(comment.getAvatar())
+            Glide.with(mContext).load(comment.getHeade_img())
                     .apply(options)
                     .into(new SimpleTarget<Drawable>() {
                 @Override
@@ -109,13 +121,20 @@ public class CourseDetailCommentFragment extends HuaShuBaseFragment {
                     holder.imgAvatar.setDrawable(resource);
                 }
             });
+            holder.tvCommenterName.setText(comment.getNickname());
+            holder.tvTime.setText(comment.getCreate_date());
+            holder.tvLikeCount.setText(comment.getLike_count() + "");
+            holder.tvComment.setText(comment.getContent());
+            List<CourseDetailBean.CommentsBean.ReplyBean> replyBeans = comment.getReply();
+            if (replyBeans.size() == 0 || replyBeans == null){
+                holder.layoutReply.setVisibility(View.GONE);
+            }else {
+                holder.tvReplyContent.setText(replyBeans.get(0).getContent());
+                holder.tvReplyName.setText(replyBeans.get(0).getNickname());
+                holder.tvReplyTime.setText(replyBeans.get(0).getCreate_date());
+            }
 
-            holder.txtCommenterName.setText(comment.getName());
-            holder.txtTime.setText(comment.getTime());
-            holder.txtLikeCount.setText(comment.getLike_count() + "");
-            holder.txtComment.setText(comment.getComment());
-
-        }
+    }
 
         @Override
         public int getItemCount() {
@@ -124,20 +143,27 @@ public class CourseDetailCommentFragment extends HuaShuBaseFragment {
 
         class CommentHolder extends RecyclerView.ViewHolder {
             RoundRectImageView imgAvatar;
-            TextView txtCommenterName;
-            TextView txtTime;
-            TextView txtLikeCount;
-            TextView txtComment;
+            TextView tvCommenterName;
+            TextView tvTime;
+            TextView tvLikeCount;
+            TextView tvComment;
             ImageView imgThumbUp;
-
+            TextView tvReplyName;
+            TextView tvReplyContent;
+            TextView tvReplyTime;
+            ConstraintLayout layoutReply;
             public CommentHolder(View itemView) {
                 super(itemView);
                 imgAvatar = itemView.findViewById(R.id.iv_item_course_detail_comment_avatar);
-                txtCommenterName = itemView.findViewById(R.id.tv_item_course_detail_comment_commenter_name);
-                txtTime = itemView.findViewById(R.id.tv_item_course_detail_comment_time);
-                txtLikeCount = itemView.findViewById(R.id.tv_item_course_detail_comment_commenter_like_count);
-                txtComment = itemView.findViewById(R.id.tv_item_course_detail_comment_comment);
+                tvCommenterName = itemView.findViewById(R.id.tv_item_course_detail_comment_commenter_name);
+                tvTime = itemView.findViewById(R.id.tv_item_course_detail_comment_time);
+                tvLikeCount = itemView.findViewById(R.id.tv_item_course_detail_comment_commenter_like_count);
+                tvComment = itemView.findViewById(R.id.tv_item_course_detail_comment_comment);
                 imgThumbUp = itemView.findViewById(R.id.iv_item_course_detail_comment_thumb_up);
+                tvReplyName= itemView.findViewById(R.id.tv_item_course_detail_comment_reply_name);
+                tvReplyContent = itemView.findViewById(R.id.tv_item_course_detail_comment_reply_content);
+                tvReplyTime= itemView.findViewById(R.id.tv_item_course_detail_comment_reply_time);
+                layoutReply = itemView.findViewById(R.id.layout_item_course_detail_reply);
             }
         }
     }

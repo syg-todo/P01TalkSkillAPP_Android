@@ -1,6 +1,7 @@
 package com.tuodanhuashu.app.course.ui.fragment;
 
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseFragment;
 import com.tuodanhuashu.app.base.SimpleItemDecoration;
+import com.tuodanhuashu.app.course.bean.CourseDetailBean;
+import com.tuodanhuashu.app.course.bean.CourseDetailModel;
 import com.tuodanhuashu.app.course.bean.DirectoryBean;
 
 
@@ -25,6 +28,8 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
     @BindView(R.id.rv_course_detail_directory)
     RecyclerView recyclerView;
 
+    private CourseDetailModel model;
+    private List<CourseDetailBean.SectionsBean> sectionsBeanList = new ArrayList<>();
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.fragment_course_detail_directory;
@@ -33,15 +38,12 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
     @Override
     protected void initView(View view) {
         super.initView(view);
-        List<DirectoryBean> directoryList = new ArrayList<>();
-        directoryList.add(new DirectoryBean("施琪嘉创伤30讲：走出心理阴影，重塑强大内心", "4'13''"));
-        directoryList.add(new DirectoryBean("施琪嘉创伤30讲：走出心理阴影，重塑强大内心", "4'13''"));
-        directoryList.add(new DirectoryBean("施琪嘉创伤30讲：走出心理阴影，重塑强大内心", "4'13''"));
-        directoryList.add(new DirectoryBean("施琪嘉创伤30讲：走出心理阴影，重塑强大内心", "4'13''"));
-        directoryList.add(new DirectoryBean("施琪嘉创伤30讲：走出心理阴影，重塑强大内心", "4'13''"));
-        directoryList.add(new DirectoryBean("施琪嘉创伤30讲：走出心理阴影，重塑强大内心", "4'13''"));
 
-        DirectoryAdapter adapter = new DirectoryAdapter(directoryList);
+        model = ViewModelProviders.of(getActivity()).get(CourseDetailModel.class);
+
+
+        sectionsBeanList = model.getCourseDetail().getValue().getSections();
+        DirectoryAdapter adapter = new DirectoryAdapter(sectionsBeanList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView.addItemDecoration(new SimpleItemDecoration());
@@ -52,9 +54,9 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
     }
 
     class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.DirectoryHolder> {
-        private List<DirectoryBean> directoryList;
+        private List<CourseDetailBean.SectionsBean> directoryList;
 
-        public DirectoryAdapter(List<DirectoryBean> directoryList) {
+        public DirectoryAdapter(List<CourseDetailBean.SectionsBean> directoryList) {
             this.directoryList = directoryList;
         }
 
@@ -68,10 +70,12 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
 
         @Override
         public void onBindViewHolder(@NonNull DirectoryHolder holder, int position) {
-            DirectoryBean directory = directoryList.get(position);
-            holder.tvName.setText(directory.getName());
-            holder.tvTime.setText(directory.getTime());
-
+            CourseDetailBean.SectionsBean directory = directoryList.get(position);
+            holder.tvName.setText(directory.getSection_name());
+            int duration = directory.getDuration();
+            int minutes= duration / 60;
+            int seconds = duration % 60;
+            holder.tvTime.setText(minutes+"'"+seconds+"''");
         }
 
         @Override

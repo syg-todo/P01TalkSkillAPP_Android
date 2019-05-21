@@ -1,8 +1,10 @@
 package com.tuodanhuashu.app.course.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -17,16 +19,18 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.company.common.utils.DisplayUtil;
 import com.tuodanhuashu.app.R;
+import com.tuodanhuashu.app.course.bean.CourseDetailBean;
+import com.tuodanhuashu.app.course.ui.CourseDetailActivity;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
 import com.tuodanhuashu.app.widget.RoundRectImageView;
 
 import java.util.List;
 
 public class RVRecommendationAdapter extends RecyclerView.Adapter<RVRecommendationAdapter.RecommendationHolder> {
-    private List<HomeCourseBean> courseBeanList;
+    private List<CourseDetailBean.RecommendCoursesBean> courseBeanList;
     private Context mContext;
 
-    public RVRecommendationAdapter(Context context, List<HomeCourseBean> list) {
+    public RVRecommendationAdapter(Context context, List<CourseDetailBean.RecommendCoursesBean> list) {
         this.courseBeanList = list;
         this.mContext = context;
     }
@@ -40,7 +44,7 @@ public class RVRecommendationAdapter extends RecyclerView.Adapter<RVRecommendati
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final RecommendationHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecommendationHolder holder, final int position) {
         RequestOptions options = new RequestOptions().override(DisplayUtil.dp2px(163), DisplayUtil.dp2px(93));
         Glide.with(mContext).load(courseBeanList.get(position).getImage_url())
                 .apply(options)
@@ -55,6 +59,18 @@ public class RVRecommendationAdapter extends RecyclerView.Adapter<RVRecommendati
         holder.tvSalePrice.setText("￥" + courseBeanList.get(position).getSale_price());
         holder.tvJoinCount.setText(courseBeanList.get(position).getJoin_count() + "人参加");
         holder.tvCourseName.setText(courseBeanList.get(position).getCourse_name());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString(CourseDetailActivity.EXTRA_COURSE_ID, String.valueOf(courseBeanList.get(position).getId()));
+                bundle.putString(CourseDetailActivity.EXTRA_COURSE_NAME, courseBeanList.get(position).getCourse_name());
+                Intent intent = new Intent(mContext, CourseDetailActivity.class);
+                mContext.startActivity(intent, bundle);
+            }
+        });
+
     }
 
     @Override

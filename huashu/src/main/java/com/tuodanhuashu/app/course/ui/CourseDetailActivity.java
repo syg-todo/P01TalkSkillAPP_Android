@@ -1,5 +1,6 @@
 package com.tuodanhuashu.app.course.ui;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -19,6 +20,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,10 +38,15 @@ import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseActivity;
+import com.tuodanhuashu.app.base.SimpleItemDecoration;
+import com.tuodanhuashu.app.course.bean.CourseDetailBean;
+import com.tuodanhuashu.app.course.bean.CourseDetailModel;
+import com.tuodanhuashu.app.course.presenter.CourseDetailPresenter;
 import com.tuodanhuashu.app.course.ui.adapter.RVRecommendationAdapter;
 import com.tuodanhuashu.app.course.ui.fragment.CourseDetailAspectFragment;
 import com.tuodanhuashu.app.course.ui.fragment.CourseDetailCommentFragment;
 import com.tuodanhuashu.app.course.ui.fragment.CourseDetailDirectoryFragment;
+import com.tuodanhuashu.app.course.view.CourseDetailView;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
 import com.tuodanhuashu.app.widget.RoundRectImageView;
@@ -48,23 +56,44 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class CourseDetailActivity extends HuaShuBaseActivity {
+public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDetailView {
     @BindView(R.id.rv_course_detail)
     RecyclerView recyclerView;
-
+    @BindView(R.id.common_head_back_iv)
+    ImageView ivBack;
     @BindView(R.id.refresheader_course_detail)
     MaterialHeader refresheaderCourseDetail;
     @BindView(R.id.refresh_course_detail)
     SmartRefreshLayout refreshLayoutCourseDetail;
     @BindView(R.id.common_head_title_tv)
     TextView tvTitle;
+    @BindView(R.id.iv_course_detail_head_download)
+    ImageView ivDownload;
+    @BindView(R.id.iv_course_detail_head_share)
+    ImageView ivShare;
+
     private DelegateAdapter delegateAdapter;
 
+    private CourseDetailPresenter courseDetailPresenter;
     private List<DelegateAdapter.Adapter> adapterList;
+
+    private int mCourseSalePrice;
+    private int isPay; //1已支付
 
     public static final String EXTRA_COURSE_NAME = "course_name";
 
     private String course_name = "";
+
+    public static final String EXTRA_COURSE_ID = "course_id";
+
+    private String course_id = "";
+
+    private CourseDetailModel model;
+
+
+    private CourseDetailBean.CourseBean courseBean;
+    private List<CourseDetailBean.RecommendCoursesBean> recommendCoursesBeanList = new ArrayList<>();
+
 
     private static final int TYPE_TOP = 1;
 
@@ -86,6 +115,30 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
     protected void initView() {
         super.initView();
         tvTitle.setText(course_name);
+
+
+        ivDownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext,"下载",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ivShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext,"分享",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+
         adapterList = new ArrayList<>();
         refresheaderCourseDetail.setColorSchemeColors(mContext.getResources().getColor(R.color.colorAccent));
         VirtualLayoutManager layoutManager = new VirtualLayoutManager(mContext);
@@ -96,12 +149,11 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
         delegateAdapter = new DelegateAdapter(layoutManager, true);
         recyclerView.setAdapter(delegateAdapter);
 
-
-        initCourseTop();
-        initMasterRow();
-        initCourseTab();
-        initRecommendation();
-        delegateAdapter.setAdapters(adapterList);
+//        initCourseTop();
+//        initMasterRow();
+//      initCourseTab();
+//        initRecommendation();
+//        delegateAdapter.setAdapters(adapterList);
 
     }
 
@@ -124,76 +176,16 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
                     }
                 });
 
-//                final List<HomeCourseBean> recommendCourses = collegePageBean.getRecommendCourses();
                 final List<HomeCourseBean> recommendCourses = new ArrayList<>();
-                HomeCourseBean courseBean = new HomeCourseBean();
-                courseBean.setCourse_name("施琪嘉创伤30讲：走出心理阴影，重塑强大内心");
-                courseBean.setPrice(199f);
-                courseBean.setSale_price(99f);
-                courseBean.setJoin_count(99);
-                courseBean.setImage_url("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg");
-                recommendCourses.add(courseBean);
-
-                HomeCourseBean courseBean1 = new HomeCourseBean();
-                courseBean1.setCourse_name("施琪嘉创伤30讲：走出心理阴影，重塑强大内心");
-                courseBean1.setPrice(199f);
-                courseBean1.setSale_price(99f);
-                courseBean1.setJoin_count(924159);
-                courseBean1.setImage_url("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg");
-                recommendCourses.add(courseBean1);
-
-                HomeCourseBean courseBean2 = new HomeCourseBean();
-                courseBean2.setCourse_name("施琪嘉创伤30讲：走出心理阴影，重塑强大内心");
-                courseBean2.setPrice(199f);
-                courseBean2.setSale_price(99f);
-                courseBean2.setJoin_count(1151599);
-                courseBean2.setImage_url("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg");
-                recommendCourses.add(courseBean2);
 
                 RecyclerView recyclerView = holder.getView(R.id.college_more_recommendation_rv);
-                recyclerView.setAdapter(new RVRecommendationAdapter(mContext, recommendCourses));
+                recyclerView.setAdapter(new RVRecommendationAdapter(mContext, recommendCoursesBeanList));
                 recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-                recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-                    @Override
-                    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-                        super.onDraw(c, parent, state);
-                        int childCount = parent.getChildCount();
-                        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                        paint.setColor(Color.parseColor("#EEEEEE"));
-                        paint.setStrokeWidth(DisplayUtil.dp2px(1));
-                        for (int i = 0; i < childCount; i++) {
-                            View child = parent.getChildAt(i);
-                            c.drawLine(DisplayUtil.dp2px(0), child.getBottom(),
-                                    child.getRight(), child.getBottom(), paint);
-                        }
 
-                    }
+                recyclerView.addItemDecoration(new SimpleItemDecoration());
 
-//                    @Override
-//                    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-//                        super.getItemOffsets(outRect, view, parent, state);
-//                        int childCount = parent.getChildCount();
-//                        int actualCount = parent.getAdapter().getItemCount();
-//                        for (int i = 0; i < childCount; i++) {
-//                            View child = parent.getChildAt(i);
-//                            int index = parent.getChildAdapterPosition(child);
-//
-//                            outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
-//                                    DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20));
-////
-////                            if (index != actualCount - 1) {
-////                                outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
-////                                        DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 0));
-////                            }
-////                            else {
-////                                outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
-////                                        DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20));
-////                            }
-//                        }
-//
-//                    }
 
-                });
+
 
             }
         };
@@ -201,7 +193,19 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
 
     }
 
+
+    @Override
+    protected void initData() {
+        super.initData();
+
+        model = ViewModelProviders.of(this).get(CourseDetailModel.class);
+        courseDetailPresenter = new CourseDetailPresenter(mContext, this);
+        courseDetailPresenter.requestCourseDetail("0", course_id);
+
+    }
+
     private void initCourseTab() {
+        Log.d("111", "initTab");
         HomeAdapter adapterCourseTab = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_COURSE_TAB, R.layout.course_detail_tab_layout) {
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
@@ -214,6 +218,8 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
                 titles.add("目录");
                 titles.add("评论");
                 final List<Fragment> fragments = new ArrayList<>();
+                CourseDetailCommentFragment fragment = new CourseDetailCommentFragment();
+
                 fragments.add(new CourseDetailAspectFragment());
                 fragments.add(new CourseDetailDirectoryFragment());
                 fragments.add(new CourseDetailCommentFragment());
@@ -272,7 +278,6 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
                 viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                     @Override
                     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                        Log.d("111", "position:" + position);
                     }
 
                     @Override
@@ -316,12 +321,10 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
         if (indicatorWidth > 0) {
             View indicator = view.findViewById(R.id.tab_item_indicator);
             ViewGroup.LayoutParams layoutParams = indicator.getLayoutParams();
-            Log.d("111", "indicatorWidth:" + indicatorWidth);
             layoutParams.width = indicatorWidth;
             layoutParams.height = indicatorHeight;
             indicator.setLayoutParams(layoutParams);
         }
-        Log.d("111", text);
 //        tabText.setTextSize(textSize);
         tabText.setText(text);
         return view;
@@ -334,6 +337,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
             public void onBindViewHolder(final BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
                 final RoundRectImageView imgMasterAvatar = holder.getView(R.id.img_course_detail_master);
+
                 RequestOptions options = new RequestOptions()
                         .override(DisplayUtil.dp2px(40), DisplayUtil.dp2px(40))
                         .centerCrop();
@@ -361,13 +365,13 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
                         });
 
                 final TextView txtMasterName = holder.getView(R.id.tv_course_detail_course_master_name);
-                txtMasterName.setText("施琪嘉");
+                txtMasterName.setText(courseBean.getMaster_name());
 
                 txtMasterName.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Bundle bundle = new Bundle();
-                        bundle.putString(MasterDetailActivity.EXTRA_MASTER_NAME, "施琪嘉");
+                        bundle.putString(MasterDetailActivity.EXTRA_MASTER_NAME, courseBean.getMaster_name());
                         readyGo(MasterDetailActivity.class);
                     }
                 });
@@ -395,8 +399,39 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
-                TextView txtCoursePrice = holder.getView(R.id.tv_course_detail_course_price);
-                txtCoursePrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+                TextView tvCourseDetailPrice = holder.getView(R.id.tv_course_detail_course_price);
+                TextView tvCourseDetailSalePrice = holder.getView(R.id.tv_course_detail_course_sale_price);
+                TextView tvCourseDetailJoin = holder.getView(R.id.tv_course_detail_course_join);
+                TextView tvCourseDetailBrief = holder.getView(R.id.tv_course_detail_course_brief);
+                TextView tvCourseDetailCourseName = holder.getView(R.id.tv_course_detail_course_name);
+                TextView tvCourseDetailCourseBought = holder.getView(R.id.tv_course_detail_course_bought);
+                TextView tvCourseDetailCourseFree = holder.getView(R.id.tv_course_detail_course_free);
+                TextView tvCourseDetailCourseBuy = holder.getView(R.id.tv_course_detail_course_buy);
+
+
+
+                mCourseSalePrice = courseBean.getSale_price();
+                if (mCourseSalePrice == 0){
+                    tvCourseDetailSalePrice.setVisibility(View.GONE);
+                    tvCourseDetailCourseFree.setVisibility(View.VISIBLE);
+                    tvCourseDetailCourseBought.setVisibility(View.GONE);
+                    tvCourseDetailCourseBuy.setVisibility(View.GONE);
+                }else if (isPay == 1){
+                    tvCourseDetailCourseFree.setVisibility(View.GONE);
+                    tvCourseDetailCourseBought.setVisibility(View.VISIBLE);
+                    tvCourseDetailCourseBuy.setVisibility(View.GONE);
+                }else {
+                    tvCourseDetailCourseFree.setVisibility(View.GONE);
+                    tvCourseDetailCourseBought.setVisibility(View.GONE);
+                    tvCourseDetailCourseBuy.setVisibility(View.VISIBLE);
+                }
+
+                tvCourseDetailSalePrice.setText("￥" + courseBean.getSale_price());
+                tvCourseDetailJoin.setText(courseBean.getJoin_count() + "人参加");
+                tvCourseDetailBrief.setText(courseBean.getCourse_intro());
+                tvCourseDetailCourseName.setText(courseBean.getCourse_name());
+                tvCourseDetailPrice.setText("￥" + courseBean.getPrice());
+                tvCourseDetailPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
 
             }
         };
@@ -407,5 +442,26 @@ public class CourseDetailActivity extends HuaShuBaseActivity {
     protected void getBundleExtras(Bundle extras) {
         super.getBundleExtras(extras);
         course_name = extras.getString(EXTRA_COURSE_NAME);
+        course_id = extras.getString(EXTRA_COURSE_ID);
+    }
+
+    @Override
+    public void getCourseDetailSuccess(CourseDetailBean courseDetailBean) {
+        recommendCoursesBeanList = courseDetailBean.getRecommendCourses();
+        courseBean = courseDetailBean.getCourse();
+
+        model.setCourseDetail(courseDetailBean);
+        initCourseTop();
+        initMasterRow();
+        initCourseTab();
+        initRecommendation();
+        delegateAdapter.setAdapters(adapterList);
+//        initCourseTab();
+
+    }
+
+    @Override
+    public void getCourseDetailFail(String msg) {
+        Log.d("111", "fail");
     }
 }
