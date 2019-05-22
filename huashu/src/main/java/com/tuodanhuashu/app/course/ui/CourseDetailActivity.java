@@ -116,6 +116,8 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         super.initView();
         tvTitle.setText(course_name);
 
+        ivDownload.getDrawable().setTint(getResources().getColor(R.color.black));
+        ivShare.getDrawable().setTint(getResources().getColor(R.color.black));
 
         ivDownload.setOnClickListener(new View.OnClickListener() {
             @Override

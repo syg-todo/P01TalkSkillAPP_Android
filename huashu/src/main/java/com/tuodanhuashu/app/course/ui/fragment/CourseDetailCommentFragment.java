@@ -28,6 +28,7 @@ import com.tuodanhuashu.app.base.SimpleItemDecoration;
 import com.tuodanhuashu.app.course.bean.CommentBean;
 import com.tuodanhuashu.app.course.bean.CourseDetailBean;
 import com.tuodanhuashu.app.course.bean.CourseDetailModel;
+import com.tuodanhuashu.app.course.ui.adapter.CommentAdapter;
 import com.tuodanhuashu.app.widget.RoundRectImageView;
 
 import org.w3c.dom.Text;
@@ -59,7 +60,6 @@ public class CourseDetailCommentFragment extends HuaShuBaseFragment {
         commentsBeanList = model.getCourseDetail().getValue().getComments();
 
 
-
         //测试数据
         for (int i = 0; i < 3; i++) {
             commentsBeanList.get(i).setContent("看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章。");
@@ -74,12 +74,7 @@ public class CourseDetailCommentFragment extends HuaShuBaseFragment {
         //测试数据
 
 
-
-
-
-
-
-        CommentAdapter adapter = new CommentAdapter(commentsBeanList);
+        CommentAdapter adapter = new CommentAdapter(mContext,commentsBeanList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
@@ -90,82 +85,5 @@ public class CourseDetailCommentFragment extends HuaShuBaseFragment {
     public CourseDetailCommentFragment() {
     }
 
-
-    class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentHolder> {
-
-        private List<CourseDetailBean.CommentsBean> commentList;
-
-        public CommentAdapter(List<CourseDetailBean.CommentsBean> commentList) {
-            this.commentList = commentList;
-        }
-
-        @NonNull
-        @Override
-        public CommentHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(mContext).inflate(R.layout.item_course_detail_comment, parent, false);
-            CommentHolder holder = new CommentHolder(view);
-            return holder;
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull final CommentHolder holder, int position) {
-            CourseDetailBean.CommentsBean comment = commentList.get(position);
-            RequestOptions options = new RequestOptions()
-                    .override(DisplayUtil.dp2px(30),DisplayUtil.dp2px(30))
-                    .centerCrop();
-            Glide.with(mContext).load(comment.getHeade_img())
-                    .apply(options)
-                    .into(new SimpleTarget<Drawable>() {
-                @Override
-                public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                    holder.imgAvatar.setDrawable(resource);
-                }
-            });
-            holder.tvCommenterName.setText(comment.getNickname());
-            holder.tvTime.setText(comment.getCreate_date());
-            holder.tvLikeCount.setText(comment.getLike_count() + "");
-            holder.tvComment.setText(comment.getContent());
-            List<CourseDetailBean.CommentsBean.ReplyBean> replyBeans = comment.getReply();
-            if (replyBeans.size() == 0 || replyBeans == null){
-                holder.layoutReply.setVisibility(View.GONE);
-            }else {
-                holder.tvReplyContent.setText(replyBeans.get(0).getContent());
-                holder.tvReplyName.setText(replyBeans.get(0).getNickname());
-                holder.tvReplyTime.setText(replyBeans.get(0).getCreate_date());
-            }
-
-    }
-
-        @Override
-        public int getItemCount() {
-            return commentList.size();
-        }
-
-        class CommentHolder extends RecyclerView.ViewHolder {
-            RoundRectImageView imgAvatar;
-            TextView tvCommenterName;
-            TextView tvTime;
-            TextView tvLikeCount;
-            TextView tvComment;
-            ImageView imgThumbUp;
-            TextView tvReplyName;
-            TextView tvReplyContent;
-            TextView tvReplyTime;
-            ConstraintLayout layoutReply;
-            public CommentHolder(View itemView) {
-                super(itemView);
-                imgAvatar = itemView.findViewById(R.id.iv_item_course_detail_comment_avatar);
-                tvCommenterName = itemView.findViewById(R.id.tv_item_course_detail_comment_commenter_name);
-                tvTime = itemView.findViewById(R.id.tv_item_course_detail_comment_time);
-                tvLikeCount = itemView.findViewById(R.id.tv_item_course_detail_comment_commenter_like_count);
-                tvComment = itemView.findViewById(R.id.tv_item_course_detail_comment_comment);
-                imgThumbUp = itemView.findViewById(R.id.iv_item_course_detail_comment_thumb_up);
-                tvReplyName= itemView.findViewById(R.id.tv_item_course_detail_comment_reply_name);
-                tvReplyContent = itemView.findViewById(R.id.tv_item_course_detail_comment_reply_content);
-                tvReplyTime= itemView.findViewById(R.id.tv_item_course_detail_comment_reply_time);
-                layoutReply = itemView.findViewById(R.id.layout_item_course_detail_reply);
-            }
-        }
-    }
 
 }

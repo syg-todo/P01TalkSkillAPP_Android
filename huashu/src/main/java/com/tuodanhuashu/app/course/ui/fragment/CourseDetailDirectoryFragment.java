@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ import com.tuodanhuashu.app.base.HuaShuBaseFragment;
 import com.tuodanhuashu.app.base.SimpleItemDecoration;
 import com.tuodanhuashu.app.course.bean.CourseDetailBean;
 import com.tuodanhuashu.app.course.bean.CourseDetailModel;
-import com.tuodanhuashu.app.course.bean.DirectoryBean;
+import com.tuodanhuashu.app.course.ui.PlayActivity;
 
 
 import java.util.ArrayList;
@@ -76,6 +75,14 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
             int minutes= duration / 60;
             int seconds = duration % 60;
             holder.tvTime.setText(minutes+"'"+seconds+"''");
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    readyGo(PlayActivity.class);
+                }
+            });
+
         }
 
         @Override

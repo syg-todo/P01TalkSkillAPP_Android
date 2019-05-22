@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_play"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="49dp">
+
+        <EditText
+            android:layout_width="305dp"
+            android:layout_height="30dp"
+            android:hint="写下你的想法~"
+            android:textSize="13sp"
+            android:layout_marginLeft="23dp"
+            android:textColor="#ffd1d1d1"
+            android:paddingLeft="8dp"
+            android:background="@drawable/shape_play_edittext"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="21dp"
+            android:text="发送"
+            android:textColor="#ffff7d7d"
+            android:textSize="15sp"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_gravity="center_vertical"
+            />
+    </LinearLayout>
+
+</LinearLayout>
