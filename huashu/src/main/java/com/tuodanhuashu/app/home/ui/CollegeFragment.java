@@ -253,6 +253,49 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                 final List<HomeCourseBean> choicenessCourses = collegePageBean.getChoicenessCourses();
                 RecyclerView recyclerView = holder.getView(R.id.college_choiceness_course_rv);
                 recyclerView.setAdapter(new RVChoicenessAdapter(mContext, choicenessCourses));
+//                recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+//                    @Override
+//                    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+//                        super.getItemOffsets(outRect, view, parent, state);
+//
+//
+//
+//
+//                        int childCount = parent.getChildCount();
+//                        int actualCount = parent.getAdapter().getItemCount();
+//                        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+//                        paint.setColor(Color.parseColor("#EEEEEE"));
+//                        paint.setStrokeWidth(DisplayUtil.dp2px( 1));
+//
+//                        for (int i = 0; i < childCount; i++) {
+//                            View child = parent.getChildAt(i);
+//                            int index = parent.getChildAdapterPosition(child);
+//
+//                            if (index/2 == 0){
+//                                outRect.set(DisplayUtil.dp2px(10),DisplayUtil.dp2px(20),DisplayUtil.dp2px(10));
+//                            }
+//
+//                            if (index != actualCount - 1) {
+//                                outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
+//                                        DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 0));
+//                            } else {
+//                                outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
+//                                        DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20));
+//                            }
+//                        }
+//
+////                        for (int i = 0; i < childCount; i++) {
+////                            if (i/2==0){
+////                                outRect.set();
+////                            }else {
+////
+////                            }
+////
+////                            View child = parent.getChildAt(i);
+////                            c.drawLine(0, child.getBottom(), child.getRight(), child.getBottom(), paint);
+////                        }
+//                    }
+//                });
             }
         };
         adapterList.add(ChoicenessAdapter);
@@ -365,7 +408,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
             holder.txtCourseMasterName.setText(courseBeanList.get(position).getMaster_name());
             holder.txtCoursePrice.setText("￥" + courseBeanList.get(position).getPrice());
 
-            holder.txtCourseName.setOnClickListener(new View.OnClickListener() {
+            holder.txtCourseMasterName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
@@ -374,7 +417,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                 }
             });
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+            holder.txtCourseName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();

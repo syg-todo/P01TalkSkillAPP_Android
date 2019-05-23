@@ -42,6 +42,9 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
 
 
         sectionsBeanList = model.getCourseDetail().getValue().getSections();
+
+        sectionsBeanList.addAll(sectionsBeanList);
+        sectionsBeanList.addAll(sectionsBeanList);
         DirectoryAdapter adapter = new DirectoryAdapter(sectionsBeanList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));

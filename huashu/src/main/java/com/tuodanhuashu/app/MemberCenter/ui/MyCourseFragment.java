@@ -1,6 +1,7 @@
 package com.tuodanhuashu.app.MemberCenter.ui;
 
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +17,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseFragment;
 import com.tuodanhuashu.app.base.SimpleItemDecoration;
+import com.tuodanhuashu.app.course.ui.CourseDetailActivity;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
 import com.tuodanhuashu.app.widget.RoundRectImageView;
 
@@ -85,7 +87,7 @@ public class MyCourseFragment extends HuaShuBaseFragment {
 
         @Override
         public void onBindViewHolder(@NonNull final MyCourseHolder holder, int position) {
-            HomeCourseBean course = courseList.get(position);
+            final HomeCourseBean course = courseList.get(position);
 
             Glide.with(mContext).load(course.getImage_url()).into(new SimpleTarget<Drawable>() {
                 @Override
@@ -96,6 +98,16 @@ public class MyCourseFragment extends HuaShuBaseFragment {
             holder.txtNmae.setText(course.getCourse_name());
             holder.txtPrice.setText("¥"+course.getSale_price());
             holder.txtTag.setText(course.getMaster_name());
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_ID,course.getId());
+                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_NAME,course.getCourse_name());
+                    readyGo(CourseDetailActivity.class,bundle);
+                }
+            });
         }
 
         @Override

@@ -29,6 +29,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     private Context mContext;
     private List<CourseDetailBean.CommentsBean> commentList;
 
+
+    private boolean isLike = false;//是否点赞，默认为点赞
+
     public CommentAdapter(Context mContext, List<CourseDetailBean.CommentsBean> commentList) {
         this.mContext = mContext;
         this.commentList = commentList;
@@ -44,7 +47,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     @Override
     public void onBindViewHolder(@NonNull final CommentHolder holder, int position) {
-        CourseDetailBean.CommentsBean comment = commentList.get(position);
+        final CourseDetailBean.CommentsBean comment = commentList.get(position);
         RequestOptions options = new RequestOptions()
                 .override(DisplayUtil.dp2px(30), DisplayUtil.dp2px(30))
                 .centerCrop();
@@ -61,13 +64,24 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         holder.tvLikeCount.setText(comment.getLike_count() + "");
         holder.tvComment.setText(comment.getContent());
         List<CourseDetailBean.CommentsBean.ReplyBean> replyBeans = comment.getReply();
-        if ( replyBeans == null) {
+        if (replyBeans == null) {
             holder.layoutReply.setVisibility(View.GONE);
         } else {
             holder.tvReplyContent.setText(replyBeans.get(0).getContent());
             holder.tvReplyName.setText(replyBeans.get(0).getNickname());
             holder.tvReplyTime.setText(replyBeans.get(0).getCreate_date());
         }
+
+        final int likeCount = comment.getLike_count();
+        holder.imgThumbUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isLike = !isLike;
+                v.setSelected(isLike);
+                int now = isLike ? likeCount - 1 : likeCount + 1;
+                holder.tvLikeCount.setText(now + "");
+            }
+        });
 
     }
 

@@ -26,8 +26,10 @@
             android:layout_centerInParent="true"
             android:textSize="18sp"
             android:textColor="@color/black"
+            android:maxWidth="136dp"
             android:maxLines="1"
-            android:text="页面标题"/>
+            android:ellipsize="end"
+            android:text="页面标题页面标题页面标题页面标题"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="0.3dp"

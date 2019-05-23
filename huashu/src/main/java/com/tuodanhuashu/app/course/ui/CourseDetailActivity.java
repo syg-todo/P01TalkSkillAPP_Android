@@ -12,7 +12,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -159,41 +161,41 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
     }
 
-    private void initRecommendation() {
-
-        HomeAdapter adapterRecommendation = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_RECOMMEND, R.layout.course_detail_recommendation_layout) {
-            @Override
-            public void onBindViewHolder(BaseViewHolder holder, int position) {
-                super.onBindViewHolder(holder, position);
-                if (position != 0) {
-                    TextView tv = holder.getView(R.id.college_recommendation_top_tv);
-                    tv.setVisibility(View.GONE);
-                }
-
-                TextView moreTv = holder.getView(R.id.college_recommendation_course_more_tv);
-                moreTv.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(mContext, "more", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                final List<HomeCourseBean> recommendCourses = new ArrayList<>();
-
-                RecyclerView recyclerView = holder.getView(R.id.college_more_recommendation_rv);
-                recyclerView.setAdapter(new RVRecommendationAdapter(mContext, recommendCoursesBeanList));
-                recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-
-                recyclerView.addItemDecoration(new SimpleItemDecoration());
-
-
-
-
-            }
-        };
-        adapterList.add(adapterRecommendation);
-
-    }
+//    private void initRecommendation() {
+//
+//        HomeAdapter adapterRecommendation = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_RECOMMEND, R.layout.course_detail_recommendation_layout) {
+//            @Override
+//            public void onBindViewHolder(BaseViewHolder holder, int position) {
+//                super.onBindViewHolder(holder, position);
+//                if (position != 0) {
+//                    TextView tv = holder.getView(R.id.college_recommendation_top_tv);
+//                    tv.setVisibility(View.GONE);
+//                }
+//
+//                TextView moreTv = holder.getView(R.id.college_recommendation_course_more_tv);
+//                moreTv.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Toast.makeText(mContext, "more", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//
+//                final List<HomeCourseBean> recommendCourses = new ArrayList<>();
+//
+//                RecyclerView recyclerView = holder.getView(R.id.college_more_recommendation_rv);
+//                recyclerView.setAdapter(new RVRecommendationAdapter(mContext, recommendCoursesBeanList));
+//                recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+//
+//                recyclerView.addItemDecoration(new SimpleItemDecoration());
+//
+//
+//
+//
+//            }
+//        };
+//        adapterList.add(adapterRecommendation);
+//
+//    }
 
 
     @Override
@@ -214,13 +216,12 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                 super.onBindViewHolder(holder, position);
                 TabLayout tabLayout = holder.getView(R.id.tablayout_course_detail);
 
-                ViewPager viewPager = holder.getView(R.id.viewpage_course_detail);
+//                ViewPager viewPager = holder.getView(R.id.viewpage_course_detail);
                 final List<String> titles = new ArrayList<>();
                 titles.add("详情");
                 titles.add("目录");
                 titles.add("评论");
                 final List<Fragment> fragments = new ArrayList<>();
-                CourseDetailCommentFragment fragment = new CourseDetailCommentFragment();
 
                 fragments.add(new CourseDetailAspectFragment());
                 fragments.add(new CourseDetailDirectoryFragment());
@@ -230,40 +231,23 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                     tabLayout.addTab(tabLayout.newTab().setText(title));
                 }
 
-                tabLayout.setupWithViewPager(viewPager);
-
-                viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
-                    @Override
-                    public Fragment getItem(int position) {
-                        return fragments.get(position);
-                    }
-
-                    @Override
-                    public int getCount() {
-                        return fragments.size();
-                    }
-
-                    @Nullable
-                    @Override
-                    public CharSequence getPageTitle(int position) {
-                        return titles.get(position);
-                    }
-                });
-
-
                 for (int i = 0; i < titles.size(); i++) {
-                    View customView = getTabView(mContext, titles.get(i), DisplayUtil.dp2px(18), DisplayUtil.dp2px(2));
-                    tabLayout.getTabAt(i).setCustomView(customView);
                     if (i == 0) {
                         tabLayout.getTabAt(i).select();
                     }
+                    View customView = getTabView(mContext, titles.get(i), DisplayUtil.dp2px(18), DisplayUtil.dp2px(2),tabLayout.getTabAt(i).isSelected());
+                    tabLayout.getTabAt(i).setCustomView(customView);
+
                 }
 
-
+                final FragmentManager fragmentManager = getSupportFragmentManager();
+                final FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.add(R.id.frame_course_detail,fragments.get(0)).commit();
                 tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
                         changeTabStatus(tab, true);
+                        fragmentManager.beginTransaction().replace(R.id.frame_course_detail,fragments.get(tab.getPosition())).commit();
                     }
 
                     @Override
@@ -277,21 +261,21 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                     }
                 });
 
-                viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                    @Override
-                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                    }
-
-                    @Override
-                    public void onPageSelected(int position) {
-
-                    }
-
-                    @Override
-                    public void onPageScrollStateChanged(int state) {
-
-                    }
-                });
+//                viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//                    @Override
+//                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//                    }
+//
+//                    @Override
+//                    public void onPageSelected(int position) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onPageScrollStateChanged(int state) {
+//
+//                    }
+//                });
 
             }
         };
@@ -317,7 +301,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     }
 
 
-    public static View getTabView(Context context, String text, int indicatorWidth, int indicatorHeight) {
+    public static View getTabView(Context context, String text, int indicatorWidth, int indicatorHeight,boolean isSelected) {
         View view = LayoutInflater.from(context).inflate(R.layout.tab_item_layout, null);
         TextView tabText = view.findViewById(R.id.tab_item_text);
         if (indicatorWidth > 0) {
@@ -326,6 +310,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
             layoutParams.width = indicatorWidth;
             layoutParams.height = indicatorHeight;
             indicator.setLayoutParams(layoutParams);
+            indicator.setVisibility(isSelected?View.VISIBLE:View.INVISIBLE);
         }
 //        tabText.setTextSize(textSize);
         tabText.setText(text);
@@ -374,7 +359,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                     public void onClick(View v) {
                         Bundle bundle = new Bundle();
                         bundle.putString(MasterDetailActivity.EXTRA_MASTER_NAME, courseBean.getMaster_name());
-                        readyGo(MasterDetailActivity.class);
+                        readyGo(MasterDetailActivity.class,bundle);
                     }
                 });
                 final TextView txtFollow = holder.getView(R.id.tv_course_detail_follow);
@@ -456,7 +441,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         initCourseTop();
         initMasterRow();
         initCourseTab();
-        initRecommendation();
+//        initRecommendation();
         delegateAdapter.setAdapters(adapterList);
 //        initCourseTab();
 

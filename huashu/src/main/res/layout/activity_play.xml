@@ -16,7 +16,8 @@
         android:layout_height="49dp">
 
         <EditText
-            android:layout_width="305dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="30dp"
             android:hint="写下你的想法~"
             android:textSize="13sp"

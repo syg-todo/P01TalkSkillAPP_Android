@@ -93,7 +93,7 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
                 courseListPresenter.requestCourseClassList();
                 tablayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                     @Override
-                    public void onTabSelected(TabLayout.Tab tab) {
+                                  public void onTabSelected(TabLayout.Tab tab) {
 //                        page = 1;
                         courseBeanList.clear();
                         classId = courseClassList.get(tab.getPosition()).getId();
@@ -315,7 +315,6 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
 
         @Override
         public int getItemCount() {
-            Log.d("111","courseListAdapter.size:"+courseBeanList.size());
             return courseBeanList.size();
         }
 
