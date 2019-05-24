@@ -78,8 +78,7 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
     @Override
     protected void initView() {
         super.initView();
-
-
+        commonHeadBackIv.getDrawable().setTint(getResources().getColor(R.color.black));
     }
 
     @Override

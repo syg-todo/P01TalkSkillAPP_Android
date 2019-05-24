@@ -44,7 +44,7 @@ public class CourseDetailCommentFragment extends HuaShuBaseFragment {
     RecyclerView recyclerView;
 
     private CourseDetailModel model;
-    private List<CourseDetailBean.CommentsBean> commentsBeanList = new ArrayList<>();
+    private List<CommentBean> commentsBeanList = new ArrayList<>();
 
     @Override
     protected int getContentViewLayoutID() {

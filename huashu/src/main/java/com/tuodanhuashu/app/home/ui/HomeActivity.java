@@ -50,7 +50,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class HomeActivity extends HuaShuBaseActivity implements OnRequestListener,OnDownloadListener{
 
     @BindView(R.id.main_header_left_iv)
-    CircleImageView mainHeaderLeftIv;
+    ImageView mainHeaderLeftIv;
     @BindView(R.id.main_header_right_iv)
     ImageView mainHeaderRightIv;
     @BindView(R.id.head_huashu_tv)

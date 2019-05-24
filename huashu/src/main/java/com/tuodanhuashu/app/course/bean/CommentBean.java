@@ -1,19 +1,34 @@
 package com.tuodanhuashu.app.course.bean;
 
-public class CommentBean {
-    private String avatar;
+import java.util.List;
+
+public  class CommentBean {
+    /**
+     * mobile : 13815030973
+     * nickname : 东东
+     * heade_img : https://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83erqTAeZqj2xX0M803XtyibGkaxJnRweYk86h0tFXiaTHWY04Mj9sf9GhGDlNmaB0PhUU1ibrKxpaRP3w/132
+     * content : 很好的啊
+     * like_count : 1
+     * is_like : 2
+     * create_date : 1970-01-01
+     * reply : {"mobile":"13815030973","nickname":"东东","heade_img":"https://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83erqTAeZqj2xX0M803XtyibGkaxJnRweYk86h0tFXiaTHWY04Mj9sf9GhGDlNmaB0PhUU1ibrKxpaRP3w/132","content":"时的很好的啊","create_date":"1970-01-01"}
+     */
+
+    private String mobile;
     private String nickname;
-    private String time;
-    private String comment;
+    private String heade_img;
+    private String content;
     private int like_count;
+    private int is_like;
+    private String create_date;
+    private List<ReplyBean> reply;
 
-
-    public String getAvatar() {
-        return avatar;
+    public String getMobile() {
+        return mobile;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     public String getNickname() {
@@ -24,20 +39,20 @@ public class CommentBean {
         this.nickname = nickname;
     }
 
-    public String getTime() {
-        return time;
+    public String getHeade_img() {
+        return heade_img;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setHeade_img(String heade_img) {
+        this.heade_img = heade_img;
     }
 
-    public String getComment() {
-        return comment;
+    public String getContent() {
+        return content;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public int getLike_count() {
@@ -47,4 +62,85 @@ public class CommentBean {
     public void setLike_count(int like_count) {
         this.like_count = like_count;
     }
+
+    public int getIs_like() {
+        return is_like;
+    }
+
+    public void setIs_like(int is_like) {
+        this.is_like = is_like;
+    }
+
+    public String getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(String create_date) {
+        this.create_date = create_date;
+    }
+
+    public List<ReplyBean> getReply() {
+        return reply;
+    }
+
+    public void setReply(List<ReplyBean> reply) {
+        this.reply = reply;
+    }
+
+    public static class ReplyBean {
+        /**
+         * mobile : 13815030973
+         * nickname : 东东
+         * heade_img : https://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83erqTAeZqj2xX0M803XtyibGkaxJnRweYk86h0tFXiaTHWY04Mj9sf9GhGDlNmaB0PhUU1ibrKxpaRP3w/132
+         * content : 时的很好的啊
+         * create_date : 1970-01-01
+         */
+
+        private String mobile;
+        private String nickname;
+        private String heade_img;
+        private String content;
+        private String create_date;
+
+        public String getMobile() {
+            return mobile;
+        }
+
+        public void setMobile(String mobile) {
+            this.mobile = mobile;
+        }
+
+        public String getNickname() {
+            return nickname;
+        }
+
+        public void setNickname(String nickname) {
+            this.nickname = nickname;
+        }
+
+        public String getHeade_img() {
+            return heade_img;
+        }
+
+        public void setHeade_img(String heade_img) {
+            this.heade_img = heade_img;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+        public String getCreate_date() {
+            return create_date;
+        }
+
+        public void setCreate_date(String create_date) {
+            this.create_date = create_date;
+        }
+    }
 }
+

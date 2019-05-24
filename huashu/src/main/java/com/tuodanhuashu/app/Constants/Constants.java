@@ -39,6 +39,7 @@ public class Constants {
 
         public static final String COLLEGE_COURSE_DETAIL_URL = "/api/Courseuser/course_info";
 
+        public static final String COLLEGE_COURSE_SECTION_INFO_URL = "/api/Courseuser/sectioninfo";
 
         public static final String TALK_SKILL_LIST_URL = "/api/user/get_list_by_keywords";
 

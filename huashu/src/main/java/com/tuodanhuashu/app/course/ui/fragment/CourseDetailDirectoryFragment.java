@@ -2,6 +2,7 @@ package com.tuodanhuashu.app.course.ui.fragment;
 
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -72,7 +73,7 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
 
         @Override
         public void onBindViewHolder(@NonNull DirectoryHolder holder, int position) {
-            CourseDetailBean.SectionsBean directory = directoryList.get(position);
+            final CourseDetailBean.SectionsBean directory = directoryList.get(position);
             holder.tvName.setText(directory.getSection_name());
             int duration = directory.getDuration();
             int minutes= duration / 60;
@@ -82,7 +83,9 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    readyGo(PlayActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(PlayActivity.EXTRA_SECTION_ID,directory.getSectionId()+"");
+                    readyGo(PlayActivity.class,bundle);
                 }
             });
 

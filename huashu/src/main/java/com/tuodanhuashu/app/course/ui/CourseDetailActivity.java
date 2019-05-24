@@ -61,7 +61,7 @@ import butterknife.BindView;
 public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDetailView {
     @BindView(R.id.rv_course_detail)
     RecyclerView recyclerView;
-    @BindView(R.id.common_head_back_iv)
+    @BindView(R.id.iv_course_detail_head_back)
     ImageView ivBack;
     @BindView(R.id.refresheader_course_detail)
     MaterialHeader refresheaderCourseDetail;
@@ -124,24 +124,26 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         ivDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext,"下载",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "下载", Toast.LENGTH_SHORT).show();
             }
         });
 
         ivShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext,"分享",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "分享", Toast.LENGTH_SHORT).show();
             }
         });
+
 
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+              onBackPressed();
             }
         });
 
+        ivBack.getDrawable().setTint(getResources().getColor(R.color.white));
 
         adapterList = new ArrayList<>();
         refresheaderCourseDetail.setColorSchemeColors(mContext.getResources().getColor(R.color.colorAccent));
@@ -235,19 +237,19 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                     if (i == 0) {
                         tabLayout.getTabAt(i).select();
                     }
-                    View customView = getTabView(mContext, titles.get(i), DisplayUtil.dp2px(18), DisplayUtil.dp2px(2),tabLayout.getTabAt(i).isSelected());
+                    View customView = getTabView(mContext, titles.get(i), DisplayUtil.dp2px(18), DisplayUtil.dp2px(2), tabLayout.getTabAt(i).isSelected());
                     tabLayout.getTabAt(i).setCustomView(customView);
 
                 }
 
                 final FragmentManager fragmentManager = getSupportFragmentManager();
                 final FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.add(R.id.frame_course_detail,fragments.get(0)).commit();
+                transaction.add(R.id.frame_course_detail, fragments.get(0)).commit();
                 tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
                         changeTabStatus(tab, true);
-                        fragmentManager.beginTransaction().replace(R.id.frame_course_detail,fragments.get(tab.getPosition())).commit();
+                        fragmentManager.beginTransaction().replace(R.id.frame_course_detail, fragments.get(tab.getPosition())).commit();
                     }
 
                     @Override
@@ -301,7 +303,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     }
 
 
-    public static View getTabView(Context context, String text, int indicatorWidth, int indicatorHeight,boolean isSelected) {
+    public static View getTabView(Context context, String text, int indicatorWidth, int indicatorHeight, boolean isSelected) {
         View view = LayoutInflater.from(context).inflate(R.layout.tab_item_layout, null);
         TextView tabText = view.findViewById(R.id.tab_item_text);
         if (indicatorWidth > 0) {
@@ -310,7 +312,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
             layoutParams.width = indicatorWidth;
             layoutParams.height = indicatorHeight;
             indicator.setLayoutParams(layoutParams);
-            indicator.setVisibility(isSelected?View.VISIBLE:View.INVISIBLE);
+            indicator.setVisibility(isSelected ? View.VISIBLE : View.INVISIBLE);
         }
 //        tabText.setTextSize(textSize);
         tabText.setText(text);
@@ -359,7 +361,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                     public void onClick(View v) {
                         Bundle bundle = new Bundle();
                         bundle.putString(MasterDetailActivity.EXTRA_MASTER_NAME, courseBean.getMaster_name());
-                        readyGo(MasterDetailActivity.class,bundle);
+                        readyGo(MasterDetailActivity.class, bundle);
                     }
                 });
                 final TextView txtFollow = holder.getView(R.id.tv_course_detail_follow);
@@ -396,18 +398,17 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                 TextView tvCourseDetailCourseBuy = holder.getView(R.id.tv_course_detail_course_buy);
 
 
-
                 mCourseSalePrice = courseBean.getSale_price();
-                if (mCourseSalePrice == 0){
+                if (mCourseSalePrice == 0) {
                     tvCourseDetailSalePrice.setVisibility(View.GONE);
                     tvCourseDetailCourseFree.setVisibility(View.VISIBLE);
                     tvCourseDetailCourseBought.setVisibility(View.GONE);
                     tvCourseDetailCourseBuy.setVisibility(View.GONE);
-                }else if (isPay == 1){
+                } else if (isPay == 1) {
                     tvCourseDetailCourseFree.setVisibility(View.GONE);
                     tvCourseDetailCourseBought.setVisibility(View.VISIBLE);
                     tvCourseDetailCourseBuy.setVisibility(View.GONE);
-                }else {
+                } else {
                     tvCourseDetailCourseFree.setVisibility(View.GONE);
                     tvCourseDetailCourseBought.setVisibility(View.GONE);
                     tvCourseDetailCourseBuy.setVisibility(View.VISIBLE);

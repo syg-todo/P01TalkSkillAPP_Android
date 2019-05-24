@@ -13,7 +13,7 @@ public class CourseDetailBean {
 
     private CourseBean course;
     private List<SectionsBean> sections;
-    private List<CommentsBean> comments;
+    private List<CommentBean> comments;
     private List<RecommendCoursesBean> recommendCourses;
 
     public CourseBean getCourse() {
@@ -32,11 +32,11 @@ public class CourseDetailBean {
         this.sections = sections;
     }
 
-    public List<CommentsBean> getComments() {
+    public List<CommentBean> getComments() {
         return comments;
     }
 
-    public void setComments(List<CommentsBean> comments) {
+    public void setComments(List<CommentBean> comments) {
         this.comments = comments;
     }
 
@@ -314,147 +314,6 @@ public class CourseDetailBean {
 
     }
 
-    public static class CommentsBean {
-        /**
-         * mobile : 13776885597
-         * nickname : zhuzhu
-         * heade_img :
-         * content :
-         * like_count : 10000
-         * is_like : 1
-         * create_date :
-         * reply : [{"mobile":"13776885597","nickname":"zhuzhu","heade_img":"","content":"","create_date":""}]
-         */
-
-        private String mobile;
-        private String nickname;
-        private String heade_img;
-        private String content;
-        private int like_count;
-        private int is_like;
-        private String create_date;
-        private List<ReplyBean> reply;
-
-        public String getMobile() {
-            return mobile;
-        }
-
-        public void setMobile(String mobile) {
-            this.mobile = mobile;
-        }
-
-        public String getNickname() {
-            return nickname;
-        }
-
-        public void setNickname(String nickname) {
-            this.nickname = nickname;
-        }
-
-        public String getHeade_img() {
-            return heade_img;
-        }
-
-        public void setHeade_img(String heade_img) {
-            this.heade_img = heade_img;
-        }
-
-        public String getContent() {
-            return content;
-        }
-
-        public void setContent(String content) {
-            this.content = content;
-        }
-
-        public int getLike_count() {
-            return like_count;
-        }
-
-        public void setLike_count(int like_count) {
-            this.like_count = like_count;
-        }
-
-        public int getIs_like() {
-            return is_like;
-        }
-
-        public void setIs_like(int is_like) {
-            this.is_like = is_like;
-        }
-
-        public String getCreate_date() {
-            return create_date;
-        }
-
-        public void setCreate_date(String create_date) {
-            this.create_date = create_date;
-        }
-
-        public List<ReplyBean> getReply() {
-            return reply;
-        }
-
-        public void setReply(List<ReplyBean> reply) {
-            this.reply = reply;
-        }
-
-        public static class ReplyBean {
-            /**
-             * mobile : 13776885597
-             * nickname : zhuzhu
-             * heade_img :
-             * content :
-             * create_date :
-             */
-
-            private String mobile;
-            private String nickname;
-            private String heade_img;
-            private String content;
-            private String create_date;
-
-            public String getMobile() {
-                return mobile;
-            }
-
-            public void setMobile(String mobile) {
-                this.mobile = mobile;
-            }
-
-            public String getNickname() {
-                return nickname;
-            }
-
-            public void setNickname(String nickname) {
-                this.nickname = nickname;
-            }
-
-            public String getHeade_img() {
-                return heade_img;
-            }
-
-            public void setHeade_img(String heade_img) {
-                this.heade_img = heade_img;
-            }
-
-            public String getContent() {
-                return content;
-            }
-
-            public void setContent(String content) {
-                this.content = content;
-            }
-
-            public String getCreate_date() {
-                return create_date;
-            }
-
-            public void setCreate_date(String create_date) {
-                this.create_date = create_date;
-            }
-        }
-    }
 
     public static class RecommendCoursesBean {
         /**

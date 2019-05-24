@@ -1,62 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <RelativeLayout
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/white"
-        android:id="@+id/common_head_layout">
+        android:background="@color/white">
+
         <ImageView
-            android:id="@+id/common_head_back_iv"
+            android:id="@+id/iv_course_detail_head_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
             android:layout_marginLeft="12dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/vector_back"/>
+            android:layout_marginTop="@dimen/dp_10"
+            android:src="@drawable/vector_back_black"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="visible"
+            app:layout_goneMarginLeft="20dp" />
+
         <TextView
             android:id="@+id/common_head_title_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:textSize="18sp"
-            android:textColor="@color/black"
+            android:layout_marginTop="@dimen/dp_10"
+            android:ellipsize="end"
             android:maxWidth="136dp"
             android:maxLines="1"
-            android:ellipsize="end"
-            android:text="页面标题页面标题页面标题页面标题"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.3dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/color_bottom_divider"/>
+            android:text="页面标题页面标题页面标题页面标题"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-        android:id="@+id/iv_course_detail_head_download"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:src="@drawable/vector_download"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:scaleType="fitCenter"
-        android:layout_marginRight="47dp"/>
+            android:id="@+id/iv_course_detail_head_download"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/vector_download"
+            app:layout_constraintRight_toLeftOf="@id/iv_course_detail_head_share"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <ImageView
-        android:id="@+id/iv_course_detail_head_share"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:src="@drawable/vector_share"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:scaleType="fitCenter"
-        android:layout_marginRight="16dp"/>
+            android:id="@+id/iv_course_detail_head_share"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="16dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/vector_share"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
 
-    </RelativeLayout>
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="50dp"-->
+    <!--android:background="@color/white"-->
+    <!--android:id="@+id/common_head_layout">-->
+    <!--<ImageView-->
+    <!--android:id="@+id/iv_course_detail_head_back"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_alignParentLeft="true"-->
+    <!--android:layout_marginLeft="12dp"-->
+    <!--android:scaleType="fitCenter"-->
+    <!--android:src="@drawable/vector_back_black"/>-->
+    <!--<TextView-->
+    <!--android:id="@+id/common_head_title_tv"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:textSize="18sp"-->
+    <!--android:textColor="@color/black"-->
+    <!--android:maxWidth="136dp"-->
+    <!--android:maxLines="1"-->
+    <!--android:ellipsize="end"-->
+    <!--android:text="页面标题页面标题页面标题页面标题"/>-->
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0.3dp"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:background="@color/color_bottom_divider" />-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/iv_course_detail_head_download"-->
+    <!--android:layout_width="16dp"-->
+    <!--android:layout_height="16dp"-->
+    <!--android:src="@drawable/vector_download"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:scaleType="fitCenter"-->
+    <!--android:layout_marginRight="47dp"/>-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/iv_course_detail_head_share"-->
+    <!--android:layout_width="16dp"-->
+    <!--android:layout_height="16dp"-->
+    <!--android:src="@drawable/vector_share"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:scaleType="fitCenter"-->
+    <!--android:layout_marginRight="16dp"/>-->
+
+    <!--</RelativeLayout>-->
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/refresh_course_detail"
         android:layout_width="match_parent"
@@ -75,12 +135,13 @@
 
         <android.support.v7.widget.RecyclerView
 
+            android:id="@+id/rv_course_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/color_main_bg"
-            android:id="@+id/rv_course_detail"/>
+            android:background="@color/color_main_bg" />
 
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp">
@@ -89,29 +150,31 @@
             android:layout_width="150dp"
             android:layout_height="match_parent"
             android:background="#ffffff">
+
             <ImageView
                 android:layout_width="18dp"
                 android:layout_height="15dp"
                 android:layout_marginLeft="50dp"
                 android:layout_marginTop="17dp"
-                android:src="@mipmap/audition"
-                />
+                android:src="@mipmap/audition" />
+
             <TextView
                 android:layout_width="30dp"
                 android:layout_height="21dp"
-                android:textColor="#ff666666"
-                android:textSize="15sp"
                 android:layout_marginLeft="3dp"
                 android:layout_marginTop="14dp"
-                android:text="@string/audition"/>
+                android:text="@string/audition"
+                android:textColor="#ff666666"
+                android:textSize="15sp" />
         </LinearLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="立即参加：99元"
-            android:textSize="15sp"
+            android:background="@drawable/shape_course_detail_participate_immediately"
             android:gravity="center"
+            android:text="立即参加：99元"
             android:textColor="#ffffffff"
-            android:background="@drawable/shape_course_detail_participate_immediately"/>
+            android:textSize="15sp" />
     </LinearLayout>
 </LinearLayout>

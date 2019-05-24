@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.company.common.utils.DisplayUtil;
 import com.tuodanhuashu.app.R;
+import com.tuodanhuashu.app.course.bean.CommentBean;
 import com.tuodanhuashu.app.course.bean.CourseDetailBean;
 import com.tuodanhuashu.app.course.ui.fragment.CourseDetailCommentFragment;
 import com.tuodanhuashu.app.widget.RoundRectImageView;
@@ -27,12 +29,12 @@ import java.util.List;
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentHolder> {
 
     private Context mContext;
-    private List<CourseDetailBean.CommentsBean> commentList;
+    private List<CommentBean> commentList;
 
 
     private boolean isLike = false;//是否点赞，默认为点赞
 
-    public CommentAdapter(Context mContext, List<CourseDetailBean.CommentsBean> commentList) {
+    public CommentAdapter(Context mContext, List<CommentBean> commentList) {
         this.mContext = mContext;
         this.commentList = commentList;
     }
@@ -47,7 +49,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     @Override
     public void onBindViewHolder(@NonNull final CommentHolder holder, int position) {
-        final CourseDetailBean.CommentsBean comment = commentList.get(position);
+        final CommentBean comment = commentList.get(position);
         RequestOptions options = new RequestOptions()
                 .override(DisplayUtil.dp2px(30), DisplayUtil.dp2px(30))
                 .centerCrop();
@@ -63,7 +65,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         holder.tvTime.setText(comment.getCreate_date());
         holder.tvLikeCount.setText(comment.getLike_count() + "");
         holder.tvComment.setText(comment.getContent());
-        List<CourseDetailBean.CommentsBean.ReplyBean> replyBeans = comment.getReply();
+        List<CommentBean.ReplyBean> replyBeans = comment.getReply();
         if (replyBeans == null) {
             holder.layoutReply.setVisibility(View.GONE);
         } else {
@@ -78,7 +80,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             public void onClick(View v) {
                 isLike = !isLike;
                 v.setSelected(isLike);
-                int now = isLike ? likeCount - 1 : likeCount + 1;
+
+                Log.d("111","likecount:"+likeCount);
+                int now = isLike ? likeCount + 1 : likeCount ;
+
+                Log.d("111","now:"+now);
+
                 holder.tvLikeCount.setText(now + "");
             }
         });

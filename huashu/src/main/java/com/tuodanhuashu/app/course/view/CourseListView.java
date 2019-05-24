@@ -10,20 +10,20 @@ import java.util.List;
 
 public interface CourseListView extends BaseView {
 
-    public void getCourseListSuccess(List<HomeCourseBean> courseBeanList);
+    void getCourseListSuccess(List<HomeCourseBean> courseBeanList);
 
-    public void getCourseListFail(String msg);
+    void getCourseListFail(String msg);
 
-    public void getCourseWithBannerSuccess(CourseWithBannerBean courseWithBannerBean);
+    void getCourseWithBannerSuccess(CourseWithBannerBean courseWithBannerBean);
 
-    public void getCourseCommunityFail(String msg);
+    void getCourseCommunityFail(String msg);
 
-    public void getClassListSuccess(List<CourseClassBean> courseClassList);
+    void getClassListSuccess(List<CourseClassBean> courseClassList);
 
-    public void getClassListFail(String msg);
+    void getClassListFail(String msg);
 
-    public void getMasterListSuccess(List<MasterBean> masterBeans);
+    void getMasterListSuccess(List<MasterBean> masterBeans);
 
-    public void getMasterListFail(String msg);
+    void getMasterListFail(String msg);
 
 }
