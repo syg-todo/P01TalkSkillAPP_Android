@@ -25,15 +25,13 @@ import com.alibaba.android.vlayout.VirtualLayoutManager;
 import com.alibaba.android.vlayout.layout.LinearLayoutHelper;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.tuodanhuashu.app.R;
-import com.tuodanhuashu.app.base.HuaShuBaseActivity;
 import com.tuodanhuashu.app.base.SimpleItemDecoration;
 import com.tuodanhuashu.app.course.AudioPlayService;
 import com.tuodanhuashu.app.course.bean.CommentBean;
-import com.tuodanhuashu.app.course.bean.CourseDetailBean;
 import com.tuodanhuashu.app.course.bean.SectionBean;
-import com.tuodanhuashu.app.course.presenter.PlayPresenter;
+import com.tuodanhuashu.app.course.presenter.AudioPlayPresenter;
 import com.tuodanhuashu.app.course.ui.adapter.CommentAdapter;
-import com.tuodanhuashu.app.course.view.PlayView;
+import com.tuodanhuashu.app.course.view.AudioPlayView;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
 
 import java.util.ArrayList;
@@ -42,7 +40,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PlayActivity extends AppCompatActivity implements PlayView {
+public class AudioAudioPlayActivity extends AppCompatActivity implements AudioPlayView {
 
     private static final int TYPE_TOP = 0;
     private static final int TYPE_COMMENT = 1;
@@ -71,7 +69,7 @@ public class PlayActivity extends AppCompatActivity implements PlayView {
 
     private List<CommentBean> commentsBeanList = new ArrayList<>();
 
-    private PlayPresenter playPresenter;
+    private AudioPlayPresenter audioPlayPresenter;
 
     private CommentAdapter adapter;
 
@@ -100,13 +98,13 @@ public class PlayActivity extends AppCompatActivity implements PlayView {
 
 //    @Override
 //    protected int getContentViewLayoutID() {
-//        return R.layout.activity_play;
+//        return R.layout.activity_audio_play;
 //    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_play);
+        setContentView(R.layout.activity_audio_play);
         ButterKnife.bind(this);
         mContext = this;
 
@@ -133,8 +131,8 @@ public class PlayActivity extends AppCompatActivity implements PlayView {
 
     private void initData() {
         Log.d("111", "initData");
-        playPresenter = new PlayPresenter(mContext, this);
-        playPresenter.requestCourseClassList("0", "1");
+        audioPlayPresenter = new AudioPlayPresenter(mContext, this);
+        audioPlayPresenter.requestCourseClassList("0", "1");
 
     }
 

@@ -16,7 +16,7 @@ import com.tuodanhuashu.app.base.HuaShuBaseFragment;
 import com.tuodanhuashu.app.base.SimpleItemDecoration;
 import com.tuodanhuashu.app.course.bean.CourseDetailBean;
 import com.tuodanhuashu.app.course.bean.CourseDetailModel;
-import com.tuodanhuashu.app.course.ui.PlayActivity;
+import com.tuodanhuashu.app.course.ui.AudioAudioPlayActivity;
 
 
 import java.util.ArrayList;
@@ -84,8 +84,8 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(PlayActivity.EXTRA_SECTION_ID,directory.getSectionId()+"");
-                    readyGo(PlayActivity.class,bundle);
+                    bundle.putString(AudioAudioPlayActivity.EXTRA_SECTION_ID,directory.getSectionId()+"");
+                    readyGo(AudioAudioPlayActivity.class,bundle);
                 }
             });
 

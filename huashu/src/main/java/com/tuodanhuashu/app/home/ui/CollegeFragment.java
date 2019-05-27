@@ -52,6 +52,7 @@ import com.tuodanhuashu.app.base.HuaShuBaseFragment;
 import com.tuodanhuashu.app.course.ui.CourseDetailActivity;
 import com.tuodanhuashu.app.course.ui.CourseListActivity;
 import com.tuodanhuashu.app.course.ui.MasterDetailActivity;
+import com.tuodanhuashu.app.course.ui.VideoActivity;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
 import com.tuodanhuashu.app.home.adapter.HomeBannerViewHolder;
 import com.tuodanhuashu.app.home.bean.HomeBannerBean;
@@ -553,6 +554,13 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
                 final EditText et = holder.getView(R.id.zhuanlan_search_et);
+
+                et.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        readyGo(VideoActivity.class);
+                    }
+                });
                 et.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {

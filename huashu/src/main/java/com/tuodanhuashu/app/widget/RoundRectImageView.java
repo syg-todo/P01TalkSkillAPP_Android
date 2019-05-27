@@ -64,7 +64,7 @@ public class RoundRectImageView extends View {
         width = w;
         height = h;
         bitmap = getInitialBitmap((int) width, (int) height);
-        savedArea.set(0, 0, width, width);
+        savedArea.set(0, 0, width, height);
     }
 
     @Override
