@@ -1,6 +1,7 @@
 package com.tuodanhuashu.app.course.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import com.company.common.utils.DisplayUtil;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.course.bean.VideoBean;
+import com.tuodanhuashu.app.course.ui.VideoPlayerActivity;
 import com.tuodanhuashu.app.widget.RoundRectImageView;
 
 import java.util.List;
@@ -66,6 +68,15 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder>
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                 holder.ivItemAvatar.setDrawable(resource);
+            }
+        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, VideoPlayerActivity.class);
+
+                mContext.startActivity(intent);
             }
         });
     }

@@ -38,7 +38,6 @@ public class VideoActivity extends HuaShuBaseActivity {
     @Override
     protected void initData() {
         super.initData();
-
         VideoBean videoBean = new VideoBean("风浪科技", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1558757671584&di=c5b61404bf83891a662a031437f5335f&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201806%2F11%2F20180611091852_Gt2ik.jpeg",
                 "很皮很优神", 10000, "http://img1.imgtn.bdimg.com/it/u=3049673303,4028148324&fm=26&gp=0.jpg");
 
@@ -72,7 +71,7 @@ public class VideoActivity extends HuaShuBaseActivity {
     protected void initView() {
         super.initView();
 
-        adapter = new VideoAdapter(mContext, videoBeanList);
+        adapter = new VideoAdapter(this, videoBeanList);
         rvVideo.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         rvVideo.setAdapter(adapter);
         rvVideo.addItemDecoration(new RecyclerView.ItemDecoration() {

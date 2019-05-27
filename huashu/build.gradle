@@ -26,9 +26,7 @@ android {
         versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
-
             abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a'
-
         }
 
         manifestPlaceholders = [
@@ -49,7 +47,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.aar', '*.jar'], dir: 'libs')
     api project(':common')
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:support-v4:27.1.1'
@@ -74,7 +72,7 @@ dependencies {
 
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.hyphenate:kefu-easeui-android:1.1.8'
-    implementation(name: 'alipaySdk-15.6.0-20190226104053', ext: 'aar')
+//    implementation(name: 'alipaySdk-15.6.0-20190226104053', ext: 'aar')
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
     implementation 'cn.jiguang.sdk:jpush:3.2.0'  // 此处以JPush 3.2.0 版本为例。
     implementation 'cn.jiguang.sdk:jcore:1.2.7'  // 此处以JCore 1.2.7 版本为例。
@@ -83,5 +81,6 @@ dependencies {
     implementation 'com.alibaba:fastjson:1.1.70.android'
     implementation 'com.lzy.net:okgo:3.0.4'
     implementation 'android.arch.lifecycle:extensions:1.1.1'
-
+//    implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
+    implementation 'com.aliyun.dpa:oss-android-sdk:+'
 }

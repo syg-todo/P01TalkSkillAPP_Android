@@ -53,6 +53,7 @@ import com.tuodanhuashu.app.course.ui.CourseDetailActivity;
 import com.tuodanhuashu.app.course.ui.CourseListActivity;
 import com.tuodanhuashu.app.course.ui.MasterDetailActivity;
 import com.tuodanhuashu.app.course.ui.VideoActivity;
+import com.tuodanhuashu.app.course.ui.VideoPlayerActivity;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
 import com.tuodanhuashu.app.home.adapter.HomeBannerViewHolder;
 import com.tuodanhuashu.app.home.bean.HomeBannerBean;
@@ -336,7 +337,10 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
                     bundle.putString(MasterDetailActivity.EXTRA_MASTER_NAME,courseBeanList.get(position).getMaster_name());
-                    readyGo(MasterDetailActivity.class,bundle);
+
+                    readyGo(VideoPlayerActivity.class);
+
+//                    readyGo(MasterDetailActivity.class,bundle);
                 }
             });
 
