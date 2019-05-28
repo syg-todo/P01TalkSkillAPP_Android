@@ -11,10 +11,13 @@ import com.tuodanhuashu.app.R;
 
 public class ControlView extends RelativeLayout {
 
-    private ImageView mTitleBackBtn;
-
+    private ImageView ivTitleBack;
+    private ImageView ivLike;
     //标题返回按钮监听
     private OnBackClickListener mOnBackClickListener;
+
+
+    private OnStarClickListener mOnStarClickListener;
 
     public ControlView(Context context) {
         super(context);
@@ -42,15 +45,28 @@ public class ControlView extends RelativeLayout {
     }
 
     private void findAllViews() {
-        mTitleBackBtn = findViewById(R.id.player_title_back);
+        ivTitleBack = findViewById(R.id.iv_player_title_back);
+
+        ivLike = findViewById(R.id.iv_player_like);
+
+
     }
 
     private void setViewListener() {
-        mTitleBackBtn.setOnClickListener(new OnClickListener() {
+        ivTitleBack.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mOnBackClickListener != null) {
                     mOnBackClickListener.onClick();
+                }
+            }
+        });
+
+        ivLike.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnStarClickListener != null){
+                    mOnStarClickListener.onClick();
                 }
             }
         });
@@ -62,10 +78,16 @@ public class ControlView extends RelativeLayout {
     }
 
 
+    public void setOnStarClickListener(OnStarClickListener l){ mOnStarClickListener = l;}
     public interface OnBackClickListener {
         /**
          * 返回按钮点击事件
          */
+        void onClick();
+    }
+
+    public interface OnStarClickListener{
+
         void onClick();
     }
 }

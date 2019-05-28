@@ -9,6 +9,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.aliyun.vodplayer.media.AliyunLocalSource;
 import com.aliyun.vodplayer.media.AliyunVodPlayer;
@@ -172,6 +173,7 @@ public class VideoPlayerView extends RelativeLayout {
             public void onDoubleTap() {
                 //双击事件，控制暂停播放
 //                switchPlayerState();
+                star();
                 Log.d("111", "doubleTap");
 
             }
@@ -246,6 +248,19 @@ public class VideoPlayerView extends RelativeLayout {
                 }
             }
         });
+
+        mControlView.setOnStarClickListener(new ControlView.OnStarClickListener() {
+            @Override
+            public void onClick() {
+                star();
+            }
+        });
+    }
+
+
+    //喜欢
+    private void star() {
+        Toast.makeText(getContext(),"star",Toast.LENGTH_SHORT).show();
     }
 
 
