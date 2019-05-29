@@ -9,7 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="44dp"
         android:background="@drawable/gradient_titlebar_bg"
-        android:src="@drawable/vector_back"
         app:layout_constraintTop_toTopOf="parent">
 
 
@@ -17,9 +16,9 @@
             android:id="@+id/iv_player_title_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="17dp"
             android:layout_gravity="center_vertical"
-             />
+            android:layout_marginLeft="17dp"
+            android:src="@drawable/vector_back" />
     </LinearLayout>
 
     <com.tuodanhuashu.app.widget.RoundRectImageView
@@ -35,35 +34,95 @@
         app:radiusY1="24"
         app:radiusY2="24" />
 
-    <ImageView
-        android:id="@+id/iv_player_like"
-        android:layout_width="34dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="35dp"
-        android:layout_marginRight="12dp"
-        android:src="@drawable/vector_star"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_player_avatar" />
+    <!--<ImageView-->
+    <!--android:id="@+id/iv_player_like"-->
+    <!--android:layout_width="34dp"-->
+    <!--android:layout_height="30dp"-->
+    <!--android:layout_marginTop="35dp"-->
+    <!--android:layout_marginRight="12dp"-->
+    <!--android:src="@drawable/vector_star"-->
+    <!--app:layout_constraintRight_toRightOf="parent"-->
+    <!--app:layout_constraintTop_toBottomOf="@id/iv_player_avatar" />-->
 
-    <TextView
-        android:id="@+id/tv_player_like"
-        android:layout_width="wrap_content"
-        android:layout_height="16dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="16dp"
-        android:text="9.0w"
-        android:textColor="#ffffffff"
-        android:textSize="11sp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_player_like" />
+    <!--<TextView-->
+    <!--android:id="@+id/tv_player_like"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="16dp"-->
+    <!--android:layout_marginTop="5dp"-->
+    <!--android:layout_marginRight="16dp"-->
+    <!--android:text="9.0w"-->
+    <!--android:textColor="#ffffffff"-->
+    <!--android:textSize="11sp"-->
+    <!--app:layout_constraintRight_toRightOf="parent"-->
+    <!--app:layout_constraintTop_toBottomOf="@id/iv_player_like" />-->
 
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/controlbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/gradient_infobar_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
 
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/btn_player_state"
+            android:layout_width="11dp"
+            android:layout_height="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/play_controller"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textColor="@color/white"-->
+        <!--android:text="/40:00"-->
+        <!--android:textSize="10sp" />-->
+
+
+        <SeekBar
+            android:id="@+id/player_info_seekbar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="12dp"
+            android:maxHeight="3dp"
+            android:minHeight="3dp"
+            android:progressDrawable="@drawable/seekbar_shape"
+            android:thumb="@drawable/seekbar_thumb"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toRightOf="@id/btn_player_state"
+            app:layout_constraintRight_toLeftOf="@id/player_info_position"/>
+
+        <TextView
+            android:id="@+id/player_info_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/player_info_duration" />
+
+        <TextView
+            android:id="@+id/player_info_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="12dp"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
 
 </android.support.constraint.ConstraintLayout>

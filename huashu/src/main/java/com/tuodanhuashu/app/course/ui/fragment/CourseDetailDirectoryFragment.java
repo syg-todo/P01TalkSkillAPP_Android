@@ -16,7 +16,7 @@ import com.tuodanhuashu.app.base.HuaShuBaseFragment;
 import com.tuodanhuashu.app.base.SimpleItemDecoration;
 import com.tuodanhuashu.app.course.bean.CourseDetailBean;
 import com.tuodanhuashu.app.course.bean.CourseDetailModel;
-import com.tuodanhuashu.app.course.ui.AudioAudioPlayActivity;
+import com.tuodanhuashu.app.course.ui.AudioPlayActivity;
 
 
 import java.util.ArrayList;
@@ -75,17 +75,22 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
         public void onBindViewHolder(@NonNull DirectoryHolder holder, int position) {
             final CourseDetailBean.SectionsBean directory = directoryList.get(position);
             holder.tvName.setText(directory.getSection_name());
-            int duration = directory.getDuration();
+            int duration = Integer.parseInt(directory.getDuration());
             int minutes= duration / 60;
             int seconds = duration % 60;
-            holder.tvTime.setText(minutes+"'"+seconds+"''");
+
+
+
+
+            String time = String.format("%02d:%02d", minutes, seconds);
+            holder.tvTime.setText(time);
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(AudioAudioPlayActivity.EXTRA_SECTION_ID,directory.getSectionId()+"");
-                    readyGo(AudioAudioPlayActivity.class,bundle);
+                    bundle.putString(AudioPlayActivity.EXTRA_SECTION_ID,directory.getId()+"");
+                    readyGo(AudioPlayActivity.class,bundle);
                 }
             });
 

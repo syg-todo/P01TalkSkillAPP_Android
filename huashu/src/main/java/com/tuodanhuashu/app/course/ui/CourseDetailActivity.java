@@ -79,8 +79,8 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     private CourseDetailPresenter courseDetailPresenter;
     private List<DelegateAdapter.Adapter> adapterList;
 
-    private int mCourseSalePrice;
-    private int isPay; //1已支付
+    private String mCourseSalePrice;
+    private String isPay; //1已支付
 
     public static final String EXTRA_COURSE_NAME = "course_name";
 
@@ -88,7 +88,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
     public static final String EXTRA_COURSE_ID = "course_id";
 
-    private String course_id = "";
+    private String course_id = "1";
 
     private CourseDetailModel model;
 
@@ -206,6 +206,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
         model = ViewModelProviders.of(this).get(CourseDetailModel.class);
         courseDetailPresenter = new CourseDetailPresenter(mContext, this);
+        Log.d("111","course_id"+course_id);
         courseDetailPresenter.requestCourseDetail("0", course_id);
 
     }
@@ -399,12 +400,13 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
 
                 mCourseSalePrice = courseBean.getSale_price();
-                if (mCourseSalePrice == 0) {
+                isPay = courseBean.getIs_pay();
+                if (mCourseSalePrice.equals("0")) {
                     tvCourseDetailSalePrice.setVisibility(View.GONE);
                     tvCourseDetailCourseFree.setVisibility(View.VISIBLE);
                     tvCourseDetailCourseBought.setVisibility(View.GONE);
                     tvCourseDetailCourseBuy.setVisibility(View.GONE);
-                } else if (isPay == 1) {
+                } else if (isPay .equals("1") ) {
                     tvCourseDetailCourseFree.setVisibility(View.GONE);
                     tvCourseDetailCourseBought.setVisibility(View.VISIBLE);
                     tvCourseDetailCourseBuy.setVisibility(View.GONE);
@@ -431,13 +433,15 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         super.getBundleExtras(extras);
         course_name = extras.getString(EXTRA_COURSE_NAME);
         course_id = extras.getString(EXTRA_COURSE_ID);
+
+        course_id = "6";
     }
 
     @Override
     public void getCourseDetailSuccess(CourseDetailBean courseDetailBean) {
         recommendCoursesBeanList = courseDetailBean.getRecommendCourses();
         courseBean = courseDetailBean.getCourse();
-
+        Log.d("111","courseBean:"+courseBean.toString());
         model.setCourseDetail(courseDetailBean);
         initCourseTop();
         initMasterRow();
@@ -450,6 +454,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
     @Override
     public void getCourseDetailFail(String msg) {
+        Log.d("111",msg);
         Log.d("111", "fail");
     }
 }

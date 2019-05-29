@@ -18,8 +18,8 @@ public  class CommentBean {
     private String nickname;
     private String heade_img;
     private String content;
-    private int like_count;
-    private int is_like;
+    private String like_count;
+    private String is_like;
     private String create_date;
     private List<ReplyBean> reply;
 
@@ -55,19 +55,19 @@ public  class CommentBean {
         this.content = content;
     }
 
-    public int getLike_count() {
+    public String getLike_count() {
         return like_count;
     }
 
-    public void setLike_count(int like_count) {
+    public void setLike_count(String like_count) {
         this.like_count = like_count;
     }
 
-    public int getIs_like() {
+    public String getIs_like() {
         return is_like;
     }
 
-    public void setIs_like(int is_like) {
+    public void setIs_like(String is_like) {
         this.is_like = is_like;
     }
 

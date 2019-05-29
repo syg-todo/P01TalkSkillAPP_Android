@@ -74,7 +74,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             holder.tvReplyTime.setText(replyBeans.get(0).getCreate_date());
         }
 
-        final int likeCount = comment.getLike_count();
+        final String likeCount = comment.getLike_count();
         holder.imgThumbUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +82,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                 v.setSelected(isLike);
 
                 Log.d("111","likecount:"+likeCount);
-                int now = isLike ? likeCount + 1 : likeCount ;
+                int like = Integer.parseInt(likeCount);
+                int now = isLike ? like + 1 : like ;
 
                 Log.d("111","now:"+now);
 

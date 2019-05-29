@@ -59,19 +59,19 @@ public class CourseDetailCommentFragment extends HuaShuBaseFragment {
 
         commentsBeanList = model.getCourseDetail().getValue().getComments();
 
-
-        //测试数据
-        for (int i = 0; i < 3; i++) {
-            commentsBeanList.get(i).setContent("看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章。");
-            commentsBeanList.get(i).setCreate_date("2019-03-27");
-            commentsBeanList.get(i).setHeade_img("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg");
-
-        }
-
-
-//        commentsBeanList.get(1).setReply(null);
-        commentsBeanList.get(0).getReply().get(0).setContent("看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章。");
-        //测试数据
+//
+//        //测试数据
+//        for (int i = 0; i < 3; i++) {
+//            commentsBeanList.get(i).setContent("看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章。");
+//            commentsBeanList.get(i).setCreate_date("2019-03-27");
+//            commentsBeanList.get(i).setHeade_img("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg");
+//
+//        }
+//
+//
+////        commentsBeanList.get(1).setReply(null);
+//        commentsBeanList.get(0).getReply().get(0).setContent("看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章，看过周梵老师很多文章。");
+//        //测试数据
 
 
         CommentAdapter adapter = new CommentAdapter(mContext,commentsBeanList);
