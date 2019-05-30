@@ -2,15 +2,17 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#50000000"
+    >
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:background="@drawable/gradient_titlebar_bg"
+        android:layout_height="88dp"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!--android:background="@drawable/gradient_titlebar_bg"-->
 
         <ImageView
             android:id="@+id/iv_player_title_back"
@@ -61,10 +63,10 @@
         android:id="@+id/controlbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/gradient_infobar_bg"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
+        <!--android:background="@drawable/gradient_infobar_bg"-->
 
 
         <ImageView
@@ -106,6 +108,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             android:textColor="@color/white"
+            android:text="00:00"
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@id/player_info_duration" />
@@ -118,6 +121,7 @@
             android:layout_marginBottom="12dp"
             android:textColor="@color/white"
             android:textSize="10sp"
+            android:text="/00:00"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 

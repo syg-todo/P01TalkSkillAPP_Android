@@ -47,6 +47,7 @@ import butterknife.ButterKnife;
 
 public class AudioPlayActivity extends AppCompatActivity implements AudioPlayView {
 
+    private static final String TAG = AudioPlayActivity.class.getSimpleName();
     private static final int TYPE_TOP = 0;
     private static final int TYPE_COMMENT = 1;
     @BindView(R.id.rv_play)
@@ -110,6 +111,7 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG,"onCreate");
         setContentView(R.layout.activity_audio_play);
         ButterKnife.bind(this);
         mContext = this;
@@ -144,6 +146,7 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
 
 
     protected void initView() {
+        Log.d(TAG,"initView");
 //        mediaPlayer = MediaPlayer.create(this, R.raw.honor);
 
         adapterList = new ArrayList<>();
@@ -180,16 +183,16 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     }
 
     private void initPlayTop() {
-
+        Log.d(TAG,"initPlayTop");
         HomeAdapter adapterTop = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_TOP, R.layout.play_top_layout) {
 
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
-
+                Log.d(TAG,"onBindViewHolder");
                 playerView = holder.getView(R.id.iv_play_iamge);
 
-
+                playerView.onResume();
                 playerView.setOnPreparedListener(new AudioPrepareListener((AudioPlayActivity) mContext));
                 String url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
 
@@ -316,6 +319,8 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
 
     }
 
+
+
     private static class AudioPrepareListener implements IAliyunVodPlayer.OnPreparedListener {
         private WeakReference<AudioPlayActivity> activityWeakReference;
 
@@ -380,7 +385,11 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     @Override
     protected void onResume() {
         super.onResume();
-
+        Log.d(TAG,"onResume");
+        if (playerView != null) {
+            Log.d(TAG,"playerView != null");
+            playerView.onResume();
+        }
 
     }
 

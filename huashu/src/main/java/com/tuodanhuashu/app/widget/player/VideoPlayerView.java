@@ -2,6 +2,7 @@ package com.tuodanhuashu.app.widget.player;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.alivc.player.VcPlayerLog;
 import com.aliyun.vodplayer.media.AliyunLocalSource;
 import com.aliyun.vodplayer.media.AliyunMediaInfo;
 import com.aliyun.vodplayer.media.AliyunPlayAuth;
@@ -20,21 +22,30 @@ import com.aliyun.vodplayer.media.AliyunVidSts;
 import com.aliyun.vodplayer.media.AliyunVodPlayer;
 import com.aliyun.vodplayer.media.IAliyunVodPlayer;
 import com.tuodanhuashu.app.R;
+import com.tuodanhuashu.app.utils.NetWatchdog;
 import com.tuodanhuashu.app.widget.player.view.control.ControlView;
 import com.tuodanhuashu.app.widget.player.view.gesture.GestureView;
+import com.tuodanhuashu.app.widget.player.view.tips.TipsView;
 
 import java.lang.ref.WeakReference;
+
+import static com.github.ybq.android.spinkit.animation.AnimationUtils.stop;
 
 
 public class VideoPlayerView extends RelativeLayout {
 
+    private static final String TAG = VideoPlayerView.class.getSimpleName();
     //视频画面
     private SurfaceView mSurfaceView;
     //手势操作view
     private GestureView mGestureView;
     //播放器
     private AliyunVodPlayer mAliyunVodPlayer;
+    //Tips view
+    private TipsView mTipsView;
 
+    //网络状态监听
+    private NetWatchdog mNetWatchdog;
     //媒体信息
     private AliyunMediaInfo mAliyunMediaInfo;
     //播放是否完成
@@ -62,6 +73,10 @@ public class VideoPlayerView extends RelativeLayout {
 
     private OnPlayStateBtnClickListener onPlayStateBtnClickListener;
     private OnSeekStartListener onSeekStartListener;
+
+
+    // 连网断网监听
+    private NetConnectedListener mNetConnectedListener = null;
 
     public VideoPlayerView(Context context) {
         super(context);
@@ -102,10 +117,10 @@ public class VideoPlayerView extends RelativeLayout {
 //        initSpeedView();
 //        //初始化指引view
 //        initGuideView();
-//        //初始化提示view
-//        initTipsView();
-//        //初始化网络监听器
-//        initNetWatchdog();
+        //初始化提示view
+        initTipsView();
+        //初始化网络监听器
+        initNetWatchdog();
 //        //初始化屏幕方向监听
 //        initOrientationWatchdog();
 //        //初始化手势对话框控制
@@ -115,6 +130,15 @@ public class VideoPlayerView extends RelativeLayout {
 //        //先隐藏手势和控制栏，防止在没有prepare的时候做操作。
 //        hideGestureAndControlViews();
     }
+
+    private void initNetWatchdog() {
+        Context context = getContext();
+        mNetWatchdog = new NetWatchdog(context);
+        mNetWatchdog.setNetChangeListener(new MyNetChangeListener(this));
+        mNetWatchdog.setNetConnectedListener(new MyNetConnectedListener(this));
+
+    }
+
 
 //    private void initGestureView() {
 //        mGestureView = new GestureView(getContext());
@@ -215,8 +239,133 @@ public class VideoPlayerView extends RelativeLayout {
 //        });
 //    }
 
+    /**
+     * 初始化提示view
+     */
+    private void initTipsView() {
 
-    public void switchPlayerState() {
+        mTipsView = new TipsView(getContext());
+        //设置tip中的点击监听事件
+        mTipsView.setOnTipClickListener(new TipsView.OnTipClickListener() {
+            @Override
+            public void onContinuePlay() {
+//                VcPlayerLog.d(TAG, "playerState = " + mAliyunVodPlayer.getPlayerState());
+                //继续播放。如果没有prepare或者stop了，需要重新prepare
+                mTipsView.hideAll();
+                if (mAliyunVodPlayer.getPlayerState() == IAliyunVodPlayer.PlayerState.Idle ||
+                        mAliyunVodPlayer.getPlayerState() == IAliyunVodPlayer.PlayerState.Stopped) {
+//                    if (mAliyunPlayAuth != null) {
+//                        prepareAuth(mAliyunPlayAuth);
+//                    } else if (mAliyunVidSts != null) {
+//                        prepareVidsts(mAliyunVidSts);
+//                    } else if (mAliyunLocalSource != null) {
+                    //setLocalSource(mAliyunLocalSource);
+                    prepareLocalSource(mAliyunLocalSource);
+//                    }
+                } else {
+                    start();
+                }
+
+            }
+
+            @Override
+            public void onStopPlay() {
+                // 结束播放
+                mTipsView.hideAll();
+                stop();
+
+                Context context = getContext();
+                if (context instanceof Activity) {
+                    ((Activity) context).finish();
+                }
+            }
+
+            @Override
+            public void onRetryPlay() {
+                //重试
+                reTry();
+            }
+
+            @Override
+            public void onReplay() {
+                //重播
+                rePlay();
+            }
+        });
+        addSubView(mTipsView);
+    }
+
+    public void reTry() {
+
+        isCompleted = false;
+        inSeek = false;
+
+        int currentPosition = mControlView.getVideoPosition();
+
+        if (mTipsView != null) {
+            mTipsView.hideAll();
+//        }
+//        if (mControlView != null) {
+//            mControlView.reset();
+//            //防止被reset掉，下次还可以获取到这些值
+//            mControlView.setVideoPosition(currentPosition);
+//        }
+//        if (mGestureView != null) {
+//            mGestureView.reset();
+//        }
+
+            if (mAliyunVodPlayer != null) {
+
+                //显示网络加载的loading。。
+                if (mTipsView != null) {
+                    mTipsView.showNetLoadingTipView();
+                }
+                //seek到当前的位置再播放
+            /*
+                isLocalSource()判断不够,有可能是sts播放,也有可能是url播放,还有可能是sd卡的视频播放,
+                如果是后两者,需要走if,否则走else
+             */
+//                if (isLocalSource() || isUrlSource()) {
+                mAliyunVodPlayer.prepareAsync(mAliyunLocalSource);
+//                } else {
+//                    mAliyunVodPlayer.prepareAsync(mAliyunVidSts);
+//                }
+                mAliyunVodPlayer.seekTo(currentPosition);
+            }
+
+        }
+    }
+
+    /**
+     * 重播，将会从头开始播放
+     */
+    public void rePlay() {
+
+        isCompleted = false;
+        inSeek = false;
+
+        if (mTipsView != null) {
+            mTipsView.hideAll();
+        }
+//        if (mControlView != null) {
+//            mControlView.reset();
+//        }
+//        if (mGestureView != null) {
+//            mGestureView.reset();
+//        }
+
+        if (mAliyunVodPlayer != null) {
+            //显示网络加载的loading。。
+            if (mTipsView != null) {
+                mTipsView.showNetLoadingTipView();
+            }
+            //重播是从头开始播
+            mAliyunVodPlayer.replay();
+        }
+
+    }
+
+    private void switchPlayerState() {
         IAliyunVodPlayer.PlayerState playerState = mAliyunVodPlayer.getPlayerState();
         if (playerState == IAliyunVodPlayer.PlayerState.Started) {
             pause();
@@ -227,6 +376,7 @@ public class VideoPlayerView extends RelativeLayout {
             onPlayStateBtnClickListener.onPlayBtnClick(playerState);
         }
     }
+
 
     /**
      * 开始播放
@@ -315,7 +465,6 @@ public class VideoPlayerView extends RelativeLayout {
 
 
     private void initControlView() {
-        Log.d("111", "isAudio" + isAudio);
         mControlView = new ControlView(getContext());
         addSubView(mControlView);
 
@@ -384,7 +533,6 @@ public class VideoPlayerView extends RelativeLayout {
         mSurfaceView = new SurfaceView(getContext().getApplicationContext());
         addSubView(mSurfaceView);
 //        if (id != 0){
-//            Log.d("111","id:"+id);
 //            mSurfaceView.setBackgroundResource(R.drawable.test);
 //        }
         SurfaceHolder holder = mSurfaceView.getHolder();
@@ -411,7 +559,6 @@ public class VideoPlayerView extends RelativeLayout {
 
 
     private void initAliVcPlayer() {
-        Log.d("111", "initAliVcPlayer");
         mAliyunVodPlayer = new AliyunVodPlayer(getContext());
         mAliyunVodPlayer.enableNativeLog();
 //        prepareLocalSource(mAliyunLocalSource);
@@ -420,7 +567,6 @@ public class VideoPlayerView extends RelativeLayout {
         mAliyunVodPlayer.setOnPreparedListener(new IAliyunVodPlayer.OnPreparedListener() {
             @Override
             public void onPrepared() {
-                Log.d("111", "initAliVcPlayer-onPrepared");
                 if (mAliyunVodPlayer == null) {
                     return;
                 }
@@ -729,7 +875,6 @@ public class VideoPlayerView extends RelativeLayout {
         asb.setSource(url);
 //        mAliyunVodPlayer.setLocalSource(asb.build());
         AliyunLocalSource mLocalSource = asb.build();
-        Log.d("111", mLocalSource.toString());
         mAliyunVodPlayer.prepareAsync(mLocalSource);
 
     }
@@ -745,7 +890,6 @@ public class VideoPlayerView extends RelativeLayout {
 //        if (mQualityView != null) {
 //            mQualityView.setIsMtsSource(false);
 //        }
-        Log.d("111", "prepareLocalSource:" + aliyunLocalSource.toString());
 
         mAliyunVodPlayer.prepareAsync(aliyunLocalSource);
     }
@@ -806,6 +950,20 @@ public class VideoPlayerView extends RelativeLayout {
         this.onPlayStateBtnClickListener = listener;
     }
 
+    /**
+     * 判断是否有网络的监听
+     */
+    public interface NetConnectedListener {
+        /**
+         * 网络已连接
+         */
+        void onReNetConnected(boolean isReconnect);
+
+        /**
+         * 网络未连接
+         */
+        void onNetUnConnected();
+    }
 
     public void setLocalSource(AliyunLocalSource aliyunLocalSource) {
         if (mAliyunVodPlayer == null) {
@@ -821,14 +979,16 @@ public class VideoPlayerView extends RelativeLayout {
 //            mControlView.setForceQuality(true);
 //        }
 
-//        if (!isLocalSource() && NetWatchdog.is4GConnected(getContext())) {
-//            if (mTipsView != null) {
-//                mTipsView.showNetChangeTipView();
-//            }
-//        } else {
-//        prepareLocalSource(aliyunLocalSource);
-//        }
-        mAliyunVodPlayer.prepareAsync(aliyunLocalSource);
+        if (
+//                        !isLocalSource() &&
+                NetWatchdog.is4GConnected(getContext())) {
+            if (mTipsView != null) {
+                mTipsView.showNetChangeTipView();
+            }
+        } else {
+            prepareLocalSource(aliyunLocalSource);
+        }
+//        mAliyunVodPlayer.prepareAsync(aliyunLocalSource);
     }
 
 
@@ -847,8 +1007,40 @@ public class VideoPlayerView extends RelativeLayout {
     }
 
 
+    /**
+     * 在activity调用onResume的时候调用。 解决home回来后，画面方向不对的问题
+     */
+    public void onResume() {
+        Log.d(TAG,"onResume");
+//        if (mIsFullScreenLocked) {
+//            int orientation = getResources().getConfiguration().orientation;
+//            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                changeScreenMode(AliyunScreenMode.Small);
+//            } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//                changeScreenMode(AliyunScreenMode.Full);
+//            }
+//        }
+
+        if (mNetWatchdog != null) {
+            Log.d(TAG,"mNetWatchDog!=null");
+            mNetWatchdog.startWatch();
+        }
+
+//        if (mOrientationWatchDog != null) {
+//            mOrientationWatchDog.startWatch();
+//        }
+
+        //从其他界面过来的话，也要show。
+//        if (mControlView != null) {
+//            mControlView.show();
+//        }
+
+        //onStop中记录下来的状态，在这里恢复使用
+//        resumePlayerState();
+    }
+
+
     public boolean isPlaying() {
-        Log.d("111", "isPlaying" + mAliyunVodPlayer.isPlaying());
         return mAliyunVodPlayer.isPlaying();
     }
 
@@ -900,7 +1092,6 @@ public class VideoPlayerView extends RelativeLayout {
      */
     private void handleProgressUpdateMessage(Message msg) {
         if (mAliyunVodPlayer != null && !inSeek) {
-            Log.d("111", "mAliyunVodPlayer.getCurrentPosition()" + mAliyunVodPlayer.getCurrentPosition());
             mControlView.setVideoPosition((int) mAliyunVodPlayer.getCurrentPosition());
         }
         //解决bug：在Prepare中开始更新的时候，不会发送更新消息。
@@ -911,10 +1102,135 @@ public class VideoPlayerView extends RelativeLayout {
      * 开始进度条更新计时器
      */
     private void startProgressUpdateTimer() {
-        Log.d("111", "   VideoPlayerView-startProgressUpdateTimer");
         if (mProgressUpdateTimer != null) {
             mProgressUpdateTimer.removeMessages(0);
             mProgressUpdateTimer.sendEmptyMessageDelayed(0, 1000);
         }
     }
+
+
+    private static class MyNetChangeListener implements NetWatchdog.NetChangeListener {
+
+        private WeakReference<VideoPlayerView> viewWeakReference;
+
+        public MyNetChangeListener(VideoPlayerView aliyunVodPlayerView) {
+            Log.d(TAG, "MyNetChangeListener");
+            viewWeakReference = new WeakReference<VideoPlayerView>(aliyunVodPlayerView);
+        }
+
+        @Override
+        public void onWifiTo4G() {
+            Log.d(TAG, "MyNetChangeListener-onWifiTo4G");
+            VideoPlayerView aliyunVodPlayerView = viewWeakReference.get();
+            if (aliyunVodPlayerView != null) {
+                aliyunVodPlayerView.onWifiTo4G();
+            }
+        }
+
+        @Override
+        public void on4GToWifi() {
+            Log.d(TAG, "MyNetChangeListener-4gtowifi");
+            VideoPlayerView aliyunVodPlayerView = viewWeakReference.get();
+            if (aliyunVodPlayerView != null) {
+                aliyunVodPlayerView.on4GToWifi();
+            }
+        }
+
+        @Override
+        public void onNetDisconnected() {
+            VideoPlayerView aliyunVodPlayerView = viewWeakReference.get();
+            if (aliyunVodPlayerView != null) {
+                aliyunVodPlayerView.onNetDisconnected();
+            }
+        }
+    }
+
+    private void on4GToWifi() {
+        Log.d(TAG, "4gtoWifi");
+        //如果已经显示错误了，那么就不用显示网络变化的提示了。
+        if (mTipsView.isErrorShow()) {
+            return;
+        }
+
+        //隐藏网络变化的提示
+        if (mTipsView != null) {
+            Log.d(TAG,"mTipsView != null");
+            mTipsView.hideNetChangeTipView();
+            start();
+        }
+
+    }
+
+    private void onNetDisconnected() {
+//        VcPlayerLog.d(TAG, "onNetDisconnected");
+        //网络断开。
+        // NOTE： 由于安卓这块网络切换的时候，有时候也会先报断开。所以这个回调是不准确的。
+    }
+
+    private void onWifiTo4G() {
+        Log.d("111", "onWifiTo4G");
+        //如果已经显示错误了，那么就不用显示网络变化的提示了。
+        if (mTipsView.isErrorShow()) {
+            return;
+        }
+
+        //wifi变成4G，先暂停播放
+        pause();
+
+        //隐藏其他的动作,防止点击界面去进行其他操作
+//        mGestureView.hide(ControlView.HideType.Normal);
+//        mControlView.hide(ControlView.HideType.Normal);
+//
+//        //显示网络变化的提示
+//        if (!isLocalSource() && mTipsView != null) {
+        mTipsView.showNetChangeTipView();
+//        }
+    }
+
+
+    /**
+     * 断网/连网监听
+     */
+    private class MyNetConnectedListener implements NetWatchdog.NetConnectedListener {
+        public MyNetConnectedListener(VideoPlayerView aliyunVodPlayerView) {
+        }
+
+        @Override
+        public void onReNetConnected(boolean isReconnect) {
+            if (mNetConnectedListener != null) {
+                mNetConnectedListener.onReNetConnected(isReconnect);
+            }
+        }
+
+        @Override
+        public void onNetUnConnected() {
+            if (mNetConnectedListener != null) {
+                mNetConnectedListener.onNetUnConnected();
+            }
+        }
+    }
+
+    public void setNetConnectedListener(NetConnectedListener listener) {
+        this.mNetConnectedListener = listener;
+    }
+
+    public static enum Theme {
+        /**
+         * 蓝色主题
+         */
+        Blue,
+        /**
+         * 绿色主题
+         */
+        Green,
+        /**
+         * 橙色主题
+         */
+        Orange,
+        /**
+         * 红色主题
+         */
+        Red
+    }
+
 }
