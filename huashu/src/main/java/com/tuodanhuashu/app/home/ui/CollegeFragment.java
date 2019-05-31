@@ -13,11 +13,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
@@ -36,8 +38,10 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.company.common.CommonConstants;
 import com.company.common.utils.DisplayUtil;
 import com.company.common.utils.KeyboardUtils;
+import com.company.common.utils.PreferencesUtils;
 import com.company.common.utils.RandomUntil;
 import com.company.common.utils.StringUtils;
 import com.ms.banner.Banner;
@@ -47,6 +51,7 @@ import com.ms.banner.holder.HolderCreator;
 import com.ms.banner.listener.OnBannerClickListener;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.tuodanhuashu.app.Constants.Constants;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseFragment;
 import com.tuodanhuashu.app.course.ui.CourseDetailActivity;
@@ -78,6 +83,9 @@ import java.util.Map;
 import butterknife.BindView;
 
 public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeView {
+
+    private static final String TAG = CollegeFragment.class.getSimpleName();
+    private int mScreenWidth;
     @BindView(R.id.college_refresheader)
     MaterialHeader collegeRefresheader;
     @BindView(R.id.college_rlv)
@@ -116,6 +124,15 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.fragment_college;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dm = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(dm);
+        mScreenWidth = dm.widthPixels;
     }
 
     @Override
@@ -173,12 +190,21 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
     }
 
     private void initActivity() {
-        HomeAdapter activityAdapter = new HomeAdapter(mContext,new LinearLayoutHelper(),1,TYPE_ACTIVITY,R.layout.college_activity_layout){
+        HomeAdapter activityAdapter = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_ACTIVITY, R.layout.college_activity_layout) {
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
                 ImageView imageView = holder.getView(R.id.iv_college_activity);
-                imageView.setImageDrawable(getResources().getDrawable(R.mipmap.activity));
+                HomeCollegePageBean.ActivityCourse activityCourse = collegePageBean.getActivityCourse();
+                String imageUrl = activityCourse.getActivity_image_url();
+                Glide.with(mContext).load(imageUrl).into(imageView);
+
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
             }
         };
         adapterList.add(activityAdapter);
@@ -207,27 +233,27 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                 RecyclerView recyclerView = holder.getView(R.id.college_more_recommendation_rv);
                 recyclerView.setAdapter(new RVRecommendationAdapter(mContext, recommendCourses));
                 recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-                recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-                    @Override
-                    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                        super.getItemOffsets(outRect, view, parent, state);
-                        int childCount = parent.getChildCount();
-                        int actualCount = parent.getAdapter().getItemCount();
-                        for (int i = 0; i < childCount; i++) {
-                            View child = parent.getChildAt(i);
-                            int index = parent.getChildAdapterPosition(child);
-
-                            if (index != actualCount - 1) {
-                                outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
-                                        DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 0));
-                            } else {
-                                outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
-                                        DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20));
-                            }
-                        }
-
-                    }
-                });
+//                recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+//                    @Override
+//                    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+//                        super.getItemOffsets(outRect, view, parent, state);
+//                        int childCount = parent.getChildCount();
+//                        int actualCount = parent.getAdapter().getItemCount();
+//                        for (int i = 0; i < childCount; i++) {
+//                            View child = parent.getChildAt(i);
+//                            int index = parent.getChildAdapterPosition(child);
+//
+//                            if (index != actualCount - 1) {
+//                                outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
+//                                        DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 0));
+//                            } else {
+//                                outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
+//                                        DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20));
+//                            }
+//                        }
+//
+//                    }
+//                });
             }
         };
         adapterList.add(recommendationsAdapter);
@@ -249,59 +275,20 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                 moreTv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+//                        readyGo(CourseListActivity.class);
                         Toast.makeText(mContext, "more", Toast.LENGTH_SHORT).show();
                     }
                 });
                 final List<HomeCourseBean> choicenessCourses = collegePageBean.getChoicenessCourses();
                 RecyclerView recyclerView = holder.getView(R.id.college_choiceness_course_rv);
                 recyclerView.setAdapter(new RVChoicenessAdapter(mContext, choicenessCourses));
-//                recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-//                    @Override
-//                    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-//                        super.getItemOffsets(outRect, view, parent, state);
-//
-//
-//
-//
-//                        int childCount = parent.getChildCount();
-//                        int actualCount = parent.getAdapter().getItemCount();
-//                        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-//                        paint.setColor(Color.parseColor("#EEEEEE"));
-//                        paint.setStrokeWidth(DisplayUtil.dp2px( 1));
-//
-//                        for (int i = 0; i < childCount; i++) {
-//                            View child = parent.getChildAt(i);
-//                            int index = parent.getChildAdapterPosition(child);
-//
-//                            if (index/2 == 0){
-//                                outRect.set(DisplayUtil.dp2px(10),DisplayUtil.dp2px(20),DisplayUtil.dp2px(10));
-//                            }
-//
-//                            if (index != actualCount - 1) {
-//                                outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
-//                                        DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 0));
-//                            } else {
-//                                outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
-//                                        DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20));
-//                            }
-//                        }
-//
-////                        for (int i = 0; i < childCount; i++) {
-////                            if (i/2==0){
-////                                outRect.set();
-////                            }else {
-////
-////                            }
-////
-////                            View child = parent.getChildAt(i);
-////                            c.drawLine(0, child.getBottom(), child.getRight(), child.getBottom(), paint);
-////                        }
-//                    }
-//                });
+
             }
         };
         adapterList.add(ChoicenessAdapter);
     }
+
+
 
     class RVChoicenessAdapter extends RecyclerView.Adapter<RVChoicenessAdapter.ChoicenessHolder> {
         private List<HomeCourseBean> courseBeanList;
@@ -322,7 +309,12 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
 
         @Override
         public void onBindViewHolder(@NonNull final ChoicenessHolder holder, final int position) {
-            Glide.with(mContext).load(courseBeanList.get(position).getImage_url()).into(new SimpleTarget<Drawable>() {
+            RequestOptions options = new RequestOptions()
+                    .override((mScreenWidth-DisplayUtil.dp2px(50))/2,DisplayUtil.dp2px(93))
+                    .centerCrop();
+
+            Glide.with(mContext).load(courseBeanList.get(position).getImage_url()).
+                    apply(options).into(new SimpleTarget<Drawable>() {
                 @Override
                 public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                     holder.imgImage.setDrawable(resource);
@@ -336,11 +328,10 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(MasterDetailActivity.EXTRA_MASTER_NAME,courseBeanList.get(position).getMaster_name());
+                    bundle.putString(MasterDetailActivity.EXTRA_MASTER_NAME, courseBeanList.get(position).getMaster_name());
 
-                    readyGo(VideoPlayerActivity.class);
 
-//                    readyGo(MasterDetailActivity.class,bundle);
+                    readyGo(MasterDetailActivity.class, bundle);
                 }
             });
 
@@ -348,10 +339,12 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_NAME,courseBeanList.get(position).getCourse_name());
-                    readyGo(CourseDetailActivity.class,bundle);
+                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_NAME, courseBeanList.get(position).getCourse_name());
+                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_ID,courseBeanList.get(position).getId());
+                    readyGo(CourseDetailActivity.class, bundle);
                 }
             });
+
         }
 
         @Override
@@ -389,6 +382,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         public RecommendationHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(mContext).inflate(R.layout.item_college_recommendation_layout, parent, false);
             RecommendationHolder holder = new RecommendationHolder(view);
+
             return holder;
         }
 
@@ -400,9 +394,11 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
 //                    holder.imgImage.setDrawable(resource);
 //                }
 //            });
+
+            String imageUrl = courseBeanList.get(position).getImage_url();
             RequestOptions options = new RequestOptions()
-                    .override(DisplayUtil.dp2px(158),DisplayUtil.dp2px(90));
-            Glide.with(mContext).load(R.drawable.test)
+                    .override(DisplayUtil.dp2px(158), DisplayUtil.dp2px(90));
+            Glide.with(mContext).load(imageUrl)
                     .apply(options).into(new SimpleTarget<Drawable>() {
                 @Override
                 public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
@@ -417,8 +413,8 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(MasterDetailActivity.EXTRA_MASTER_NAME,courseBeanList.get(position).getMaster_name());
-                    readyGo(MasterDetailActivity.class,bundle);
+                    bundle.putString(MasterDetailActivity.EXTRA_MASTER_NAME, courseBeanList.get(position).getMaster_name());
+                    readyGo(MasterDetailActivity.class, bundle);
                 }
             });
 
@@ -426,8 +422,9 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_NAME,courseBeanList.get(position).getCourse_name());
-                    readyGo(CourseDetailActivity.class,bundle);
+                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_NAME, courseBeanList.get(position).getCourse_name());
+                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_ID,courseBeanList.get(position).getId());
+                    readyGo(CourseDetailActivity.class, bundle);
                 }
             });
         }

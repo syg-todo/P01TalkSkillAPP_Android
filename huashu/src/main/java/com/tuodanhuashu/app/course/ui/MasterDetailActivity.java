@@ -58,8 +58,10 @@ public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnC
     private List<DelegateAdapter.Adapter> adapterList = new ArrayList<>();
 
     public static final String EXTRA_MASTER_NAME = "master_name";
-
     private String master_name = "";
+
+    public static final String EXTRA_MASTER_ID = "master_id";
+    private String master_id = "";
 
     @Override
     protected int getContentViewLayoutID() {
@@ -198,13 +200,11 @@ public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnC
         if (indicatorWidth > 0) {
             View indicator = view.findViewById(R.id.tab_item_indicator);
             ViewGroup.LayoutParams layoutParams = indicator.getLayoutParams();
-            Log.d("111", "indicatorWidth:" + indicatorWidth);
             layoutParams.width = indicatorWidth;
             layoutParams.height = indicatorHeight;
             indicator.setLayoutParams(layoutParams);
             indicator.setVisibility(isSelected ? View.VISIBLE : View.INVISIBLE);
         }
-        Log.d("111", text);
 //        tabText.setTextSize(textSize);
         tabText.setText(text);
         return view;
@@ -215,6 +215,7 @@ public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnC
     protected void getBundleExtras(Bundle extras) {
         super.getBundleExtras(extras);
         master_name = extras.getString(EXTRA_MASTER_NAME);
+        master_id = extras.getString(EXTRA_MASTER_ID);
     }
 
     @Override

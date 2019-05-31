@@ -1,8 +1,10 @@
 package com.tuodanhuashu.app.MemberCenter.ui;
 
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,11 +18,15 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.company.common.CommonConstants;
 import com.company.common.utils.DisplayUtil;
+import com.company.common.utils.PreferencesUtils;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseFragment;
 import com.tuodanhuashu.app.base.SimpleItemDecoration;
 import com.tuodanhuashu.app.course.bean.MasterBean;
+import com.tuodanhuashu.app.course.presenter.MyMasterPresenter;
+import com.tuodanhuashu.app.course.view.MyMasterView;
 import com.tuodanhuashu.app.widget.RoundRectImageView;
 
 import java.util.ArrayList;
@@ -28,12 +34,17 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class MyMasterFragment extends HuaShuBaseFragment {
+public class MyMasterFragment extends HuaShuBaseFragment implements MyMasterView {
+    private static final String TAG = MyMasterFragment.class.getSimpleName();
 
     @BindView(R.id.rv_my_course)
     RecyclerView recyclerView;
 
+    private MyMasterPresenter myMasterPresenter;
+
     private List<MasterBean> masterList = new ArrayList<>();
+    private MyMasterAdapter adapter;
+    private String accessToken = "";
 
     @Override
     protected int getContentViewLayoutID() {
@@ -44,23 +55,33 @@ public class MyMasterFragment extends HuaShuBaseFragment {
     protected void initView(View view) {
         super.initView(view);
 
-        MasterBean master = new MasterBean();
-        master.setId("1");
-        master.setName("施琪嘉111");
 
-        masterList.add(master);
-        masterList.add(master);
-        masterList.add(master);
-        masterList.add(master);
-        masterList.add(master);
-        masterList.add(master);
-        masterList.add(master);
-        masterList.add(master);
-        masterList.add(master);
-        MyMasterAdapter adapter = new MyMasterAdapter(masterList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView.addItemDecoration(new SimpleItemDecoration());
+    }
+
+
+    @Override
+    protected void initData() {
+        super.initData();
+        accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN);
+        myMasterPresenter = new MyMasterPresenter(mContext, this);
+        myMasterPresenter.requestMyMaster(accessToken);
+
+    }
+
+    @Override
+    public void geMyMasterSuccess(List<MasterBean> masterBeanList) {
+
+        masterList = masterBeanList;
+        adapter = new MyMasterAdapter(masterList);
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void getMyMasterFail(String msg) {
+        Log.d(TAG, msg);
     }
 
 
@@ -86,8 +107,8 @@ public class MyMasterFragment extends HuaShuBaseFragment {
             RequestOptions optionsAvatar = new RequestOptions()
                     .override(DisplayUtil.dp2px(50), DisplayUtil.dp2px(50))
                     .centerCrop();
-
-            Glide.with(mContext).load("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1671816861,451680427&fm=27&gp=0.jpg")
+            final String masterId = master.getId();
+            Glide.with(mContext).load(master.getAvatar_url())
                     .apply(optionsAvatar)
                     .into(new SimpleTarget<Drawable>() {
                         @Override
@@ -110,15 +131,32 @@ public class MyMasterFragment extends HuaShuBaseFragment {
                         }
                     });
 
-            holder.txtNmae.setText("施琪嘉111");
-            holder.txtBrief.setText("一幅画千言万语，一棵树别样人生一幅画千言万语，一棵树别样人生");
+            holder.txtNmae.setText(master.getName());
+            holder.txtBrief.setText(master.getP_signature());
             holder.txtFollow.setSelected(true);
             holder.txtFollow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(mContext, "取消关注？", Toast.LENGTH_SHORT).show();
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setMessage("取消关注？");
+                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            myMasterPresenter.unrecordMaster(accessToken, masterId);
+                            masterList.remove(position);
+                            adapter.notifyItemRemoved(position);
+                        }
+                    });
+                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+                    builder.show();
                 }
             });
+
+
         }
 
         @Override

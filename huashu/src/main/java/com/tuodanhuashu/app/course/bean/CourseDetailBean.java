@@ -69,6 +69,7 @@ public class CourseDetailBean {
          * is_checkout : 2
          * share_image_url : http://huashu.zhongpin.me/uploads/course/201905231715097514.png
          * share_url :
+         *
          */
 
         private String id;
@@ -89,6 +90,15 @@ public class CourseDetailBean {
         private String is_checkout;
         private String share_image_url;
         private String share_url;
+        private String master_avatar_url;
+
+        public String getMaster_avatar_url() {
+            return master_avatar_url;
+        }
+
+        public void setMaster_avatar_url(String master_avatar_url) {
+            this.master_avatar_url = master_avatar_url;
+        }
 
         public String getId() {
             return id;

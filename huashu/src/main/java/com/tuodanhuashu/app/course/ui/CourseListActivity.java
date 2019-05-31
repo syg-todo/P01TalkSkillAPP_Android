@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.company.common.utils.DisplayUtil;
@@ -140,8 +141,6 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
 
                     }
                 });
-
-
                 break;
         }
         courseBeanList = new ArrayList<>();
@@ -289,7 +288,10 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
         public void onBindViewHolder(@NonNull final CourseListHolder holder, int position) {
             final HomeCourseBean course = courseBeanList.get(position);
 
-            Glide.with(mContext).load(course.getImage_url()).into(new SimpleTarget<Drawable>() {
+            RequestOptions options = new RequestOptions().override(DisplayUtil.dp2px(158),DisplayUtil.dp2px(90));
+            Glide.with(mContext).load(course.getImage_url())
+                    .apply(options)
+                    .into(new SimpleTarget<Drawable>() {
                 @Override
                 public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                     holder.imgItemCourseImage.setDrawable(resource);

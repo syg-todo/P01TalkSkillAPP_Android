@@ -175,12 +175,11 @@ public class MemberCenterFragment extends HuaShuBaseFragment implements MemberCe
         myCourseFr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (isLogin()) {
+                if (isLogin()) {
                 readyGo(MyCourseActivity.class);
-//                }
-//                else {
-//                    goToLogin();
-//                }
+                } else {
+                    goToLogin();
+                }
             }
         });
         myTalkskillFr.setOnClickListener(new View.OnClickListener() {

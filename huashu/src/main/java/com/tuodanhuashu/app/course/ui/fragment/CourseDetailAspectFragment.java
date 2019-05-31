@@ -4,6 +4,7 @@ package com.tuodanhuashu.app.course.ui.fragment;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.tuodanhuashu.app.R;
@@ -19,7 +20,7 @@ import java.util.List;
 import butterknife.BindView;
 
 public class CourseDetailAspectFragment extends HuaShuBaseFragment {
-
+    private static final String TAG = CourseDetailAspectFragment.class.getSimpleName();
     @BindView(R.id.rv_course_detail_asspect)
     RecyclerView recyclerView;
 
@@ -38,9 +39,8 @@ public class CourseDetailAspectFragment extends HuaShuBaseFragment {
         model = ViewModelProviders.of(getActivity()).get(CourseDetailModel.class);
         recommendCoursesBeanList = model.getCourseDetail().getValue().getRecommendCourses();
 
-        for (int i = 0; i < recommendCoursesBeanList.size(); i++) {
-            recommendCoursesBeanList.get(i).setImage_url("http://img1.imgtn.bdimg.com/it/u=3049673303,4028148324&fm=26&gp=0.jpg");
-        }
+        String data = model.getCourseDetail().getValue().getSections().get(0).getSection_intro();
+        Log.d(TAG,data);
         recyclerView.setAdapter(new RVRecommendationAdapter(mContext, recommendCoursesBeanList));
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 

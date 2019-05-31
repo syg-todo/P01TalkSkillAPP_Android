@@ -132,19 +132,19 @@ public class NetWatchdog {
      *
      * @param l 监听事件
      */
-    public void setNetChangeListener(NetChangeListener l) {
-        mNetChangeListener = l;
-    }
+        public void setNetChangeListener(NetChangeListener l) {
+            mNetChangeListener = l;
+        }
 
-    public void setNetConnectedListener(NetConnectedListener mNetConnectedListener) {
-        this.mNetConnectedListener = mNetConnectedListener;
-    }
+        public void setNetConnectedListener(NetConnectedListener mNetConnectedListener) {
+            this.mNetConnectedListener = mNetConnectedListener;
+        }
 
-    /**
-     * 开始监听
-     */
-    public void startWatch() {
-        Log.d(TAG,"startWatch");
+        /**
+         * 开始监听
+         */
+        public void startWatch() {
+            Log.d(TAG,"startWatch");
         try {
             Log.d(TAG,"register");
             mContext.registerReceiver(mReceiver, mNetIntentFilter);

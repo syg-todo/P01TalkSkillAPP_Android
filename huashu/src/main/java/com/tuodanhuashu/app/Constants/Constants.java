@@ -41,6 +41,15 @@ public class Constants {
 
         public static final String COLLEGE_COURSE_SECTION_INFO_URL = "/api/Courseuser/sectioninfo";
 
+        public static final String COLLEGE_COURSE_RECORD_MASTER_URL = "/api/Courseuser/record_master";
+
+        public static final String COLLEGE_COURSE_UNRECORD_MASTER_URL ="/api/Courseuser/unrecord_master";
+
+        public static final String COLLEGE_COURSE_MY_MASTER_URL = "/api/Courseuser/my_master";
+
+        public static final String COLLEGE_COURSE_MY_COURSE_URL = "/api/Courseuser/my_course";
+
+
         public static final String TALK_SKILL_LIST_URL = "/api/user/get_list_by_keywords";
 
         public static final String ARTICLE_DETAIL_URL = "/api/user/news_info";
@@ -96,6 +105,7 @@ public class Constants {
         public static final String REGISTER_MESSAGE_URL = "/api/index/registerMessage";
 
         public static final String CHECK_VERSION_URL = "/api/index/AndroidVer";
+
     }
 
     public static class PREFERENCE{

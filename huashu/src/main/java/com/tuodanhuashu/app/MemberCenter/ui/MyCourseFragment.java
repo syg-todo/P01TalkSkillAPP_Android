@@ -14,11 +14,16 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.company.common.CommonConstants;
+import com.company.common.utils.PreferencesUtils;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseFragment;
 import com.tuodanhuashu.app.base.SimpleItemDecoration;
+import com.tuodanhuashu.app.course.presenter.MyCoursePresenter;
 import com.tuodanhuashu.app.course.ui.CourseDetailActivity;
+import com.tuodanhuashu.app.course.view.MyCourseView;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
+import com.tuodanhuashu.app.home.bean.MyCourseBean;
 import com.tuodanhuashu.app.widget.RoundRectImageView;
 
 import java.util.ArrayList;
@@ -26,11 +31,15 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class MyCourseFragment extends HuaShuBaseFragment {
+public class MyCourseFragment extends HuaShuBaseFragment implements MyCourseView {
     @BindView(R.id.rv_my_course)
     RecyclerView recyclerView;
 
-    private List<HomeCourseBean> courseList;
+    private MyCoursePresenter myCoursePresenter;
+    private MyCourseAdapter adapter;
+    private String accessToken;
+    private List<MyCourseBean> courseList = new ArrayList<>();
+
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.fragment_my_course;
@@ -40,40 +49,38 @@ public class MyCourseFragment extends HuaShuBaseFragment {
     protected void initView(View view) {
         super.initView(view);
         courseList = new ArrayList<>();
-        HomeCourseBean course = new HomeCourseBean();
-        course.setImage_url("https://imgsa.baidu.com//forum//w%3D580%3B//sign=6537f28142086e066aa83f4332337af4//0b46f21fbe096b632b8a30e002338744eaf8aceb.jpg");
-        course.setCourse_name("爱人先爱己，女性自爱力36堂心理提升课");
-        course.setSale_price(99);
-        course.setMaster_name("听过的");
 
-        HomeCourseBean course1 = new HomeCourseBean();
-        course1.setImage_url("https://imgsa.baidu.com//forum//w%3D580%3B//sign=6537f28142086e066aa83f4332337af4//0b46f21fbe096b632b8a30e002338744eaf8aceb.jpg");
-        course1.setCourse_name("爱人先爱己，女性自爱力36堂心理提升课");
-        course1.setSale_price(99);
-        course1.setMaster_name("已付费");
-
-        HomeCourseBean course2 = new HomeCourseBean();
-        course2.setImage_url("https://imgsa.baidu.com//forum//w%3D580%3B//sign=6537f28142086e066aa83f4332337af4//0b46f21fbe096b632b8a30e002338744eaf8aceb.jpg");
-        course2.setCourse_name("爱人先爱己，女性自爱力36堂心理提升课");
-        course2.setSale_price(99);
-        course2.setMaster_name("听过的");
-
-        courseList.add(course);
-        courseList.add(course1);
-        courseList.add(course2);
-
-        MyCourseAdapter adapter = new MyCourseAdapter(courseList);
-
-        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView.addItemDecoration(new SimpleItemDecoration());
     }
 
+
+    @Override
+    protected void initData() {
+        super.initData();
+        accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN);
+        myCoursePresenter = new MyCoursePresenter(mContext, this);
+        myCoursePresenter.requestMyCourse(accessToken);
+    }
+
+    @Override
+    public void geMyCourseSuccess(List<MyCourseBean> courseBeans) {
+        courseList = courseBeans;
+        adapter = new MyCourseAdapter(courseList);
+        recyclerView.setAdapter(adapter);
+
+    }
+
+    @Override
+    public void getMyCourseFail(String msg) {
+
+    }
+
     class MyCourseAdapter extends RecyclerView.Adapter<MyCourseAdapter.MyCourseHolder> {
 
-        private List<HomeCourseBean> courseList;
+        private List<MyCourseBean> courseList;
 
-        public MyCourseAdapter(List<HomeCourseBean> courseList) {
+        public MyCourseAdapter(List<MyCourseBean> courseList) {
             this.courseList = courseList;
         }
 
@@ -87,7 +94,7 @@ public class MyCourseFragment extends HuaShuBaseFragment {
 
         @Override
         public void onBindViewHolder(@NonNull final MyCourseHolder holder, int position) {
-            final HomeCourseBean course = courseList.get(position);
+            final MyCourseBean course = courseList.get(position);
 
             Glide.with(mContext).load(course.getImage_url()).into(new SimpleTarget<Drawable>() {
                 @Override
@@ -96,24 +103,32 @@ public class MyCourseFragment extends HuaShuBaseFragment {
                 }
             });
             holder.txtNmae.setText(course.getCourse_name());
-            holder.txtPrice.setText("¥"+course.getSale_price());
-            holder.txtTag.setText(course.getMaster_name());
+            holder.txtPrice.setText("¥" + course.getSale_price());
+            if (course.getSale_price().equals("0.00")){
+                holder.txtPrice.setText("免费");
+            }else {
+                holder.txtPrice.setText(course.getSale_price());
+            }
+            if (course.getIs_buy().equals("1")){
+                holder.txtTag.setText("已付费");
+            }else {
+                holder.txtTag.setText("听过的");
+            }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_ID,course.getId());
-                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_NAME,course.getCourse_name());
-                    readyGo(CourseDetailActivity.class,bundle);
+                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_ID, course.getId());
+                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_NAME, course.getCourse_name());
+                    readyGo(CourseDetailActivity.class, bundle);
                 }
             });
         }
 
         @Override
         public int getItemCount() {
-            return courseList.size()
-                    ;
+            return courseList.size();
         }
 
         class MyCourseHolder extends RecyclerView.ViewHolder {

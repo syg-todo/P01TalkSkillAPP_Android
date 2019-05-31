@@ -2,6 +2,7 @@ package com.tuodanhuashu.app.course.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -16,6 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -35,9 +37,14 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.company.common.CommonConstants;
+import com.company.common.net.OkNetUtils;
 import com.company.common.utils.DisplayUtil;
+import com.company.common.utils.JsonUtils;
+import com.company.common.utils.PreferencesUtils;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.tuodanhuashu.app.Constants.Constants;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseActivity;
 import com.tuodanhuashu.app.base.SimpleItemDecoration;
@@ -54,11 +61,15 @@ import com.tuodanhuashu.app.home.bean.HomeCourseBean;
 import com.tuodanhuashu.app.widget.RoundRectImageView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
 public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDetailView {
+    private static final String TAG = CourseDetailActivity.class.getSimpleName();
+
     @BindView(R.id.rv_course_detail)
     RecyclerView recyclerView;
     @BindView(R.id.iv_course_detail_head_back)
@@ -81,21 +92,27 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
     private String mCourseSalePrice;
     private String isPay; //1已支付
-
+    private String isCheckout; //是否关注
+    private String masterAvatarUrl;//导师头像
+    private String mediaType;//文件类型 1音频 2视频
+    private String imageUrl;//课程图片
+    private String masterId;//导师ID
     public static final String EXTRA_COURSE_NAME = "course_name";
 
     private String course_name = "";
-
     public static final String EXTRA_COURSE_ID = "course_id";
 
-    private String course_id = "1";
+    private String course_id = "";
 
+    //    private String accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN,"111");
+
+
+    private String accessToken = "";
     private CourseDetailModel model;
 
 
     private CourseDetailBean.CourseBean courseBean;
     private List<CourseDetailBean.RecommendCoursesBean> recommendCoursesBeanList = new ArrayList<>();
-
 
     private static final int TYPE_TOP = 1;
 
@@ -105,7 +122,6 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
     private static final int TYPE_RECOMMEND = 4;
 
-    private boolean isFollowed = false;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -116,6 +132,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     @Override
     protected void initView() {
         super.initView();
+        Log.d(TAG, PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN, "111"));
         tvTitle.setText(course_name);
 
         ivDownload.getDrawable().setTint(getResources().getColor(R.color.black));
@@ -139,11 +156,11 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              onBackPressed();
+                onBackPressed();
             }
         });
 
-        ivBack.getDrawable().setTint(getResources().getColor(R.color.white));
+        ivBack.getDrawable().setTint(getResources().getColor(R.color.black));
 
         adapterList = new ArrayList<>();
         refresheaderCourseDetail.setColorSchemeColors(mContext.getResources().getColor(R.color.colorAccent));
@@ -203,23 +220,20 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     @Override
     protected void initData() {
         super.initData();
-
+        accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN);
         model = ViewModelProviders.of(this).get(CourseDetailModel.class);
         courseDetailPresenter = new CourseDetailPresenter(mContext, this);
-        Log.d("111","course_id"+course_id);
-        courseDetailPresenter.requestCourseDetail("0", course_id);
+        courseDetailPresenter.requestCourseDetail(accessToken, course_id);
 
     }
 
     private void initCourseTab() {
-        Log.d("111", "initTab");
         HomeAdapter adapterCourseTab = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_COURSE_TAB, R.layout.course_detail_tab_layout) {
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
                 TabLayout tabLayout = holder.getView(R.id.tablayout_course_detail);
 
-//                ViewPager viewPager = holder.getView(R.id.viewpage_course_detail);
                 final List<String> titles = new ArrayList<>();
                 titles.add("详情");
                 titles.add("目录");
@@ -263,22 +277,6 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
                     }
                 });
-
-//                viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//                    @Override
-//                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                    }
-//
-//                    @Override
-//                    public void onPageSelected(int position) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onPageScrollStateChanged(int state) {
-//
-//                    }
-//                });
 
             }
         };
@@ -326,13 +324,17 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
             @Override
             public void onBindViewHolder(final BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
+
+                isCheckout = courseBean.getIs_checkout();
+                masterAvatarUrl = courseBean.getMaster_avatar_url();
+                masterId = courseBean.getMaster_id();
                 final RoundRectImageView imgMasterAvatar = holder.getView(R.id.img_course_detail_master);
 
                 RequestOptions options = new RequestOptions()
                         .override(DisplayUtil.dp2px(40), DisplayUtil.dp2px(40))
                         .centerCrop();
                 Glide.with(mContext)
-                        .load(R.mipmap.avatar)
+                        .load(masterAvatarUrl)
                         .apply(options)
                         .into(new SimpleTarget<Drawable>() {
                             @Override
@@ -356,26 +358,66 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
                 final TextView txtMasterName = holder.getView(R.id.tv_course_detail_course_master_name);
                 txtMasterName.setText(courseBean.getMaster_name());
-
                 txtMasterName.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Bundle bundle = new Bundle();
                         bundle.putString(MasterDetailActivity.EXTRA_MASTER_NAME, courseBean.getMaster_name());
+                        bundle.putString(MasterDetailActivity.EXTRA_MASTER_ID, courseBean.getMaster_id());
                         readyGo(MasterDetailActivity.class, bundle);
                     }
                 });
                 final TextView txtFollow = holder.getView(R.id.tv_course_detail_follow);
-                txtFollow.setText(isFollowed == true ? "已关注" : "关注");
+                txtFollow.setText(isCheckout.equals("1") ? "已关注" : "关注");
+                txtFollow.setSelected(isCheckout.equals("1"));
+                txtFollow.setTextColor(isCheckout.equals("1") ? Color.parseColor("#BFBFBF") : Color.parseColor("#FF6969"));
                 txtFollow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        isFollowed = !isFollowed;
-                        Toast.makeText(mContext, "click" + isFollowed, Toast.LENGTH_SHORT).show();
-                        txtFollow.setText(isFollowed == true ? "已关注" : "关注");
-                        txtFollow.setSelected(isFollowed);
-                        txtFollow.setTextColor(isFollowed == true ? Color.parseColor("#BFBFBF") : Color.parseColor("#FF6969"));
-                        txtFollow.invalidate();
+                        if (isLogin()) {
+                            switch (isCheckout) {
+                                case "1":
+                                    final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                                    builder.setMessage("取消关注？");
+                                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            courseDetailPresenter.unrecordMaster(accessToken, masterId);
+                                            txtFollow.setText("关注");
+                                            txtFollow.setTextColor(Color.parseColor("#FF6969"));
+                                            txtFollow.setSelected(false);
+                                            isCheckout = "2";
+
+                                        }
+                                    });
+                                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                        }
+                                    });
+                                    builder.show();
+
+
+                                    break;
+                                case "2":
+                                    courseDetailPresenter.recordMaster(accessToken, masterId);
+                                    txtFollow.setText("已关注");
+                                    txtFollow.setTextColor(Color.parseColor("#BFBFBF"));
+                                    txtFollow.setSelected(true);
+                                    isCheckout = "1";
+                                    break;
+                            }
+//                            }
+//                            isCheckout = isCheckout.equals("1") ? "2" : "1";
+//                            Toast.makeText(mContext, "click" + isCheckout, Toast.LENGTH_SHORT).show();
+//                            txtFollow.setText(isCheckout.equals("1") ? "已关注" : "关注");
+//                            txtFollow.setSelected(isCheckout.equals("1"));
+//                            txtFollow.setTextColor(isCheckout.equals("1") ? Color.parseColor("#BFBFBF") : Color.parseColor("#FF6969"));
+                        } else {
+                            goToLogin();
+                        }
+
+
                     }
                 });
             }
@@ -389,6 +431,13 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
+
+                masterAvatarUrl = courseBean.getMaster_avatar_url();
+                mediaType = courseBean.getMedia_type();
+                mCourseSalePrice = courseBean.getSale_price();
+                isPay = courseBean.getIs_pay();
+                imageUrl = courseBean.getImage_url();
+                ImageView ivCourseDetailImage = holder.getView(R.id.iv_course_detail_top);
                 TextView tvCourseDetailPrice = holder.getView(R.id.tv_course_detail_course_price);
                 TextView tvCourseDetailSalePrice = holder.getView(R.id.tv_course_detail_course_sale_price);
                 TextView tvCourseDetailJoin = holder.getView(R.id.tv_course_detail_course_join);
@@ -397,16 +446,15 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                 TextView tvCourseDetailCourseBought = holder.getView(R.id.tv_course_detail_course_bought);
                 TextView tvCourseDetailCourseFree = holder.getView(R.id.tv_course_detail_course_free);
                 TextView tvCourseDetailCourseBuy = holder.getView(R.id.tv_course_detail_course_buy);
+                TextView tvCourseDetailMediaType = holder.getView(R.id.tv_course_detail_course_audio);
 
 
-                mCourseSalePrice = courseBean.getSale_price();
-                isPay = courseBean.getIs_pay();
-                if (mCourseSalePrice.equals("0")) {
+                if (mCourseSalePrice.equals("0.00")) {
                     tvCourseDetailSalePrice.setVisibility(View.GONE);
                     tvCourseDetailCourseFree.setVisibility(View.VISIBLE);
                     tvCourseDetailCourseBought.setVisibility(View.GONE);
                     tvCourseDetailCourseBuy.setVisibility(View.GONE);
-                } else if (isPay .equals("1") ) {
+                } else if (isPay.equals("1")) {
                     tvCourseDetailCourseFree.setVisibility(View.GONE);
                     tvCourseDetailCourseBought.setVisibility(View.VISIBLE);
                     tvCourseDetailCourseBuy.setVisibility(View.GONE);
@@ -416,13 +464,14 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                     tvCourseDetailCourseBuy.setVisibility(View.VISIBLE);
                 }
 
+                Glide.with(mContext).load(imageUrl).into(ivCourseDetailImage);
                 tvCourseDetailSalePrice.setText("￥" + courseBean.getSale_price());
                 tvCourseDetailJoin.setText(courseBean.getJoin_count() + "人参加");
                 tvCourseDetailBrief.setText(courseBean.getCourse_intro());
                 tvCourseDetailCourseName.setText(courseBean.getCourse_name());
                 tvCourseDetailPrice.setText("￥" + courseBean.getPrice());
                 tvCourseDetailPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-
+                tvCourseDetailMediaType.setText(mediaType.equals("1") ? "音频" : "视频");
             }
         };
         adapterList.add(adapterCourseTop);
@@ -434,14 +483,13 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         course_name = extras.getString(EXTRA_COURSE_NAME);
         course_id = extras.getString(EXTRA_COURSE_ID);
 
-        course_id = "6";
+//        course_id = "6";
     }
 
     @Override
     public void getCourseDetailSuccess(CourseDetailBean courseDetailBean) {
         recommendCoursesBeanList = courseDetailBean.getRecommendCourses();
         courseBean = courseDetailBean.getCourse();
-        Log.d("111","courseBean:"+courseBean.toString());
         model.setCourseDetail(courseDetailBean);
         initCourseTop();
         initMasterRow();
@@ -454,7 +502,6 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
     @Override
     public void getCourseDetailFail(String msg) {
-        Log.d("111",msg);
-        Log.d("111", "fail");
+
     }
 }
