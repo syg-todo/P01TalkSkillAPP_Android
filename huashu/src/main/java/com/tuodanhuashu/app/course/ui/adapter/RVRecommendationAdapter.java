@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -22,7 +23,6 @@ import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.course.bean.CourseDetailBean;
 import com.tuodanhuashu.app.course.ui.CourseDetailActivity;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
-import com.tuodanhuashu.app.widget.RoundRectImageView;
 
 import java.util.List;
 
@@ -48,12 +48,7 @@ public class RVRecommendationAdapter extends RecyclerView.Adapter<RVRecommendati
         RequestOptions options = new RequestOptions().override(DisplayUtil.dp2px(163), DisplayUtil.dp2px(93));
         Glide.with(mContext).load(courseBeanList.get(position).getImage_url())
                 .apply(options)
-                .into(new SimpleTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        holder.imgImage.setDrawable(resource);
-                    }
-                });
+                .into(holder.imgImage);
         holder.tvPrice.setText("￥" + courseBeanList.get(position).getPrice());
         holder.tvPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         holder.tvSalePrice.setText("￥" + courseBeanList.get(position).getSale_price());
@@ -79,7 +74,7 @@ public class RVRecommendationAdapter extends RecyclerView.Adapter<RVRecommendati
     }
 
     class RecommendationHolder extends RecyclerView.ViewHolder {
-        RoundRectImageView imgImage;
+        ImageView imgImage;
         TextView tvPrice;
         TextView tvSalePrice;
         TextView tvJoinCount;

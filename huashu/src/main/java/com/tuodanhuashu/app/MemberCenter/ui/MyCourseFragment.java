@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -24,7 +25,6 @@ import com.tuodanhuashu.app.course.ui.CourseDetailActivity;
 import com.tuodanhuashu.app.course.view.MyCourseView;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
 import com.tuodanhuashu.app.home.bean.MyCourseBean;
-import com.tuodanhuashu.app.widget.RoundRectImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,12 +96,7 @@ public class MyCourseFragment extends HuaShuBaseFragment implements MyCourseView
         public void onBindViewHolder(@NonNull final MyCourseHolder holder, int position) {
             final MyCourseBean course = courseList.get(position);
 
-            Glide.with(mContext).load(course.getImage_url()).into(new SimpleTarget<Drawable>() {
-                @Override
-                public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                    holder.imgImage.setDrawable(resource);
-                }
-            });
+            Glide.with(mContext).load(course.getImage_url()).into(holder.imgImage);
             holder.txtNmae.setText(course.getCourse_name());
             holder.txtPrice.setText("¥" + course.getSale_price());
             if (course.getSale_price().equals("0.00")){
@@ -133,7 +128,7 @@ public class MyCourseFragment extends HuaShuBaseFragment implements MyCourseView
 
         class MyCourseHolder extends RecyclerView.ViewHolder {
 
-            RoundRectImageView imgImage;
+            ImageView imgImage;
             private TextView txtNmae;
             private TextView txtTag;
             private TextView txtPrice;

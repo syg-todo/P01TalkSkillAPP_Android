@@ -143,14 +143,10 @@
 
 
     </FrameLayout>
-    <com.tuodanhuashu.app.widget.RoundRectImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/round"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        app:radiusX1="20"
-        app:radiusX2="20"
-        app:radiusY1="20"
-        app:radiusY2="20"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/tv_course_detail_course_join"/>
 </android.support.constraint.ConstraintLayout>

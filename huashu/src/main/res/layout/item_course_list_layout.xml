@@ -5,14 +5,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <com.tuodanhuashu.app.widget.RoundRectImageView
+    <com.github.siyamed.shapeimageview.mask.PorterShapeImageView
         android:id="@+id/iv_item_course_list_image"
         android:layout_width="158dp"
         android:layout_height="90dp"
-        app:radiusX1="8"
-        app:radiusX2="8"
-        app:radiusY1="8"
-        app:radiusY2="8"
+        app:siShape="@drawable/shape_rounded_rectangle"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="@dimen/dp_10"

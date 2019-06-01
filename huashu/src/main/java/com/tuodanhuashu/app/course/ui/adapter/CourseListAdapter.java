@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -21,7 +22,6 @@ import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.course.ui.CourseDetailActivity;
 import com.tuodanhuashu.app.course.ui.CourseListActivity;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
-import com.tuodanhuashu.app.widget.RoundRectImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,12 +47,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
     public void onBindViewHolder(@NonNull final CourseListAdapter.CourseListHolder holder, int position) {
         final HomeCourseBean course = courseBeanList.get(position);
 
-        Glide.with(mContext).load(course.getImage_url()).into(new SimpleTarget<Drawable>() {
-            @Override
-            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                holder.imgItemCourseImage.setDrawable(resource);
-            }
-        });
+        Glide.with(mContext).load(course.getImage_url()).into(holder.imgItemCourseImage);
         holder.tvItemCourseName.setText(course.getCourse_name());
         holder.tvItemCoursePrice.setText(String.valueOf(course.getPrice()));
         holder.tvItemCourseSalePrice.setText(String.valueOf(course.getSale_price()));
@@ -79,7 +74,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
     }
 
     class CourseListHolder extends RecyclerView.ViewHolder {
-        RoundRectImageView imgItemCourseImage;
+        ImageView imgItemCourseImage;
         TextView tvItemCourseName;
         TextView tvItemCoursePrice;
         TextView tvItemCourseSalePrice;

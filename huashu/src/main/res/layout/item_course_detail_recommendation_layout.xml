@@ -61,7 +61,7 @@
         app:layout_constraintRight_toLeftOf="@id/img_course_detail_recommend_image"
         app:layout_constraintTop_toBottomOf="@id/tv_course_detail_recommend_course_name" />
 
-    <com.tuodanhuashu.app.widget.RoundRectImageView
+    <com.github.siyamed.shapeimageview.mask.PorterShapeImageView
         android:id="@+id/img_course_detail_recommend_image"
         android:layout_width="163dp"
         android:layout_height="93dp"
@@ -71,8 +71,6 @@
         android:scaleType="fitXY"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:radiusX1="6"
-        app:radiusX2="6"
-        app:radiusY1="6"
-        app:radiusY2="6" />
+        app:siShape="@drawable/shape_rounded_rectangle"
+      />
 </android.support.constraint.ConstraintLayout>

@@ -8,14 +8,16 @@
     android:background="@drawable/shape_college_course"
     android:orientation="vertical">
 
-    <com.tuodanhuashu.app.widget.RoundRectImageView
+    <com.github.siyamed.shapeimageview.mask.PorterShapeImageView
         android:id="@+id/img_course_image"
         android:layout_width="match_parent"
         android:layout_height="93dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:radiusX1="8"
-        app:radiusX2="8" />
+        app:siSquare="false"
+        app:siShape="@drawable/shape_half_rounded_rectangle"
+
+     />
 
     <TextView
         android:id="@+id/tv_course_name"

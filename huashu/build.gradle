@@ -5,7 +5,8 @@ android {
         config {
             keyAlias 'fenglang_key'
             keyPassword 'jww123'
-            storeFile file('C:/Users/43759/Desktop/资料归档/fenglang.jks')
+//            storeFile file('C:/Users/43759/Desktop/资料归档/fenglang.jks')
+            storeFile file('E:/Android/fenglang.jks')
             storePassword 'jww123'
         }
         debug {
@@ -15,13 +16,17 @@ android {
         release {
             v1SigningEnabled true
             v2SigningEnabled true
+            storeFile file('E:\\Android\\fenglang.jks')
+            storePassword 'jww123'
+            keyAlias = 'fenglang_key'
+            keyPassword 'jww123'
         }
     }
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.tuodanhuashu.app"
         minSdkVersion 22
-        targetSdkVersion 27
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -39,9 +44,8 @@ android {
 
         release {
             signingConfig signingConfigs.config
-
-
         }
+
 
     }
 }
@@ -83,4 +87,5 @@ dependencies {
     implementation 'android.arch.lifecycle:extensions:1.1.1'
 //    implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
     implementation 'com.aliyun.dpa:oss-android-sdk:+'
+    implementation 'com.github.siyamed:android-shape-imageview:0.9.+@aar'
 }

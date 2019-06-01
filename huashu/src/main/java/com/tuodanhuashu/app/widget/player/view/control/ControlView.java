@@ -200,7 +200,6 @@ public class ControlView extends RelativeLayout {
      * @param position 位置，ms
      */
     public void setVideoPosition(int position) {
-        Log.d("111","position:"+position);
         mVideoPosition = position;
         updateInfoBar();
     }

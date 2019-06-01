@@ -7,7 +7,7 @@
     android:layout_marginTop="@dimen/dp_10"
     android:paddingBottom="@dimen/dp_10">
 
-    <com.tuodanhuashu.app.widget.RoundRectImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/img_course_detail_master"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -15,10 +15,7 @@
         android:layout_marginTop="@dimen/dp_10"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:radiusX1="20.0"
-        app:radiusX2="20.0"
-        app:radiusY1="20.0"
-        app:radiusY2="20.0" />
+     />
 
     <TextView
         android:id="@+id/tv_course_detail_course_master_name"
@@ -32,16 +29,13 @@
         android:layout_marginTop="20dp"
         android:textSize="14sp"
         />
-    <com.tuodanhuashu.app.widget.RoundRectImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/img_course_detail_master_tag"
         android:layout_width="15dp"
         android:layout_height="15dp"
         app:layout_constraintBottom_toBottomOf="@id/img_course_detail_master"
         app:layout_constraintRight_toRightOf="@id/img_course_detail_master"
-        app:radiusX1="7.5"
-        app:radiusX2="7.5"
-        app:radiusY1="7.5"
-        app:radiusY2="7.5" />
+         />
 
     <TextView
         android:id="@+id/tv_course_detail_follow"

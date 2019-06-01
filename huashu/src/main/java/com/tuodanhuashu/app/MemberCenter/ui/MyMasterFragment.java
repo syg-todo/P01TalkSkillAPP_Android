@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +28,6 @@ import com.tuodanhuashu.app.base.SimpleItemDecoration;
 import com.tuodanhuashu.app.course.bean.MasterBean;
 import com.tuodanhuashu.app.course.presenter.MyMasterPresenter;
 import com.tuodanhuashu.app.course.view.MyMasterView;
-import com.tuodanhuashu.app.widget.RoundRectImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,12 +110,7 @@ public class MyMasterFragment extends HuaShuBaseFragment implements MyMasterView
             final String masterId = master.getId();
             Glide.with(mContext).load(master.getAvatar_url())
                     .apply(optionsAvatar)
-                    .into(new SimpleTarget<Drawable>() {
-                        @Override
-                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                            holder.imgAvatar.setDrawable(resource);
-                        }
-                    });
+                    .into(holder.imgAvatar);
 
 
             RequestOptions optionsVip = new RequestOptions()
@@ -124,12 +119,7 @@ public class MyMasterFragment extends HuaShuBaseFragment implements MyMasterView
 
             Glide.with(mContext).load(R.mipmap.vip_blue)
                     .apply(optionsVip)
-                    .into(new SimpleTarget<Drawable>() {
-                        @Override
-                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                            holder.imgVip.setDrawable(resource);
-                        }
-                    });
+                    .into(holder.imgVip);
 
             holder.txtNmae.setText(master.getName());
             holder.txtBrief.setText(master.getP_signature());
@@ -166,8 +156,8 @@ public class MyMasterFragment extends HuaShuBaseFragment implements MyMasterView
 
         class MyMasterHolder extends RecyclerView.ViewHolder {
 
-            RoundRectImageView imgAvatar;
-            RoundRectImageView imgVip;
+            ImageView imgAvatar;
+            ImageView imgVip;
             private TextView txtNmae;
             private TextView txtBrief;
             private TextView txtFollow;

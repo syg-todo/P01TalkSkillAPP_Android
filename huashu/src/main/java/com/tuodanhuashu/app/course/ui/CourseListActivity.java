@@ -33,7 +33,6 @@ import com.tuodanhuashu.app.course.bean.MasterBean;
 import com.tuodanhuashu.app.course.presenter.CourseListPresenter;
 import com.tuodanhuashu.app.course.view.CourseListView;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
-import com.tuodanhuashu.app.widget.RoundRectImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +69,7 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
     private List<CourseClassBean> courseClassList;
     private List<MasterBean> masterList;
     private CourseListAdapter adapter;
+
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_course_list;
@@ -93,7 +93,7 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
                 courseListPresenter.requestCourseClassList();
                 tablayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                     @Override
-                                  public void onTabSelected(TabLayout.Tab tab) {
+                    public void onTabSelected(TabLayout.Tab tab) {
 //                        page = 1;
                         courseBeanList.clear();
                         classId = courseClassList.get(tab.getPosition()).getId();
@@ -215,7 +215,7 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
     @Override
     public void getCourseWithBannerSuccess(CourseWithBannerBean courseWithBannerBean) {
 //        if (page == 1) {
-            this.courseBeanList.clear();
+        this.courseBeanList.clear();
 
 //        }
         this.courseBeanList.addAll(courseWithBannerBean.getCourses());
@@ -288,15 +288,10 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
         public void onBindViewHolder(@NonNull final CourseListHolder holder, int position) {
             final HomeCourseBean course = courseBeanList.get(position);
 
-            RequestOptions options = new RequestOptions().override(DisplayUtil.dp2px(158),DisplayUtil.dp2px(90));
+            RequestOptions options = new RequestOptions().override(DisplayUtil.dp2px(158), DisplayUtil.dp2px(90));
             Glide.with(mContext).load(course.getImage_url())
                     .apply(options)
-                    .into(new SimpleTarget<Drawable>() {
-                @Override
-                public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                    holder.imgItemCourseImage.setDrawable(resource);
-                }
-            });
+                    .into(holder.imgItemCourseImage);
             holder.tvItemCourseName.setText(course.getCourse_name());
             holder.tvItemCoursePrice.setText(String.valueOf(course.getPrice()));
             holder.tvItemCourseSalePrice.setText(String.valueOf(course.getSale_price()));
@@ -307,8 +302,8 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
                 @Override
                 public void onClick(View view) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_NAME,course.getCourse_name());
-                    readyGo(CourseDetailActivity.class,bundle);
+                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_NAME, course.getCourse_name());
+                    readyGo(CourseDetailActivity.class, bundle);
                 }
             });
 
@@ -320,7 +315,7 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
         }
 
         class CourseListHolder extends RecyclerView.ViewHolder {
-            RoundRectImageView imgItemCourseImage;
+            ImageView imgItemCourseImage;
             TextView tvItemCourseName;
             TextView tvItemCoursePrice;
             TextView tvItemCourseSalePrice;

@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#50000000"
-    >
+    android:background="#50000000">
 
 
     <LinearLayout
@@ -23,18 +22,14 @@
             android:src="@drawable/vector_back" />
     </LinearLayout>
 
-    <com.tuodanhuashu.app.widget.RoundRectImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_player_avatar"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="257dp"
         android:layout_marginRight="5dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:radiusX1="24"
-        app:radiusX2="24"
-        app:radiusY1="24"
-        app:radiusY2="24" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!--<ImageView-->
     <!--android:id="@+id/iv_player_like"-->
@@ -100,15 +95,15 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintLeft_toRightOf="@id/btn_player_state"
-            app:layout_constraintRight_toLeftOf="@id/player_info_position"/>
+            app:layout_constraintRight_toLeftOf="@id/player_info_position" />
 
         <TextView
             android:id="@+id/player_info_position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:textColor="@color/white"
             android:text="00:00"
+            android:textColor="@color/white"
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@id/player_info_duration" />
@@ -119,9 +114,9 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="12dp"
             android:layout_marginBottom="12dp"
+            android:text="/00:00"
             android:textColor="@color/white"
             android:textSize="10sp"
-            android:text="/00:00"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 

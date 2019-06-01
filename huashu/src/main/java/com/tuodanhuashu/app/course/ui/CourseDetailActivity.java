@@ -58,7 +58,6 @@ import com.tuodanhuashu.app.course.ui.fragment.CourseDetailDirectoryFragment;
 import com.tuodanhuashu.app.course.view.CourseDetailView;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
-import com.tuodanhuashu.app.widget.RoundRectImageView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,6 +65,7 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDetailView {
     private static final String TAG = CourseDetailActivity.class.getSimpleName();
@@ -134,6 +134,9 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         super.initView();
         Log.d(TAG, PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN, "111"));
         tvTitle.setText(course_name);
+
+        ImageView imageView = new ImageView(mContext);
+
 
         ivDownload.getDrawable().setTint(getResources().getColor(R.color.black));
         ivShare.getDrawable().setTint(getResources().getColor(R.color.black));
@@ -328,33 +331,31 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                 isCheckout = courseBean.getIs_checkout();
                 masterAvatarUrl = courseBean.getMaster_avatar_url();
                 masterId = courseBean.getMaster_id();
-                final RoundRectImageView imgMasterAvatar = holder.getView(R.id.img_course_detail_master);
+                final CircleImageView imgMasterAvatar = holder.getView(R.id.img_course_detail_master);
 
                 RequestOptions options = new RequestOptions()
                         .override(DisplayUtil.dp2px(40), DisplayUtil.dp2px(40))
                         .centerCrop();
+
                 Glide.with(mContext)
                         .load(masterAvatarUrl)
                         .apply(options)
-                        .into(new SimpleTarget<Drawable>() {
-                            @Override
-                            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                                imgMasterAvatar.setDrawable(resource);
-                            }
-                        });
-                final RoundRectImageView imgMasterTag = holder.getView(R.id.img_course_detail_master_tag);
+                        .into(imgMasterAvatar);
+//                        .into(new SimpleTarget<Drawable>() {
+//                            @Override
+//                            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+//                                Log.d(TAG,"onResourceReady");
+//                                imgMasterAvatar.setDrawable(resource);
+//                            }
+//                        });
+                final CircleImageView imgMasterTag = holder.getView(R.id.img_course_detail_master_tag);
                 RequestOptions optionsTag = new RequestOptions()
                         .override(DisplayUtil.dp2px(15), DisplayUtil.dp2px(15))
                         .centerCrop();
                 Glide.with(mContext)
                         .load(R.mipmap.vip_blue)
                         .apply(optionsTag)
-                        .into(new SimpleTarget<Drawable>() {
-                            @Override
-                            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                                imgMasterTag.setDrawable(resource);
-                            }
-                        });
+                        .into(imgMasterTag);
 
                 final TextView txtMasterName = holder.getView(R.id.tv_course_detail_course_master_name);
                 txtMasterName.setText(courseBean.getMaster_name());
@@ -483,7 +484,6 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         course_name = extras.getString(EXTRA_COURSE_NAME);
         course_id = extras.getString(EXTRA_COURSE_ID);
 
-//        course_id = "6";
     }
 
     @Override

@@ -78,6 +78,7 @@ public class RoundRectImageView extends View {
 
         canvas.drawBitmap(bitmapFrame, 0, 0, paint);
         paint.setXfermode(xfermode);
+        Log.d("111",bitmap.toString());
         canvas.drawBitmap(bitmap, 0, 0, paint);
         paint.setXfermode(null);
         canvas.restoreToCount(saved);
@@ -113,6 +114,7 @@ public class RoundRectImageView extends View {
 
     //设置图片的接口
     public void setDrawable(Drawable resource) {
+
         bitmap = drawableToBitmap(resource);
         invalidate();
     }

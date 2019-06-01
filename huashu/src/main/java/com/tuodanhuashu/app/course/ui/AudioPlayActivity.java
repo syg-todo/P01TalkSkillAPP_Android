@@ -26,6 +26,8 @@ import com.alibaba.android.vlayout.layout.LinearLayoutHelper;
 import com.aliyun.vodplayer.media.AliyunLocalSource;
 import com.aliyun.vodplayer.media.IAliyunVodPlayer;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.company.common.CommonConstants;
+import com.company.common.utils.PreferencesUtils;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.SimpleItemDecoration;
 import com.tuodanhuashu.app.course.AudioPlayService;
@@ -52,7 +54,11 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     private static final int TYPE_COMMENT = 1;
     @BindView(R.id.rv_play)
     RecyclerView recyclerView;
+    @BindView(R.id.edit)
+    TextView tvEdit;
 
+    @BindView(R.id.tv_audio_play_send)
+    TextView tvAudioPlaySend;
     VideoPlayerView playerView;
 
     ImageView ivPlayController;
@@ -83,12 +89,13 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     private RecyclerView rvPlayComment;
     public static final String EXTRA_SECTION_ID = "section_id";
 
-    public static final String EXTAR_ACCESS_TOKEN = "access_token";
+    public static final String EXTAR_COURSE_ID = "course_id";
 
 
-    private String section_id = "1";
-    private String access_token = "1";
+    private String section_id = "";
+    private String access_token = "";
 
+    private String course_id = "";
     private final int UPDATE_PROGRESS = 1;
     //        使用handler定时更新进度条
     private Handler handler = new Handler() {
@@ -111,15 +118,14 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG,"onCreate");
         setContentView(R.layout.activity_audio_play);
         ButterKnife.bind(this);
         mContext = this;
-
+        access_token = PreferencesUtils.getString(mContext,CommonConstants.KEY_TOKEN);
         Bundle bundle = getIntent().getExtras();
 
         section_id = bundle.getString(EXTRA_SECTION_ID);
-        access_token = bundle.getString(EXTAR_ACCESS_TOKEN);
+        course_id = bundle.getString(EXTAR_COURSE_ID);
         initData();
         initView();
 
@@ -138,16 +144,14 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     }
 
     private void initData() {
-        Log.d("111", "initData");
+        access_token = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN);
         audioPlayPresenter = new AudioPlayPresenter(mContext, this);
-        audioPlayPresenter.requestCourseClassList("0", "1");
+        audioPlayPresenter.requestCourseClassList(access_token, section_id);
 
     }
 
 
     protected void initView() {
-        Log.d(TAG,"initView");
-//        mediaPlayer = MediaPlayer.create(this, R.raw.honor);
 
         adapterList = new ArrayList<>();
         VirtualLayoutManager layoutManager = new VirtualLayoutManager(mContext);
@@ -158,6 +162,21 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
         delegateAdapter = new DelegateAdapter(layoutManager, true);
         recyclerView.setAdapter(delegateAdapter);
 
+        tvAudioPlaySend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        tvEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG,course_id);
+                Log.d(TAG,access_token);
+                audioPlayPresenter.sendComment(access_token,course_id,"挺好的啊");
+            }
+        });
         initPlayTop();
         initComment();
         delegateAdapter.setAdapters(adapterList);
@@ -183,13 +202,11 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     }
 
     private void initPlayTop() {
-        Log.d(TAG,"initPlayTop");
         HomeAdapter adapterTop = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_TOP, R.layout.play_top_layout) {
 
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
-                Log.d(TAG,"onBindViewHolder");
                 playerView = holder.getView(R.id.iv_play_iamge);
 
                 playerView.onResume();
@@ -281,7 +298,6 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
 
     @Override
     public void getSectionFail(String msg) {
-        Log.d("111", msg);
     }
 
     @Override

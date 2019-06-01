@@ -17,12 +17,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.company.common.base.BasePresenter;
+import com.company.common.net.OkNetUtils;
 import com.company.common.utils.DisplayUtil;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.course.bean.CommentBean;
 import com.tuodanhuashu.app.course.bean.CourseDetailBean;
+import com.tuodanhuashu.app.course.presenter.AudioPlayPresenter;
+import com.tuodanhuashu.app.course.presenter.CourseDetailPresenter;
+import com.tuodanhuashu.app.course.ui.AudioPlayActivity;
 import com.tuodanhuashu.app.course.ui.fragment.CourseDetailCommentFragment;
-import com.tuodanhuashu.app.widget.RoundRectImageView;
 
 import java.util.List;
 
@@ -30,14 +34,20 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     private Context mContext;
     private List<CommentBean> commentList;
+    private AudioPlayActivity mContextActivity;
 
-
+    private BasePresenter presenter;
     private boolean isLike = false;//是否点赞，默认为点赞
 
     public CommentAdapter(Context mContext, List<CommentBean> commentList) {
         this.mContext = mContext;
         this.commentList = commentList;
     }
+
+//    public CommentAdapter(AudioPlayActivity mContext,List<CommentBean> commentList){
+//        this.mContextActivity = mContext;
+//        this.commentList = commentList;
+//    }
 
     @NonNull
     @Override
@@ -55,38 +65,28 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                 .centerCrop();
         Glide.with(mContext).load(comment.getHeade_img())
                 .apply(options)
-                .into(new SimpleTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        holder.imgAvatar.setDrawable(resource);
-                    }
-                });
+                .into(holder.imgAvatar);
         holder.tvCommenterName.setText(comment.getNickname());
         holder.tvTime.setText(comment.getCreate_date());
         holder.tvLikeCount.setText(comment.getLike_count() + "");
         holder.tvComment.setText(comment.getContent());
         List<CommentBean.ReplyBean> replyBeans = comment.getReply();
-        if (replyBeans == null) {
+        if (replyBeans.size() == 0) {
             holder.layoutReply.setVisibility(View.GONE);
         } else {
             holder.tvReplyContent.setText(replyBeans.get(0).getContent());
             holder.tvReplyName.setText(replyBeans.get(0).getNickname());
             holder.tvReplyTime.setText(replyBeans.get(0).getCreate_date());
         }
-
         final String likeCount = comment.getLike_count();
         holder.imgThumbUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isLike = !isLike;
+
                 v.setSelected(isLike);
-
-                Log.d("111","likecount:"+likeCount);
                 int like = Integer.parseInt(likeCount);
-                int now = isLike ? like + 1 : like ;
-
-                Log.d("111","now:"+now);
-
+                int now = isLike ? like + 1 : like;
                 holder.tvLikeCount.setText(now + "");
             }
         });
@@ -99,7 +99,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     }
 
     class CommentHolder extends RecyclerView.ViewHolder {
-        RoundRectImageView imgAvatar;
+        ImageView imgAvatar;
         TextView tvCommenterName;
         TextView tvTime;
         TextView tvLikeCount;
@@ -112,6 +112,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
         public CommentHolder(View itemView) {
             super(itemView);
+
             imgAvatar = itemView.findViewById(R.id.iv_item_course_detail_comment_avatar);
             tvCommenterName = itemView.findViewById(R.id.tv_item_course_detail_comment_commenter_name);
             tvTime = itemView.findViewById(R.id.tv_item_course_detail_comment_time);

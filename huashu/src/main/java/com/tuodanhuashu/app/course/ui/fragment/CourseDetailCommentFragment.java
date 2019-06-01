@@ -29,7 +29,6 @@ import com.tuodanhuashu.app.course.bean.CommentBean;
 import com.tuodanhuashu.app.course.bean.CourseDetailBean;
 import com.tuodanhuashu.app.course.bean.CourseDetailModel;
 import com.tuodanhuashu.app.course.ui.adapter.CommentAdapter;
-import com.tuodanhuashu.app.widget.RoundRectImageView;
 
 import org.w3c.dom.Text;
 
@@ -40,6 +39,7 @@ import butterknife.BindView;
 
 public class CourseDetailCommentFragment extends HuaShuBaseFragment {
 
+    private static final String TAG = CourseDetailCommentFragment.class.getSimpleName();
     @BindView(R.id.rv_course_detail_comment)
     RecyclerView recyclerView;
 
@@ -56,7 +56,6 @@ public class CourseDetailCommentFragment extends HuaShuBaseFragment {
         super.initView(view);
 
         model = ViewModelProviders.of(getActivity()).get(CourseDetailModel.class);
-
         commentsBeanList = model.getCourseDetail().getValue().getComments();
 
 //
@@ -74,7 +73,7 @@ public class CourseDetailCommentFragment extends HuaShuBaseFragment {
 //        //测试数据
 
 
-        CommentAdapter adapter = new CommentAdapter(mContext,commentsBeanList);
+        CommentAdapter adapter = new CommentAdapter(mContext, commentsBeanList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
@@ -85,5 +84,9 @@ public class CourseDetailCommentFragment extends HuaShuBaseFragment {
     public CourseDetailCommentFragment() {
     }
 
+
+    public void lieke(){
+
+    }
 
 }

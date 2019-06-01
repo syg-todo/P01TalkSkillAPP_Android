@@ -77,9 +77,6 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
             int minutes= duration / 60;
             int seconds = duration % 60;
 
-
-
-
             String time = String.format("%02d:%02d", minutes, seconds);
             holder.tvTime.setText(time);
 
@@ -87,7 +84,8 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(AudioPlayActivity.EXTRA_SECTION_ID,directory.getId()+"");
+                    bundle.putString(AudioPlayActivity.EXTRA_SECTION_ID,directory.getId());
+                    bundle.putString(AudioPlayActivity.EXTAR_COURSE_ID,directory.getCourse_id());
                     readyGo(AudioPlayActivity.class,bundle);
                 }
             });

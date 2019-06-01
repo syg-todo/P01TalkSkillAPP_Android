@@ -27,4 +27,18 @@ public class PlayBiz {
         OkNetUtils.get(tag, Constants.URL.BASE_URL + Constants.URL.COLLEGE_COURSE_SECTION_INFO_URL, params, context, listener);
     }
 
+    public void sendComment(int tag, String accessToken, String courseId, String content) {
+        Map<String,String> params = new HashMap<>();
+        params.put("access_token",accessToken);
+        params.put("course_id",courseId);
+        params.put("content",content);
+        OkNetUtils.post(tag,Constants.URL.BASE_URL+Constants.URL.COLLEGE_COURSE_SECTION_SEND_COMMENT,params,context,listener);
+    }
+
+    public void likeComment(int tag, String accessToken, String commentId) {
+        Map<String,String> params = new HashMap<>();
+        params.put("access_token",accessToken);
+        params.put("comment_id",commentId);
+        OkNetUtils.get(tag,Constants.URL.BASE_URL+Constants.URL.COLLEGE_COURSE_UNRECORD_MASTER_URL,params,context,listener);
+    }
 }

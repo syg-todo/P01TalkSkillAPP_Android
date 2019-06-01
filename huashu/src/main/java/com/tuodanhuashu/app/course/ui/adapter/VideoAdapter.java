@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -20,7 +21,6 @@ import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.course.bean.VideoBean;
 import com.tuodanhuashu.app.course.ui.VideoPlayerActivity;
-import com.tuodanhuashu.app.widget.RoundRectImageView;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder>
     @NonNull
     @Override
     public VideoHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_video,parent,false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_video, parent, false);
         VideoHolder holder = new VideoHolder(view);
         return holder;
     }
@@ -47,29 +47,19 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder>
         VideoBean videoBean = videoBeanList.get(position);
         holder.tvItemName.setText(videoBean.getName());
         holder.tvItemTitle.setText(videoBean.getTitle());
-        holder.tvItemPlayVolume.setText(videoBean.getVolume()+"");
+        holder.tvItemPlayVolume.setText(videoBean.getVolume() + "");
 
-        RequestOptions options1 = new RequestOptions().override(DisplayUtil.dp2px(175),DisplayUtil.dp2px(233)).centerCrop();
+        RequestOptions options1 = new RequestOptions().override(DisplayUtil.dp2px(175), DisplayUtil.dp2px(233)).centerCrop();
         Glide.with(mContext).load(videoBean.getImage())
                 .apply(options1)
-                .into(new SimpleTarget<Drawable>() {
-            @Override
-            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                holder.ivItemImage.setDrawable(resource);
-            }
-        });
+                .into(holder.ivItemImage);
 
-        RequestOptions options = new RequestOptions().override(DisplayUtil.dp2px(18),DisplayUtil.dp2px(18))
+        RequestOptions options = new RequestOptions().override(DisplayUtil.dp2px(18), DisplayUtil.dp2px(18))
                 .centerCrop();
 
         Glide.with(mContext).load(videoBean.getAvatar())
                 .apply(options)
-                .into(new SimpleTarget<Drawable>() {
-            @Override
-            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                holder.ivItemAvatar.setDrawable(resource);
-            }
-        });
+                .into(holder.ivItemAvatar);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,13 +76,13 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoHolder>
         return videoBeanList.size();
     }
 
-    class VideoHolder extends RecyclerView.ViewHolder{
+    class VideoHolder extends RecyclerView.ViewHolder {
 
         TextView tvItemTitle;
         TextView tvItemName;
         TextView tvItemPlayVolume;
-        RoundRectImageView ivItemImage;
-        RoundRectImageView ivItemAvatar;
+        ImageView ivItemImage;
+        ImageView ivItemAvatar;
 
         public VideoHolder(View itemView) {
             super(itemView);

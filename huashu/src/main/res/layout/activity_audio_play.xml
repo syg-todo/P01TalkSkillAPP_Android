@@ -15,11 +15,13 @@
         android:layout_width="match_parent"
         android:layout_height="49dp">
 
-        <EditText
+        <TextView
+            android:id="@+id/edit"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="30dp"
-            android:hint="写下你的想法~"
+            android:text="写下你的想法~"
+            android:gravity="center_vertical"
             android:textSize="13sp"
             android:layout_marginLeft="23dp"
             android:textColor="#ffd1d1d1"
@@ -28,6 +30,7 @@
             android:layout_gravity="center_vertical"/>
 
         <TextView
+            android:id="@+id/tv_audio_play_send"
             android:layout_width="wrap_content"
             android:layout_height="21dp"
             android:text="发送"

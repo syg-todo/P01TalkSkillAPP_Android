@@ -44,6 +44,7 @@ import com.company.common.utils.KeyboardUtils;
 import com.company.common.utils.PreferencesUtils;
 import com.company.common.utils.RandomUntil;
 import com.company.common.utils.StringUtils;
+import com.github.siyamed.shapeimageview.mask.PorterShapeImageView;
 import com.ms.banner.Banner;
 import com.ms.banner.BannerConfig;
 import com.ms.banner.holder.BannerViewHolder;
@@ -69,7 +70,6 @@ import com.tuodanhuashu.app.home.presenter.HomeCollegePresenter;
 import com.tuodanhuashu.app.home.presenter.HomeZhuanLanPresenter;
 import com.tuodanhuashu.app.home.view.HomeCollegeView;
 import com.tuodanhuashu.app.huashu.ui.HuaShuaListActivity;
-import com.tuodanhuashu.app.widget.RoundRectImageView;
 import com.tuodanhuashu.app.zhuanlan.ui.ZhuanLanDetailActivity;
 import com.tuodanhuashu.app.zhuanlan.ui.ZhuanLanListActivity;
 import com.tuodanhuashu.app.zhuanlan.ui.ZhuanLanSearchActivity;
@@ -313,13 +313,9 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                     .override((mScreenWidth-DisplayUtil.dp2px(50))/2,DisplayUtil.dp2px(93))
                     .centerCrop();
 
-            Glide.with(mContext).load(courseBeanList.get(position).getImage_url()).
-                    apply(options).into(new SimpleTarget<Drawable>() {
-                @Override
-                public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                    holder.imgImage.setDrawable(resource);
-                }
-            });
+            Glide.with(mContext).load(courseBeanList.get(position).getImage_url())
+//                    .apply(options)
+                    .into(holder.imgImage);
             holder.txtCourseName.setText(courseBeanList.get(position).getCourse_name());
             holder.txtCourseMasterName.setText(courseBeanList.get(position).getMaster_name());
             holder.txtCoursePrice.setText("￥" + courseBeanList.get(position).getPrice());
@@ -353,7 +349,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         }
 
         class ChoicenessHolder extends RecyclerView.ViewHolder {
-            RoundRectImageView imgImage;
+            ImageView imgImage;
             TextView txtCourseName;
             TextView txtCourseMasterName;
             TextView txtCoursePrice;
@@ -399,12 +395,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
             RequestOptions options = new RequestOptions()
                     .override(DisplayUtil.dp2px(158), DisplayUtil.dp2px(90));
             Glide.with(mContext).load(imageUrl)
-                    .apply(options).into(new SimpleTarget<Drawable>() {
-                @Override
-                public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                    holder.imgImage.setDrawable(resource);
-                }
-            });
+                    .apply(options).into(holder.imgImage);
             holder.txtCourseName.setText(courseBeanList.get(position).getCourse_name());
             holder.txtCourseMasterName.setText(courseBeanList.get(position).getMaster_name());
             holder.txtCoursePrice.setText("￥" + courseBeanList.get(position).getPrice());
@@ -435,7 +426,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         }
 
         class RecommendationHolder extends RecyclerView.ViewHolder {
-            RoundRectImageView imgImage;
+            ImageView imgImage;
             TextView txtCourseName;
             TextView txtCourseMasterName;
             TextView txtCoursePrice;

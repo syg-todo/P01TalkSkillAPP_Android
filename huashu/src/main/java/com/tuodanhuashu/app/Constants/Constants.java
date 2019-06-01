@@ -49,6 +49,9 @@ public class Constants {
 
         public static final String COLLEGE_COURSE_MY_COURSE_URL = "/api/Courseuser/my_course";
 
+        public static final String COLLEGE_COURSE_SECTION_SEND_COMMENT ="/api/Courseuser/add_comment";
+
+        public static final String COLLEGE_COURSE_LIKE_COMMENT ="/api/Courseuser/like_comment";
 
         public static final String TALK_SKILL_LIST_URL = "/api/user/get_list_by_keywords";
 
@@ -105,6 +108,7 @@ public class Constants {
         public static final String REGISTER_MESSAGE_URL = "/api/index/registerMessage";
 
         public static final String CHECK_VERSION_URL = "/api/index/AndroidVer";
+
 
     }
 
