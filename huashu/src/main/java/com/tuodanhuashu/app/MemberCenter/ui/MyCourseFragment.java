@@ -98,11 +98,11 @@ public class MyCourseFragment extends HuaShuBaseFragment implements MyCourseView
 
             Glide.with(mContext).load(course.getImage_url()).into(holder.imgImage);
             holder.txtNmae.setText(course.getCourse_name());
-            holder.txtPrice.setText("¥" + course.getSale_price());
+
             if (course.getSale_price().equals("0.00")){
                 holder.txtPrice.setText("免费");
             }else {
-                holder.txtPrice.setText(course.getSale_price());
+                holder.txtPrice.setText("¥" + course.getSale_price());
             }
             if (course.getIs_buy().equals("1")){
                 holder.txtTag.setText("已付费");

@@ -33,6 +33,10 @@ public class Constants {
 
         public static final String COLLEGE_COURSE_COMMUNITY_URL = "/api/course/sqk_list";
 
+        public static final String COLLEGE_COURSE_CHOICENESS_LIST = "/api/course/choiceness_list";
+
+        public static final String COLLEGE_COURSE_ACTIVITY_LIST = "/api/cactivity/newlist";
+
         public static final String COLLEGE_COURSE_MASTER_LIST_URL = "/api/master/list";
 
         public static final String COLLEGE_COURSE_SJK_LIST_URL = "/api/course/sjk_list";

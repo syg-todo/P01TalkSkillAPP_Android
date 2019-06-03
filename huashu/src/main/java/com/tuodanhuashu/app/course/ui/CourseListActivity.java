@@ -4,10 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,8 +18,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.company.common.utils.DisplayUtil;
 import com.ms.banner.Banner;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -32,6 +28,7 @@ import com.tuodanhuashu.app.course.bean.CourseWithBannerBean;
 import com.tuodanhuashu.app.course.bean.MasterBean;
 import com.tuodanhuashu.app.course.presenter.CourseListPresenter;
 import com.tuodanhuashu.app.course.view.CourseListView;
+import com.tuodanhuashu.app.home.bean.CollegeActivityBean;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
 
 import java.util.ArrayList;
@@ -49,13 +46,14 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
     TabLayout tablayout;
     @BindView(R.id.rv_course_list)
     RecyclerView recyclerView;
+
     @BindView(R.id.smart_refresh_course_list)
     SmartRefreshLayout refreshLayout;
     @BindView(R.id.course_list_banner)
     Banner banner;
 
 
-    public static final String EXTRA_ENTER_TYPE = "enter_type";//1:分类 2社群 3：私教 4:我的文章
+    public static final String EXTRA_ENTER_TYPE = "enter_type";//1:分类 2社群 3：私教 4:精品课程 5：更多推荐 6:最新活动
 
 
     private int enterType = 1;
@@ -64,11 +62,12 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
     private int page = 1;
     private int classId;
     private String masterId;
-    private List<HomeCourseBean> courseBeanList;
+    private List<HomeCourseBean> courseBeanList = new ArrayList<>();
     private CourseListPresenter courseListPresenter;
     private List<CourseClassBean> courseClassList;
     private List<MasterBean> masterList;
-    private CourseListAdapter adapter;
+    private CourseListAdapter adapterCourse;
+    private List<CollegeActivityBean> courseActivityList = new ArrayList<>();
 
     @Override
     protected int getContentViewLayoutID() {
@@ -142,10 +141,31 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
                     }
                 });
                 break;
+            case 4:
+                commonHeadTitleTv.setText("精品课程");
+                courseListPresenter.requestChoicenessList(page + "", page_size + "");
+                tablayout.setVisibility(View.GONE);
+                banner.setVisibility(View.GONE);
+                break;
+
+            case 5:
+                commonHeadTitleTv.setText("更多推荐");
+                courseListPresenter.requestRecommendationList(page + "", page_size + "");
+                tablayout.setVisibility(View.GONE);
+                banner.setVisibility(View.GONE);
+                break;
+
+//            case 6:
+//                commonHeadTitleTv.setText("最近活动");
+//                courseListPresenter.requestActivityList(page + "", page_size + "");
+//                tablayout.setVisibility(View.GONE);
+//                recyclerView.setVisibility(View.GONE);
+//                banner.setVisibility(View.GONE);
+//                break;
         }
-        courseBeanList = new ArrayList<>();
+
 //        courseListPresenter.requestCourseListByClassId("1", "1", "10");
-        adapter = new CourseListAdapter(mContext, courseBeanList);
+        adapterCourse = new CourseListAdapter(mContext, courseBeanList);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
@@ -162,7 +182,7 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
 
             }
         });
-        recyclerView.setAdapter(adapter);
+
 //        if (enterType != 2) {
 //        courseListPresenter.requestCourseClassList();
 //        }
@@ -172,17 +192,17 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
 //        requestArticleList(false);
 //        articleListItemBeanList = new ArrayList<>();
 //
-//        adapter = new ZhuanLanListAdapter(mContext, R.layout.item_zhuanlan_list_layout, articleListItemBeanList);
-//        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+//        adapterCourse = new ZhuanLanListAdapter(mContext, R.layout.item_zhuanlan_list_layout, articleListItemBeanList);
+//        adapterCourse.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 //            @Override
-//            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+//            public void onItemClick(BaseQuickAdapter adapterCourse, View view, int position) {
 //                ArticleListItemBean bean = articleListItemBeanList.get(position);
 //                Bundle bundle = new Bundle();
 //                bundle.putString(ZhuanLanDetailActivity.EXTRA_ARTICLE_ID, bean.getId());
 //                readyGo(ZhuanLanDetailActivity.class, bundle);
 //            }
 //        });
-//        zhuanlanListRlv.setAdapter(adapter);
+//        zhuanlanListRlv.setAdapter(adapterCourse);
     }
 
     @Override
@@ -205,7 +225,8 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
         }
         this.courseBeanList.addAll(courseBeanList);
 
-        adapter.setCourseBeanList(this.courseBeanList);
+        adapterCourse.setCourseBeanList(this.courseBeanList);
+        recyclerView.setAdapter(adapterCourse);
     }
 
     @Override
@@ -219,7 +240,8 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
 
 //        }
         this.courseBeanList.addAll(courseWithBannerBean.getCourses());
-        adapter.setCourseBeanList(this.courseBeanList);
+        adapterCourse.setCourseBeanList(this.courseBeanList);
+        recyclerView.setAdapter(adapterCourse);
     }
 
     @Override
@@ -252,6 +274,21 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
 
     @Override
     public void getMasterListFail(String msg) {
+
+    }
+
+    @Override
+    public void getActivityListSuccess(List<CollegeActivityBean> collegeActivityBeans) {
+        if (courseActivityList != null) {
+            courseActivityList.clear();
+            courseActivityList.addAll(collegeActivityBeans);
+        }
+
+
+    }
+
+    @Override
+    public void getAactivityFail(String msg) {
 
     }
 
@@ -303,6 +340,7 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
                 public void onClick(View view) {
                     Bundle bundle = new Bundle();
                     bundle.putString(CourseDetailActivity.EXTRA_COURSE_NAME, course.getCourse_name());
+                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_ID, course.getId());
                     readyGo(CourseDetailActivity.class, bundle);
                 }
             });
@@ -333,4 +371,5 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
             }
         }
     }
+
 }

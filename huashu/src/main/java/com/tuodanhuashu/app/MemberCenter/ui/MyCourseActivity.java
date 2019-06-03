@@ -1,10 +1,13 @@
 package com.tuodanhuashu.app.MemberCenter.ui;
 
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tuodanhuashu.app.R;
@@ -22,6 +25,8 @@ public class MyCourseActivity extends HuaShuBaseActivity {
     TextView txtTitle;
     @BindView(R.id.vp_my_course)
     ViewPager viewPager;
+    @BindView(R.id.common_head_back_iv)
+    ImageView ivBack;
     private List<String> titles = new ArrayList<>();
     private List<Fragment> fragments = new ArrayList<>();
 
@@ -39,6 +44,13 @@ public class MyCourseActivity extends HuaShuBaseActivity {
         MyCourseFragment fragment = new MyCourseFragment();
         MyMasterFragment masterFragment = new MyMasterFragment();
 
+        ivBack.getDrawable().setTint(Color.parseColor("#000000"));
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         fragments.add(fragment);
         fragments.add(masterFragment);
         for (int i = 0; i < titles.size(); i++) {

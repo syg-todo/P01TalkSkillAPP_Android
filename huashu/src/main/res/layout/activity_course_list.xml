@@ -31,10 +31,12 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_course_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_10"
             android:layout_marginTop="9dp"
             android:background="@drawable/shape_home_funtion"/>
+
+
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 </LinearLayout>

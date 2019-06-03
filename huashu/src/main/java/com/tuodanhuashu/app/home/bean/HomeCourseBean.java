@@ -9,6 +9,15 @@ public class HomeCourseBean {
     private float sale_price;
     private int join_count;
     private String master_name;
+    private String activity_price;
+
+    public String getActivity_price() {
+        return activity_price;
+    }
+
+    public void setActivity_price(String activity_price) {
+        this.activity_price = activity_price;
+    }
 
     public String getId() {
         return id;

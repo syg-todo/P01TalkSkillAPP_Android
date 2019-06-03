@@ -11,6 +11,7 @@ import com.tuodanhuashu.app.course.bean.CourseWithBannerBean;
 import com.tuodanhuashu.app.course.bean.MasterBean;
 import com.tuodanhuashu.app.course.biz.CourseListBiz;
 import com.tuodanhuashu.app.course.view.CourseListView;
+import com.tuodanhuashu.app.home.bean.CollegeActivityBean;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
 
 import java.util.List;
@@ -33,6 +34,10 @@ public class CourseListPresenter extends BasePresenter {
     private static final int TAG_BANNER_PRIVATE = 6;
     private static final int TAG_MASTER_LIST = 7;
     private static final int TAG_COURSE_PRIVATE = 8;
+    private static final int TAG_CHOICENESS_LIST = 9;
+    private static final int TAG_RECOMMENDADTION_LIST = 10;
+    private static final int TAG_ACTIVITY_LIST = 11;
+
 
     private static final int TAG_MY_LIST = 4;
 
@@ -67,6 +72,15 @@ public class CourseListPresenter extends BasePresenter {
         courseListBiz.requestCourseListByMasterId(TAG_COURSE_PRIVATE, master_id, page, page_size);
     }
 
+    //获取精品课程
+    public void requestChoicenessList(String page, String page_size) {
+        courseListBiz.requestChoicenessList(TAG_CHOICENESS_LIST, page, page_size);
+    }
+
+    public void requestRecommendationList(String page, String page_size) {
+        courseListBiz.requestChoicenessList(TAG_CHOICENESS_LIST, page, page_size);
+    }
+
 
     @Override
     public void OnSuccess(ServerResponse serverResponse, int tag) {
@@ -94,6 +108,18 @@ public class CourseListPresenter extends BasePresenter {
             case TAG_COURSE_PRIVATE:
                 CourseWithBannerBean courseListByMasterId = JsonUtils.getJsonToBean(serverResponse.getData(), CourseWithBannerBean.class);
                 courseListView.getCourseWithBannerSuccess(courseListByMasterId);
+                break;
+            case TAG_CHOICENESS_LIST:
+                List<HomeCourseBean> choicenessCourseList = JsonUtils.getJsonToList(serverResponse.getData(), HomeCourseBean.class);
+                courseListView.getCourseListSuccess(choicenessCourseList);
+                break;
+            case TAG_RECOMMENDADTION_LIST:
+                List<HomeCourseBean> recommendationCourseList = JsonUtils.getJsonToList(serverResponse.getData(),HomeCourseBean.class);
+                courseListView.getCourseListSuccess(recommendationCourseList);
+                break;
+            case TAG_ACTIVITY_LIST:
+                List<CollegeActivityBean> activityCourseList = JsonUtils.getJsonToList(serverResponse.getData(), CollegeActivityBean.class);
+                courseListView.getActivityListSuccess(activityCourseList);
                 break;
 //            default:
 //                List<ArticleListItemBean> articleListItemBeanList = JsonUtils.getJsonToList(serverResponse.getData(),ArticleListItemBean.class);

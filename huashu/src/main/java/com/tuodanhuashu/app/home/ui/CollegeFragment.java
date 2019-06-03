@@ -205,6 +205,14 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
 
                     }
                 });
+
+                TextView moreTv = holder.getView(R.id.college_activity_course_more_tv);
+                moreTv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        readyGo(MoreActivity.class);
+                    }
+                });
             }
         };
         adapterList.add(activityAdapter);
@@ -225,7 +233,9 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                 moreTv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(mContext, "more", Toast.LENGTH_SHORT).show();
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(CourseListActivity.EXTRA_ENTER_TYPE,5);
+                        readyGo(CourseListActivity.class,bundle);
                     }
                 });
 
@@ -276,7 +286,9 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                     @Override
                     public void onClick(View v) {
 //                        readyGo(CourseListActivity.class);
-                        Toast.makeText(mContext, "more", Toast.LENGTH_SHORT).show();
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(CourseListActivity.EXTRA_ENTER_TYPE,4);
+                        readyGo(CourseListActivity.class,bundle);
                     }
                 });
                 final List<HomeCourseBean> choicenessCourses = collegePageBean.getChoicenessCourses();
@@ -325,8 +337,6 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
                     bundle.putString(MasterDetailActivity.EXTRA_MASTER_NAME, courseBeanList.get(position).getMaster_name());
-
-
                     readyGo(MasterDetailActivity.class, bundle);
                 }
             });

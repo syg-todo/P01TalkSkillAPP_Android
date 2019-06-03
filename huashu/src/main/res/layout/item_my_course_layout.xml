@@ -25,7 +25,7 @@
 
     <TextView
         android:id="@+id/tv_my_course_price"
-        android:layout_width="32dp"
+        android:layout_width="wrap_content"
         android:layout_height="19dp"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="11dp"

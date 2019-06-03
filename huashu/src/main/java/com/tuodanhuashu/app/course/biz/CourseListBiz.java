@@ -52,4 +52,13 @@ public class CourseListBiz {
         params.put("page_size",page_size);
         OkNetUtils.get(tag, Constants.URL.BASE_URL+Constants.URL.COLLEGE_COURSE_SJK_LIST_URL,params,context,listener);
     }
+
+    public void requestChoicenessList(int tag,String page,String page_size){
+        Map<String,String> params = new HashMap<>();
+        params.put("page",page);
+        params.put("page_size",page_size);
+        OkNetUtils.get(tag, Constants.URL.BASE_URL+Constants.URL.COLLEGE_COURSE_CHOICENESS_LIST,params,context,listener);
+    }
+
+
 }
