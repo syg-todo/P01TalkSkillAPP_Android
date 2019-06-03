@@ -86,7 +86,6 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
             int minutes = duration / 60;
             int seconds = duration % 60;
 
-
             isAudition = directory.getIs_audition();
             String time = String.format("%02d:%02d", minutes, seconds);
             holder.tvTime.setText(time);

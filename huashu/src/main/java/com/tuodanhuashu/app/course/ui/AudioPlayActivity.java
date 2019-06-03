@@ -1,9 +1,7 @@
 package com.tuodanhuashu.app.course.ui;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,11 +12,16 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.VirtualLayoutManager;
@@ -28,6 +31,7 @@ import com.aliyun.vodplayer.media.IAliyunVodPlayer;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.company.common.CommonConstants;
 import com.company.common.utils.PreferencesUtils;
+import com.company.common.utils.StringUtils;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.SimpleItemDecoration;
 import com.tuodanhuashu.app.course.AudioPlayService;
@@ -37,11 +41,11 @@ import com.tuodanhuashu.app.course.presenter.AudioPlayPresenter;
 import com.tuodanhuashu.app.course.ui.adapter.CommentAdapter;
 import com.tuodanhuashu.app.course.view.AudioPlayView;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
+import com.tuodanhuashu.app.user.ui.LoginActivity;
 import com.tuodanhuashu.app.widget.player.VideoPlayerView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -55,10 +59,11 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     @BindView(R.id.rv_play)
     RecyclerView recyclerView;
     @BindView(R.id.edit)
-    TextView tvEdit;
-
+    EditText etAudioComment;
     @BindView(R.id.tv_audio_play_send)
     TextView tvAudioPlaySend;
+    @BindView(R.id.layout_send)
+    LinearLayout layoutSend;
     VideoPlayerView playerView;
 
     ImageView ivPlayController;
@@ -121,7 +126,7 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
         setContentView(R.layout.activity_audio_play);
         ButterKnife.bind(this);
         mContext = this;
-        access_token = PreferencesUtils.getString(mContext,CommonConstants.KEY_TOKEN);
+        access_token = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN);
         Bundle bundle = getIntent().getExtras();
 
         section_id = bundle.getString(EXTRA_SECTION_ID);
@@ -161,27 +166,72 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
         viewPool.setMaxRecycledViews(0, 10);
         delegateAdapter = new DelegateAdapter(layoutManager, true);
         recyclerView.setAdapter(delegateAdapter);
+        final String content;
 
         tvAudioPlaySend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!isLogin()) {
+                    goToLogin();
+                } else {
 
+                    String content = etAudioComment.getText().toString().trim();
+                    if (TextUtils.isEmpty(content)) {
+                        Toast.makeText(mContext, "评论内容不能为空", Toast.LENGTH_SHORT).show();
+                    } else {
+//                        Toast.makeText(mContext, content, Toast.LENGTH_SHORT).show();
+                        audioPlayPresenter.sendComment(access_token, course_id, content);
+                        tvAudioPlaySend.setEnabled(false);
+                        etAudioComment.setEnabled(false);
+                        etAudioComment.setText("");
+                        Toast.makeText(mContext,"评论成功",Toast.LENGTH_SHORT).show();
+                        hideSoftKeyboard();
+                        layoutSend.requestFocus();
+                    }
+//                Toast.makeText(mContext,content,Toast.LENGTH_SHORT).show();
+//                Log.d(TAG,content);
+                }
             }
         });
 
-        tvEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG,course_id);
-                Log.d(TAG,access_token);
-                audioPlayPresenter.sendComment(access_token,course_id,"挺好的啊");
-            }
-        });
+//        tvEdit.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                audioPlayPresenter.sendComment(access_token, course_id, "挺好的啊");
+//            }
+//        });
+
         initPlayTop();
         initComment();
         delegateAdapter.setAdapters(adapterList);
 
 
+    }
+
+    private void hideSoftKeyboard() {
+        View view = getCurrentFocus();
+        if (view != null) {
+            IBinder binder = view.getWindowToken();
+            InputMethodManager manager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+            manager.hideSoftInputFromWindow(binder, InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    private boolean isLogin() {
+        String token = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN, "");
+
+        return !StringUtils.isEmpty(token);
+    }
+
+    private void goToLogin() {
+        PreferencesUtils.putString(mContext, CommonConstants.KEY_ACCOUNT_ID, "");
+        PreferencesUtils.putString(mContext, CommonConstants.KEY_TOKEN, "");
+
+        Intent intent = new Intent(mContext, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     private void initComment() {
@@ -336,7 +386,6 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     }
 
 
-
     private static class AudioPrepareListener implements IAliyunVodPlayer.OnPreparedListener {
         private WeakReference<AudioPlayActivity> activityWeakReference;
 
@@ -390,7 +439,6 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
 //    }
 
 
-
     private String transTimeIntToString(int time) {
         int minutes = time / 60_000;
         int seconds = (time % 60_000) / 1000;
@@ -401,9 +449,9 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG,"onResume");
+        Log.d(TAG, "onResume");
         if (playerView != null) {
-            Log.d(TAG,"playerView != null");
+            Log.d(TAG, "playerView != null");
             playerView.onResume();
         }
 
