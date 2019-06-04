@@ -39,7 +39,7 @@ public class CourseDetailAspectFragment extends HuaShuBaseFragment {
         model = ViewModelProviders.of(getActivity()).get(CourseDetailModel.class);
         recommendCoursesBeanList = model.getCourseDetail().getValue().getRecommendCourses();
 
-        String data = model.getCourseDetail().getValue().getSections().get(0).getSection_intro();
+//        String data = model.getCourseDetail().getValue().getSections().get(0).getSection_intro();
         Log.d(TAG,recommendCoursesBeanList.get(0).getImage_url());
         recyclerView.setAdapter(new RVRecommendationAdapter(mContext, recommendCoursesBeanList));
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));

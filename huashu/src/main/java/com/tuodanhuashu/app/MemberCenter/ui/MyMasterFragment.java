@@ -2,6 +2,7 @@ package com.tuodanhuashu.app.MemberCenter.ui;
 
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -27,6 +28,7 @@ import com.tuodanhuashu.app.base.HuaShuBaseFragment;
 import com.tuodanhuashu.app.base.SimpleItemDecoration;
 import com.tuodanhuashu.app.course.bean.MasterBean;
 import com.tuodanhuashu.app.course.presenter.MyMasterPresenter;
+import com.tuodanhuashu.app.course.ui.MasterDetailActivity;
 import com.tuodanhuashu.app.course.view.MyMasterView;
 
 import java.util.ArrayList;
@@ -121,6 +123,15 @@ public class MyMasterFragment extends HuaShuBaseFragment implements MyMasterView
                     .apply(optionsVip)
                     .into(holder.imgVip);
 
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(MasterDetailActivity.EXTRA_MASTER_ID,masterId);
+                    readyGo(MasterDetailActivity.class,bundle);
+                }
+            });
             holder.txtNmae.setText(master.getName());
             holder.txtBrief.setText(master.getP_signature());
             holder.txtFollow.setSelected(true);

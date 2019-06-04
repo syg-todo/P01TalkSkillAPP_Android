@@ -104,7 +104,6 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
     private String course_id = "";
 
-    //    private String accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN,"111");
 
 
     private String accessToken = "";
@@ -134,9 +133,6 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         super.initView();
         Log.d(TAG, PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN, "111"));
         tvTitle.setText(course_name);
-
-        ImageView imageView = new ImageView(mContext);
-
 
         ivDownload.getDrawable().setTint(getResources().getColor(R.color.black));
         ivShare.getDrawable().setTint(getResources().getColor(R.color.black));
@@ -483,11 +479,12 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         super.getBundleExtras(extras);
         course_name = extras.getString(EXTRA_COURSE_NAME);
         course_id = extras.getString(EXTRA_COURSE_ID);
-
+        Log.d(TAG,course_id);
     }
 
     @Override
     public void getCourseDetailSuccess(CourseDetailBean courseDetailBean) {
+        Log.d(TAG,"getCourseDetailSuccess");
         recommendCoursesBeanList = courseDetailBean.getRecommendCourses();
         courseBean = courseDetailBean.getCourse();
         model.setCourseDetail(courseDetailBean);

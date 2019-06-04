@@ -59,10 +59,11 @@ public class RVRecommendationAdapter extends RecyclerView.Adapter<RVRecommendati
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
-                bundle.putString(CourseDetailActivity.EXTRA_COURSE_ID, String.valueOf(courseBeanList.get(position).getId()));
+                bundle.putString(CourseDetailActivity.EXTRA_COURSE_ID, courseBeanList.get(position).getId());
                 bundle.putString(CourseDetailActivity.EXTRA_COURSE_NAME, courseBeanList.get(position).getCourse_name());
                 Intent intent = new Intent(mContext, CourseDetailActivity.class);
-                mContext.startActivity(intent, bundle);
+                intent.putExtras(bundle);
+                mContext.startActivity(intent);
             }
         });
 

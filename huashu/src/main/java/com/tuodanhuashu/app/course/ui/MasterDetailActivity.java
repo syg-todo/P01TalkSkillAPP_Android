@@ -1,6 +1,8 @@
 package com.tuodanhuashu.app.course.ui;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,22 +25,30 @@ import android.widget.Toast;
 import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.VirtualLayoutManager;
 import com.alibaba.android.vlayout.layout.LinearLayoutHelper;
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.company.common.CommonConstants;
 import com.company.common.utils.DisplayUtil;
+import com.company.common.utils.PreferencesUtils;
 import com.tuodanhuashu.app.MemberCenter.ui.MyCourseFragment;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseActivity;
+import com.tuodanhuashu.app.course.bean.MasterBean;
+import com.tuodanhuashu.app.course.bean.MasterDetailModel;
+import com.tuodanhuashu.app.course.presenter.MasterDetailPresenter;
 import com.tuodanhuashu.app.course.ui.fragment.CourseListFragment;
+import com.tuodanhuashu.app.course.view.MasterDetailView;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
+import com.tuodanhuashu.app.home.bean.HomeCourseBean;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 
-public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnClickListener {
+public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnClickListener, MasterDetailView {
 
+    private static final String TAG = MasterDetailActivity.class.getSimpleName();
     @BindView(R.id.tv_master_detail_head_title)
     TextView txtTitle;
 
@@ -50,13 +61,19 @@ public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnC
     private List<String> titles = new ArrayList<>();
     private List<Fragment> fragments = new ArrayList<>();
 
+    private MasterDetailPresenter masterDetailPresenter;
+
     private static final int TYPE_MASTER = 1;
     private static final int TYPE_TAB = 2;
 
     private DelegateAdapter delegateAdapter;
 
-    private String isRecord;//是否关注 1已关注 2未关注
-
+    private String accessToken;
+    private int isRecord;//是否关注 1已关注 0未关注
+    private String masterName;//导师名字
+    private String signature;//导师签名
+    private String bannerUrl;
+    private List<HomeCourseBean> courseBeanList = new ArrayList<>();
     private List<DelegateAdapter.Adapter> adapterList = new ArrayList<>();
 
     public static final String EXTRA_MASTER_NAME = "master_name";
@@ -65,6 +82,8 @@ public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnC
     public static final String EXTRA_MASTER_ID = "master_id";
     private String master_id = "";
 
+
+    private MasterDetailModel model;
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_master_detail;
@@ -86,10 +105,8 @@ public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnC
         viewPool.setMaxRecycledViews(0, 10);
         delegateAdapter = new DelegateAdapter(layoutManager, true);
 
-        initMaster();
-        initTab();
-        delegateAdapter.setAdapters(adapterList);
         recyclerView.setAdapter(delegateAdapter);
+
         ivHeadBack.getDrawable().setTint(Color.parseColor("#000000"));
         ivHeadBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,11 +174,62 @@ public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnC
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
+                TextView tvMasterName = holder.getView(R.id.tv_master_detail_name);
+                TextView tvMasterSignature = holder.getView(R.id.tv_master_detail_brief);
+                ImageView ivMasterBanner = holder.getView(R.id.iv_master_detail_image);
+                tvMasterName.setText(masterName);
+                tvMasterSignature.setText(signature);
+                Glide.with(mContext).load(bannerUrl).into(ivMasterBanner);
+
                 final TextView txtFollow = holder.getView(R.id.tv_master_detail_follow);
+//                txtFollow.setEnabled(true);
+                txtFollow.setClickable(true);
+                txtFollow.setText(isRecord == 1 ? "已关注" : "关注");
+                txtFollow.setSelected(isRecord == 1);
+                txtFollow.setTextColor(isRecord == 1 ? Color.parseColor("#BFBFBF") : Color.parseColor("#FF6969"));
                 txtFollow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        txtFollow.setSelected(true);
+                        if (isLogin()) {
+                            switch (isRecord) {
+                                case 1:
+                                    final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                                    builder.setMessage("取消关注？");
+                                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            masterDetailPresenter.unrecordMaster(accessToken, master_id);
+                                            txtFollow.setText("关注");
+                                            txtFollow.setTextColor(Color.parseColor("#FF6969"));
+                                            txtFollow.setSelected(false);
+                                            isRecord = 0;
+
+                                        }
+                                    });
+                                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                        }
+                                    });
+                                    builder.show();
+                                    break;
+                                case 0:
+                                    masterDetailPresenter.recordMaster(accessToken, master_id);
+                                    txtFollow.setText("已关注");
+                                    txtFollow.setTextColor(Color.parseColor("#BFBFBF"));
+                                    txtFollow.setSelected(true);
+                                    isRecord = 1;
+                                    break;
+                            }
+//                            }
+//                            isCheckout = isCheckout.equals("1") ? "2" : "1";
+//                            Toast.makeText(mContext, "click" + isCheckout, Toast.LENGTH_SHORT).show();
+//                            txtFollow.setText(isCheckout.equals("1") ? "已关注" : "关注");
+//                            txtFollow.setSelected(isCheckout.equals("1"));
+//                            txtFollow.setTextColor(isCheckout.equals("1") ? Color.parseColor("#BFBFBF") : Color.parseColor("#FF6969"));
+                        }else {
+                            goToLogin();
+                        }
                     }
                 });
 
@@ -192,6 +260,11 @@ public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnC
     protected void initData() {
         super.initData();
 
+        model = ViewModelProviders.of(this).get(MasterDetailModel.class);
+        accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN,"");
+        Log.d(TAG,accessToken);
+        masterDetailPresenter = new MasterDetailPresenter(mContext, this);
+        masterDetailPresenter.requestMasterDetail(accessToken, master_id);
     }
 
     public static View getTabView(Context context, String text, int indicatorWidth, int indicatorHeight, boolean isSelected) {
@@ -225,5 +298,40 @@ public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnC
                 Toast.makeText(mContext, "分享", Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    @Override
+    public void getMasterDetailSuccess(MasterBean masterBean) {
+        masterName = masterBean.getName();
+        signature = masterBean.getP_signature();
+        isRecord = masterBean.getIs_record();
+        bannerUrl = masterBean.getBanner_url();
+
+        model.setMasterDetail(masterBean);
+        initMaster();
+        initTab();
+        delegateAdapter.setAdapters(adapterList);
+
+    }
+
+    @Override
+    public void getMasterDetailFail(String msg) {
+
+    }
+
+    @Override
+    public void getRecordSuccess() {
+        Toast.makeText(mContext,"关注成功",Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void getUnrecordSuccess() {
+        Toast.makeText(mContext,"取消关注成功",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void getRecordFail(String msg) {
+
     }
 }

@@ -337,6 +337,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
                     bundle.putString(MasterDetailActivity.EXTRA_MASTER_NAME, courseBeanList.get(position).getMaster_name());
+                    bundle.putString(MasterDetailActivity.EXTRA_MASTER_ID,courseBeanList.get(position).getId());
                     readyGo(MasterDetailActivity.class, bundle);
                 }
             });
@@ -415,6 +416,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
                     bundle.putString(MasterDetailActivity.EXTRA_MASTER_NAME, courseBeanList.get(position).getMaster_name());
+                    bundle.putString(MasterDetailActivity.EXTRA_MASTER_ID,courseBeanList.get(position).getId());
                     readyGo(MasterDetailActivity.class, bundle);
                 }
             });
