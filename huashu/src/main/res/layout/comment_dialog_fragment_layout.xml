@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <EditText
+        android:id="@+id/et_comment_dialgo"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:background="@drawable/shape_play_edittext"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="@dimen/dp_10"
+        android:hint="写下你的想法~"
+        android:gravity="top"
+        android:paddingLeft="@dimen/dp_10"
+        android:maxLines="3"
+        android:paddingTop="5dp"/>
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="26dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_comment_dialgo"
+        android:layout_marginRight="@dimen/dp_10"
+        android:text="发送"
+        android:textColor="@color/white"
+
+        android:background="@drawable/shape_button_send_clickable"
+        android:id="@+id/btn_comment_dialog_send"
+        android:layout_marginTop="@dimen/dp_10"/>
+
+    <TextView
+        android:id="@+id/tv_comment_max"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="@id/et_comment_dialgo"
+        app:layout_constraintBottom_toBottomOf="@id/et_comment_dialgo"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginBottom="10dp"
+        android:text="/300"/>
+
+    <TextView
+        android:id="@+id/tv_comment_current"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toLeftOf="@id/tv_comment_max"
+        app:layout_constraintBottom_toBottomOf="@id/et_comment_dialgo"
+        android:layout_marginBottom="10dp"
+        android:text="0"/>
+</android.support.constraint.ConstraintLayout>

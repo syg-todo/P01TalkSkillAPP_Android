@@ -23,7 +23,7 @@
                 android:layout_alignParentBottom="true"
                 android:baselineAligned="false">
 
-                <android.support.v7.widget.AppCompatEditText
+                <TextView
                     android:id="@+id/edit"
                     android:layout_width="0dp"
                     android:layout_weight="1"

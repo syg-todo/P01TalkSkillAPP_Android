@@ -12,16 +12,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.VirtualLayoutManager;
@@ -39,6 +34,7 @@ import com.tuodanhuashu.app.course.bean.CommentBean;
 import com.tuodanhuashu.app.course.bean.SectionBean;
 import com.tuodanhuashu.app.course.presenter.AudioPlayPresenter;
 import com.tuodanhuashu.app.course.ui.adapter.CommentAdapter;
+import com.tuodanhuashu.app.course.ui.fragment.CommentDialogFragment;
 import com.tuodanhuashu.app.course.view.AudioPlayView;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
 import com.tuodanhuashu.app.user.ui.LoginActivity;
@@ -51,7 +47,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AudioPlayActivity extends AppCompatActivity implements AudioPlayView {
+public class AudioPlayActivity extends AppCompatActivity implements AudioPlayView, DialogFragmentDataCallback {
 
     private static final String TAG = AudioPlayActivity.class.getSimpleName();
     private static final int TYPE_TOP = 0;
@@ -59,22 +55,22 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     @BindView(R.id.rv_play)
     RecyclerView recyclerView;
     @BindView(R.id.edit)
-    EditText etAudioComment;
+    TextView tvAudioComment;
     @BindView(R.id.tv_audio_play_send)
     TextView tvAudioPlaySend;
     @BindView(R.id.layout_send)
     LinearLayout layoutSend;
     VideoPlayerView playerView;
 
-    ImageView ivPlayController;
     ImageView ivPlayShare;
     ImageView ivDownload;
     SeekBar seekBar;
-    TextView tvPlayDuration;
     TextView tvPlayCurrent;
-    ImageView ivPlayBack;
     TextView tvPlayCourseName;
+    private String isPay;
     private boolean isPlaying = false;
+
+    private String content;
     //    private MediaPlayer mediaPlayer;
 //    private MyConnection coon;
     private AudioPlayService.MyBinder audioController;
@@ -149,7 +145,8 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     }
 
     private void initData() {
-        access_token = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN);
+        isPay =
+                access_token = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN);
         audioPlayPresenter = new AudioPlayPresenter(mContext, this);
         audioPlayPresenter.requestCourseClassList(access_token, section_id);
 
@@ -166,41 +163,19 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
         viewPool.setMaxRecycledViews(0, 10);
         delegateAdapter = new DelegateAdapter(layoutManager, true);
         recyclerView.setAdapter(delegateAdapter);
-        final String content;
 
-        tvAudioPlaySend.setOnClickListener(new View.OnClickListener() {
+        tvAudioComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!isLogin()) {
                     goToLogin();
                 } else {
-
-                    String content = etAudioComment.getText().toString().trim();
-                    if (TextUtils.isEmpty(content)) {
-                        Toast.makeText(mContext, "评论内容不能为空", Toast.LENGTH_SHORT).show();
-                    } else {
-//                        Toast.makeText(mContext, content, Toast.LENGTH_SHORT).show();
-                        audioPlayPresenter.sendComment(access_token, course_id, content);
-                        tvAudioPlaySend.setEnabled(false);
-                        etAudioComment.setEnabled(false);
-                        etAudioComment.setText("");
-                        Toast.makeText(mContext,"评论成功",Toast.LENGTH_SHORT).show();
-                        hideSoftKeyboard();
-                        layoutSend.requestFocus();
-                    }
-//                Toast.makeText(mContext,content,Toast.LENGTH_SHORT).show();
-//                Log.d(TAG,content);
+                    CommentDialogFragment dialogFragment = new CommentDialogFragment();
+                    dialogFragment.show(getFragmentManager(), "tag");
                 }
             }
         });
 
-//        tvEdit.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                audioPlayPresenter.sendComment(access_token, course_id, "挺好的啊");
-//            }
-//        });
 
         initPlayTop();
         initComment();
@@ -209,14 +184,6 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
 
     }
 
-    private void hideSoftKeyboard() {
-        View view = getCurrentFocus();
-        if (view != null) {
-            IBinder binder = view.getWindowToken();
-            InputMethodManager manager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-            manager.hideSoftInputFromWindow(binder, InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
 
     private boolean isLogin() {
         String token = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN, "");
@@ -239,13 +206,8 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
-
                 rvPlayComment = holder.getView(R.id.rv_play_comment);
 
-
-//                rvPlayComment.setAdapter(adapter);
-//                rvPlayComment.addItemDecoration(new SimpleItemDecoration());
-//                rvPlayComment.setLayoutManager(new LinearLayoutManager(mContext));
             }
         };
         adapterList.add(adapterComment);
@@ -263,21 +225,16 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
                 playerView.setOnPreparedListener(new AudioPrepareListener((AudioPlayActivity) mContext));
                 String url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
 
-//                String url = "http://m10.music.126.net/20190528134504/5d4b7996319188b6c32679ad16598d0e/ymusic/c42b/91c2/697a/6ce5fa08bda832ee45a32e2d7087fbbc.mp3";
                 AliyunLocalSource.AliyunLocalSourceBuilder alsb = new AliyunLocalSource.AliyunLocalSourceBuilder();
                 alsb.setSource(url);
                 AliyunLocalSource localSource = alsb.build();
                 playerView.setLocalSource(localSource);
                 playerView.setAudio(true);
                 playerView.setAutoPlay(true);//设置自动播放
-//                playerView.setBackground(R.drawable.test);
-//                ivPlayController = holder.getView(R.id.iv_play_controller);
+
                 ivPlayShare = holder.getView(R.id.iv_play_share);
                 ivDownload = holder.getView(R.id.iv_play_download);
-//                seekBar = holder.getView(R.id.seekbar_play);
-//                tvPlayDuration = holder.getView(R.id.tv_play_duration);
-//                tvPlayCurrent = holder.getView(R.id.tv_play_current);
-//                ivPlayBack = holder.getView(R.id.iv_play_head_back);
+
                 tvPlayCourseName = holder.getView(R.id.tv_play_course_name);
 
 
@@ -336,6 +293,7 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     @Override
     public void getSectionSuccess(SectionBean section) {
         commentsBeanList = section.getComments();
+
         adapter = new CommentAdapter(mContext, commentsBeanList);
         rvPlayComment.setAdapter(adapter);
 
@@ -386,6 +344,13 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     }
 
 
+    @Override
+    public void setCommentText(String content) {
+        this.content = content;
+        audioPlayPresenter.sendComment(access_token, course_id, content);
+    }
+
+
     private static class AudioPrepareListener implements IAliyunVodPlayer.OnPreparedListener {
         private WeakReference<AudioPlayActivity> activityWeakReference;
 
@@ -411,33 +376,6 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
 //        FixedToastUtils.show(AliyunPlayerSkinActivity.this.getApplicationContext(),R.string.toast_prepare_success);
     }
 
-//    private class MyConnection implements ServiceConnection {
-//
-//        @Override
-//        public void onServiceConnected(ComponentName name, IBinder service) {
-//            Log.d("111", "onServiceConnected");
-//
-//            audioController = (AudioPlayService.MyBinder) service;
-//            updatePlayText();
-//            //设置进度条的最大值
-//            int duration = audioController.getDuration();
-//            String time = transTimeIntToString(duration);
-//
-//            tvPlayDuration.setText("/" + time);
-//            tvPlayCurrent.setText("00:00");
-//            seekBar.setMax(audioController.getDuration());
-//
-//            seekBar.setProgress(audioController.getCurrentPostion());
-//
-//        }
-//
-//        @Override
-//        public void onServiceDisconnected(ComponentName name) {
-//
-//        }
-//
-//    }
-
 
     private String transTimeIntToString(int time) {
         int minutes = time / 60_000;
@@ -449,9 +387,9 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume");
+
         if (playerView != null) {
-            Log.d(TAG, "playerView != null");
+
             playerView.onResume();
         }
 
@@ -460,7 +398,6 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        unbindService(coon);
     }
 
     @Override
@@ -477,26 +414,4 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
 
     }
 
-//    public void updatePlayText() {
-//        if (playerView.isPlaying()) {
-//
-//            ivPlayController.setSelected(true);
-//
-//            handler.sendEmptyMessage(UPDATE_PROGRESS);
-//        } else {
-//            ivPlayController.setSelected(false);
-//
-//        }
-//
-//
-//    }
-
-//    public void play() {
-//
-//        audioController.play();
-//        if (audioController != null) {
-//            handler.sendEmptyMessage(UPDATE_PROGRESS);
-//        }
-//        updatePlayText();
-//    }
 }

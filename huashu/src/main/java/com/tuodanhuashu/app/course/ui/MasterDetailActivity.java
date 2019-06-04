@@ -55,6 +55,8 @@ public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnC
 
     private DelegateAdapter delegateAdapter;
 
+    private String isRecord;//是否关注 1已关注 2未关注
+
     private List<DelegateAdapter.Adapter> adapterList = new ArrayList<>();
 
     public static final String EXTRA_MASTER_NAME = "master_name";
@@ -88,7 +90,7 @@ public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnC
         initTab();
         delegateAdapter.setAdapters(adapterList);
         recyclerView.setAdapter(delegateAdapter);
-
+        ivHeadBack.getDrawable().setTint(Color.parseColor("#000000"));
         ivHeadBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,10 +134,8 @@ public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnC
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
                         changeTabStatus(tab, true);
-                        Log.d("111", fragments.get(tab.getPosition()).toString());
                         fragmentManager.beginTransaction().replace(R.id.frame_master_detail, fragments.get(tab.getPosition())).commit();
                     }
-
 
                     @Override
                     public void onTabUnselected(TabLayout.Tab tab) {
