@@ -52,6 +52,7 @@ public class CourseDetailPresenter extends BasePresenter {
         switch (tag) {
             case TAG_COURSE_DETAIL:
                 CourseDetailBean courseDetailBean = JsonUtils.getJsonToBean(serverResponse.getData(), CourseDetailBean.class);
+                Log.d("CourseDetailActivity","presenter:"+courseDetailBean.getCourse().getIs_checkout());
                 courseDetailView.getCourseDetailSuccess(courseDetailBean);
                 break;
             case TAG_RECORD_MASTER:

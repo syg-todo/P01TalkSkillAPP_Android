@@ -105,7 +105,6 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     private String course_id = "";
 
 
-
     private String accessToken = "";
     private CourseDetailModel model;
 
@@ -127,11 +126,21 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         return R.layout.activity_course_datail;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refresh();
+        initView();
+        initData();
+    }
+
+    private void refresh() {
+        courseDetailPresenter.requestCourseDetail(accessToken, course_id);
+    }
 
     @Override
     protected void initView() {
         super.initView();
-        Log.d(TAG, PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN, "111"));
         tvTitle.setText(course_name);
 
         ivDownload.getDrawable().setTint(getResources().getColor(R.color.black));
@@ -222,7 +231,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN);
         model = ViewModelProviders.of(this).get(CourseDetailModel.class);
         courseDetailPresenter = new CourseDetailPresenter(mContext, this);
-        courseDetailPresenter.requestCourseDetail(accessToken, course_id);
+
 
     }
 
@@ -318,13 +327,14 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     }
 
 
+
     private void initMasterRow() {
+
         HomeAdapter adapterMasterRow = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_MASTER_ROW, R.layout.course_detail_master_row_layout) {
             @Override
             public void onBindViewHolder(final BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
 
-                isCheckout = courseBean.getIs_checkout();
                 masterAvatarUrl = courseBean.getMaster_avatar_url();
                 masterId = courseBean.getMaster_id();
                 final CircleImageView imgMasterAvatar = holder.getView(R.id.img_course_detail_master);
@@ -337,13 +347,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                         .load(masterAvatarUrl)
                         .apply(options)
                         .into(imgMasterAvatar);
-//                        .into(new SimpleTarget<Drawable>() {
-//                            @Override
-//                            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-//                                Log.d(TAG,"onResourceReady");
-//                                imgMasterAvatar.setDrawable(resource);
-//                            }
-//                        });
+
                 final CircleImageView imgMasterTag = holder.getView(R.id.img_course_detail_master_tag);
                 RequestOptions optionsTag = new RequestOptions()
                         .override(DisplayUtil.dp2px(15), DisplayUtil.dp2px(15))
@@ -479,14 +483,17 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         super.getBundleExtras(extras);
         course_name = extras.getString(EXTRA_COURSE_NAME);
         course_id = extras.getString(EXTRA_COURSE_ID);
-        Log.d(TAG,course_id);
     }
 
     @Override
     public void getCourseDetailSuccess(CourseDetailBean courseDetailBean) {
-        Log.d(TAG,"getCourseDetailSuccess");
+        if (courseBean != null) {
+            courseBean = null;
+        }
         recommendCoursesBeanList = courseDetailBean.getRecommendCourses();
         courseBean = courseDetailBean.getCourse();
+        isCheckout = courseBean.getIs_checkout();
+
         model.setCourseDetail(courseDetailBean);
         initCourseTop();
         initMasterRow();
