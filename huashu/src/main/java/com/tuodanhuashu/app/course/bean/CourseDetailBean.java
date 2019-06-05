@@ -6,10 +6,10 @@ public class CourseDetailBean {
 
 
     /**
-     * course : {"id":"6","course_name":"社群课","image_url":"http://huashu.zhongpin.me/uploads/course/201905231715042942.png","image_small_url":"http://huashu.zhongpin.me/uploads/course/201905231715097514.png","price":"500.00","sale_price":"300.00","join_count":"0","course_intro":"渡人终渡己心意还相惜","media_type":"1","master_id":"4","class_id":"0","course_type":"2","master_name":"导师4","activity_price":"0","is_pay":"2","is_checkout":"2","share_image_url":"http://huashu.zhongpin.me/uploads/course/201905231715097514.png","share_url":""}
-     * sections : [{"id":"1","course_id":"6","section_name":"第一章","section_intro":"&lt;p&gt;情感：生活现象与人心的相互作用下，产生的感受。&lt;/p&gt;&lt;p&gt;情感客观的方面：生活现象中蕴含了情感，人的大脑可以感受到这种情感。&lt;/p&gt;&lt;p&gt;情感主观的方面：第一，即使过同样的生活，美好的人和丑恶的人对生活的感觉不同，第二，受到负面情感刺激而心情不好时，感受情感的能力就下降了。&lt;/p&gt;&lt;p&gt;因此，情感是生活现象与人心共同决定的，而不能单独由某一方来定。&lt;/p&gt;&lt;p&gt;情感是人对现实的一种比较固定的态度，它表现为与人的个性、道德经验等有关的各种体验之中。&lt;span class=&quot;sup--normal&quot; data-sup=&quot;3&quot; data-ctrmap=&quot;:3,&quot; style=&quot;font-size: 10.5px; line-height: 0; position: relative; vertical-align: baseline; top: -0.5em; margin-left: 2px; color: rgb(51, 102, 204); cursor: pointer; padding: 0px 2px;&quot;&gt;&amp;nbsp;[3]&lt;/span&gt;&lt;a style=&quot;color: rgb(19, 110, 194); position: relative; top: -50px; font-size: 0px; line-height: 0;&quot; name=&quot;ref_[3]_19222975&quot;&gt;&lt;/a&gt;&amp;nbsp;&lt;/p&gt;&lt;p&gt;我们常常说\u201c感觉\u201d这个词，例如：一对恋人分手了，理由是彼此对彼此没有感觉了，再例如：活的麻木了，已经对生活没感觉了。感觉就是从生活现象里感受到的情感，这是由生活现象和人心两方面共同决定的情感。&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;","duration":"240","is_audition":"1"},{"id":"2","course_id":"6","section_name":"第二章","section_intro":"&lt;p&gt;&lt;span style=&quot;color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);&quot;&gt;这套课程会帮助你变成更好的男人，教你\u201c大道至简\u201d的求爱方法：&amp;nbsp;&lt;/span&gt;&lt;br style=&quot;margin: 0px; padding: 0px; color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; white-space: normal; background-color: rgb(255, 255, 255);&quot;/&gt;&lt;span style=&quot;color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);&quot;&gt;1.如何在交谈中吸引女人&amp;nbsp;&lt;/span&gt;&lt;br style=&quot;margin: 0px; padding: 0px; color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; white-space: normal; background-color: rgb(255, 255, 255);&quot;/&gt;&lt;span style=&quot;color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);&quot;&gt;2.调情的艺术&amp;nbsp;&lt;/span&gt;&lt;br style=&quot;margin: 0px; padding: 0px; color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; white-space: normal; background-color: rgb(255, 255, 255);&quot;/&gt;&lt;span style=&quot;color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);&quot;&gt;3.邂逅（搭讪）的艺术&amp;nbsp;&lt;/span&gt;&lt;br style=&quot;margin: 0px; padding: 0px; color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; white-space: normal; background-color: rgb(255, 255, 255);&quot;/&gt;&lt;span style=&quot;color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);&quot;&gt;4.约会大师全流程（选择\u2014邀约\u2014见面\u2014亲密关系）&amp;nbsp;&lt;/span&gt;&lt;br style=&quot;margin: 0px; padding: 0px; color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; white-space: normal; background-color: rgb(255, 255, 255);&quot;/&gt;&lt;span style=&quot;color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);&quot;&gt;5.长期关系的经营与维护&amp;nbsp;&lt;/span&gt;&lt;br style=&quot;margin: 0px; padding: 0px; color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; white-space: normal; background-color: rgb(255, 255, 255);&quot;/&gt;&lt;span style=&quot;color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);&quot;&gt;协助男人更好地理解女人，提升你的\u201c情商\u201d、\u201c恋商\u201d以及\u201c两性相处\u201d的能力，最终，让你获得爱的能力，让你喜欢的TA爱上你！&amp;nbsp;&lt;/span&gt;&lt;br style=&quot;margin: 0px; padding: 0px; color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; white-space: normal; background-color: rgb(255, 255, 255);&quot;/&gt;&lt;span style=&quot;color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);&quot;&gt;本套课程可细分为以下几大核心内容：&amp;nbsp;&lt;/span&gt;&lt;br style=&quot;margin: 0px; padding: 0px; color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; white-space: normal; background-color: rgb(255, 255, 255);&quot;/&gt;&lt;span style=&quot;color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);&quot;&gt;倾听女人心，了解女人的真实情感需求&amp;nbsp;&lt;/span&gt;&lt;br style=&quot;margin: 0px; padding: 0px; color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; white-space: normal; background-color: rgb(255, 255, 255);&quot;/&gt;&lt;span style=&quot;color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);&quot;&gt;展示男人的核心价值与核心吸引力&amp;nbsp;&lt;/span&gt;&lt;br style=&quot;margin: 0px; padding: 0px; color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; white-space: normal; background-color: rgb(255, 255, 255);&quot;/&gt;&lt;span style=&quot;color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);&quot;&gt;约会的艺术与两性相处的智慧&amp;nbsp;&lt;/span&gt;&lt;br style=&quot;margin: 0px; padding: 0px; color: rgb(68, 68, 68); font-family: &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;WenQuanYi Micro Hei&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, Arial, sans-serif; font-size: 14px; white-space: normal; background-color: rgb(255, 255, 255);&quot;/&gt;&lt;br/&gt;&lt;/p&gt;","duration":"120","is_audition":"1"}]
-     * comments : [{"mobile":"13815030973","nickname":"东东","heade_img":"https://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83erqTAeZqj2xX0M803XtyibGkaxJnRweYk86h0tFXiaTHWY04Mj9sf9GhGDlNmaB0PhUU1ibrKxpaRP3w/132","content":"很好的啊","like_count":"1","is_like":"2","create_date":"1970-01-01","reply":[{"mobile":"13815030973","nickname":"东东","heade_img":"https://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83erqTAeZqj2xX0M803XtyibGkaxJnRweYk86h0tFXiaTHWY04Mj9sf9GhGDlNmaB0PhUU1ibrKxpaRP3w/132","content":"时的很好的啊","create_date":"1970-01-01"}]}]
-     * recommendCourses : [{"id":"6","course_name":"社群课","image_url":"http://huashu.zhongpin.me/uploads/course/201905231715042942.png","image_small_url":"http://huashu.zhongpin.me/uploads/course/201905231715097514.png","price":"500.00","sale_price":"300.00","join_count":"0","master_name":"导师4","activity_price":"0.00"},{"id":"7","course_name":"测试的","image_url":"http://huashu.zhongpin.me/uploads/course/201905281410506041.png","image_small_url":"http://huashu.zhongpin.me/uploads/course/201905281410576589.png","price":"500.00","sale_price":"400.00","join_count":"0","master_name":"导师1","activity_price":"0.00"}]
+     * course : {"id":"4","course_name":"课程3","image_url":"http://huashu.zhongpin.me/uploads/course/201905231709159241.png","image_small_url":"http://huashu.zhongpin.me/uploads/course/201905231709182818.png","price":"500.00","sale_price":"400.00","join_count":"0","course_intro":"愤怒往往能使对方丧胆而让步；流泪能够换得对方的同情；恐惧能将人们的心拴在一起；情感冷漠常使交往者打退堂鼓；。","media_type":"1","master_id":"3","class_id":"0","course_type":"3","course_detail":"<p class=\"one-p\" style=\"margin-top: 0px; margin-bottom: 2em; padding: 0px; line-height: 2.2; overflow-wrap: break-word; font-family: \" microsoft=\"\" segoe=\"\" hiragino=\"\" sans=\"\" wenquanyi=\"\" micro=\"\" font-size:=\"\" white-space:=\"\">习近平主席夫人彭丽媛，中共中央政治局委员、中央外事工作委员会办公室主任杨洁篪，全国人大常委会副委员长曹建明，国务委员王毅，全国政协副主席何立峰、刘新成等出席欢迎仪式。<\/p><p class=\"one-p\" style=\"margin-top: 0px; margin-bottom: 2em; padding: 0px; line-height: 2.2; overflow-wrap: break-word; font-family: \" microsoft=\"\" segoe=\"\" hiragino=\"\" sans=\"\" wenquanyi=\"\" micro=\"\" font-size:=\"\" white-space:=\"\"><img src=\"https://inews.gtimg.com/newsapp_bt/0/9146589761/1000\" class=\"content-picture\" style=\"margin: 0.6em auto; padding: 0px; border: 0px none; vertical-align: middle; max-width: 100%; display: block;\"/><em class=\"desc\" style=\"margin: 0px; padding: 0px; color: rgb(155, 158, 163); line-height: 20px; text-align: center; display: block; font-size: 14px;\">5月28日，国家主席习近平在北京人民大会堂同尼日尔总统伊素福举行会谈。这是会谈前，习近平在人民大会堂东门外广场为伊素福举行欢迎仪式。 新华社记者 刘卫兵 摄<\/em><\/p><p class=\"one-p\" style=\"margin-top: 0px; margin-bottom: 2em; padding: 0px; line-height: 2.2; overflow-wrap: break-word; font-family: \" microsoft=\"\" segoe=\"\" hiragino=\"\" sans=\"\" wenquanyi=\"\" micro=\"\" font-size:=\"\" white-space:=\"\">陪同伊素福访华的有总统夫人、总统办公厅主任、外交、合作、非洲一体化和尼日尔侨民部部长等。<\/p><p class=\"one-p\" style=\"margin-top: 0px; margin-bottom: 2em; padding: 0px; line-height: 2.2; overflow-wrap: break-word; font-family: \" microsoft=\"\" segoe=\"\" hiragino=\"\" sans=\"\" wenquanyi=\"\" micro=\"\" font-size:=\"\" white-space:=\"\">军乐团奏尼中两国国歌。鸣礼炮21响。<\/p><p><br/><\/p>","master_name":"导师3","master_avatar_url":"http://huashu.zhongpin.me/uploads/master/header/201905231659514894.png","activity_price":"0","is_pay":"2","is_checkout":"1","share_image_url":"http://huashu.zhongpin.me/uploads/course/201905231709182818.png","share_url":"http://huashu.zhongpin.me/api/course/course_info/course_id/4.html"}
+     * sections : [{"id":"7","course_id":"4","section_name":"第2章","section_intro":"&lt;p&gt;33333&lt;/p&gt;","duration":"3","is_audition":"1"}]
+     * comments : []
+     * recommendCourses : [{"id":"4","course_name":"课程3","image_url":"http://huashu.zhongpin.me/uploads/course/201905231709159241.png","image_small_url":"http://huashu.zhongpin.me/uploads/course/201905231709182818.png","price":"500.00","sale_price":"400.00","join_count":"0","master_name":"导师3","activity_price":"0.00"},{"id":"5","course_name":"课程7","image_url":"http://huashu.zhongpin.me/uploads/course/201905231713111702.png","image_small_url":"http://huashu.zhongpin.me/uploads/course/201905231713152582.png","price":"500.00","sale_price":"300.00","join_count":"0","master_name":"导师4","activity_price":"0.00"}]
      */
 
     private CourseBean course;
@@ -51,25 +51,26 @@ public class CourseDetailBean {
 
     public static class CourseBean {
         /**
-         * id : 6
-         * course_name : 社群课
-         * image_url : http://huashu.zhongpin.me/uploads/course/201905231715042942.png
-         * image_small_url : http://huashu.zhongpin.me/uploads/course/201905231715097514.png
+         * id : 4
+         * course_name : 课程3
+         * image_url : http://huashu.zhongpin.me/uploads/course/201905231709159241.png
+         * image_small_url : http://huashu.zhongpin.me/uploads/course/201905231709182818.png
          * price : 500.00
-         * sale_price : 300.00
+         * sale_price : 400.00
          * join_count : 0
-         * course_intro : 渡人终渡己心意还相惜
+         * course_intro : 愤怒往往能使对方丧胆而让步；流泪能够换得对方的同情；恐惧能将人们的心拴在一起；情感冷漠常使交往者打退堂鼓；。
          * media_type : 1
-         * master_id : 4
+         * master_id : 3
          * class_id : 0
-         * course_type : 2
-         * master_name : 导师4
+         * course_type : 3
+         * course_detail : <p class="one-p" style="margin-top: 0px; margin-bottom: 2em; padding: 0px; line-height: 2.2; overflow-wrap: break-word; font-family: " microsoft="" segoe="" hiragino="" sans="" wenquanyi="" micro="" font-size:="" white-space:="">习近平主席夫人彭丽媛，中共中央政治局委员、中央外事工作委员会办公室主任杨洁篪，全国人大常委会副委员长曹建明，国务委员王毅，全国政协副主席何立峰、刘新成等出席欢迎仪式。</p><p class="one-p" style="margin-top: 0px; margin-bottom: 2em; padding: 0px; line-height: 2.2; overflow-wrap: break-word; font-family: " microsoft="" segoe="" hiragino="" sans="" wenquanyi="" micro="" font-size:="" white-space:=""><img src="https://inews.gtimg.com/newsapp_bt/0/9146589761/1000" class="content-picture" style="margin: 0.6em auto; padding: 0px; border: 0px none; vertical-align: middle; max-width: 100%; display: block;"/><em class="desc" style="margin: 0px; padding: 0px; color: rgb(155, 158, 163); line-height: 20px; text-align: center; display: block; font-size: 14px;">5月28日，国家主席习近平在北京人民大会堂同尼日尔总统伊素福举行会谈。这是会谈前，习近平在人民大会堂东门外广场为伊素福举行欢迎仪式。 新华社记者 刘卫兵 摄</em></p><p class="one-p" style="margin-top: 0px; margin-bottom: 2em; padding: 0px; line-height: 2.2; overflow-wrap: break-word; font-family: " microsoft="" segoe="" hiragino="" sans="" wenquanyi="" micro="" font-size:="" white-space:="">陪同伊素福访华的有总统夫人、总统办公厅主任、外交、合作、非洲一体化和尼日尔侨民部部长等。</p><p class="one-p" style="margin-top: 0px; margin-bottom: 2em; padding: 0px; line-height: 2.2; overflow-wrap: break-word; font-family: " microsoft="" segoe="" hiragino="" sans="" wenquanyi="" micro="" font-size:="" white-space:="">军乐团奏尼中两国国歌。鸣礼炮21响。</p><p><br/></p>
+         * master_name : 导师3
+         * master_avatar_url : http://huashu.zhongpin.me/uploads/master/header/201905231659514894.png
          * activity_price : 0
          * is_pay : 2
-         * is_checkout : 2
-         * share_image_url : http://huashu.zhongpin.me/uploads/course/201905231715097514.png
-         * share_url :
-         *
+         * is_checkout : 1
+         * share_image_url : http://huashu.zhongpin.me/uploads/course/201905231709182818.png
+         * share_url : http://huashu.zhongpin.me/api/course/course_info/course_id/4.html
          */
 
         private String id;
@@ -84,21 +85,14 @@ public class CourseDetailBean {
         private String master_id;
         private String class_id;
         private String course_type;
+        private String course_detail;
         private String master_name;
+        private String master_avatar_url;
         private String activity_price;
         private String is_pay;
         private String is_checkout;
         private String share_image_url;
         private String share_url;
-        private String master_avatar_url;
-
-        public String getMaster_avatar_url() {
-            return master_avatar_url;
-        }
-
-        public void setMaster_avatar_url(String master_avatar_url) {
-            this.master_avatar_url = master_avatar_url;
-        }
 
         public String getId() {
             return id;
@@ -196,12 +190,28 @@ public class CourseDetailBean {
             this.course_type = course_type;
         }
 
+        public String getCourse_detail() {
+            return course_detail;
+        }
+
+        public void setCourse_detail(String course_detail) {
+            this.course_detail = course_detail;
+        }
+
         public String getMaster_name() {
             return master_name;
         }
 
         public void setMaster_name(String master_name) {
             this.master_name = master_name;
+        }
+
+        public String getMaster_avatar_url() {
+            return master_avatar_url;
+        }
+
+        public void setMaster_avatar_url(String master_avatar_url) {
+            this.master_avatar_url = master_avatar_url;
         }
 
         public String getActivity_price() {
@@ -247,11 +257,11 @@ public class CourseDetailBean {
 
     public static class SectionsBean {
         /**
-         * id : 1
-         * course_id : 6
-         * section_name : 第一章
-         * section_intro : &lt;p&gt;情感：生活现象与人心的相互作用下，产生的感受。&lt;/p&gt;&lt;p&gt;情感客观的方面：生活现象中蕴含了情感，人的大脑可以感受到这种情感。&lt;/p&gt;&lt;p&gt;情感主观的方面：第一，即使过同样的生活，美好的人和丑恶的人对生活的感觉不同，第二，受到负面情感刺激而心情不好时，感受情感的能力就下降了。&lt;/p&gt;&lt;p&gt;因此，情感是生活现象与人心共同决定的，而不能单独由某一方来定。&lt;/p&gt;&lt;p&gt;情感是人对现实的一种比较固定的态度，它表现为与人的个性、道德经验等有关的各种体验之中。&lt;span class=&quot;sup--normal&quot; data-sup=&quot;3&quot; data-ctrmap=&quot;:3,&quot; style=&quot;font-size: 10.5px; line-height: 0; position: relative; vertical-align: baseline; top: -0.5em; margin-left: 2px; color: rgb(51, 102, 204); cursor: pointer; padding: 0px 2px;&quot;&gt;&amp;nbsp;[3]&lt;/span&gt;&lt;a style=&quot;color: rgb(19, 110, 194); position: relative; top: -50px; font-size: 0px; line-height: 0;&quot; name=&quot;ref_[3]_19222975&quot;&gt;&lt;/a&gt;&amp;nbsp;&lt;/p&gt;&lt;p&gt;我们常常说“感觉”这个词，例如：一对恋人分手了，理由是彼此对彼此没有感觉了，再例如：活的麻木了，已经对生活没感觉了。感觉就是从生活现象里感受到的情感，这是由生活现象和人心两方面共同决定的情感。&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-         * duration : 240
+         * id : 7
+         * course_id : 4
+         * section_name : 第2章
+         * section_intro : &lt;p&gt;33333&lt;/p&gt;
+         * duration : 3
          * is_audition : 1
          */
 
@@ -311,17 +321,16 @@ public class CourseDetailBean {
         }
     }
 
-
     public static class RecommendCoursesBean {
         /**
-         * id : 6
-         * course_name : 社群课
-         * image_url : http://huashu.zhongpin.me/uploads/course/201905231715042942.png
-         * image_small_url : http://huashu.zhongpin.me/uploads/course/201905231715097514.png
+         * id : 4
+         * course_name : 课程3
+         * image_url : http://huashu.zhongpin.me/uploads/course/201905231709159241.png
+         * image_small_url : http://huashu.zhongpin.me/uploads/course/201905231709182818.png
          * price : 500.00
-         * sale_price : 300.00
+         * sale_price : 400.00
          * join_count : 0
-         * master_name : 导师4
+         * master_name : 导师3
          * activity_price : 0.00
          */
 

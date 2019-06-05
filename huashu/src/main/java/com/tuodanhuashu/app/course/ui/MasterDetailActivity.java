@@ -37,6 +37,7 @@ import com.tuodanhuashu.app.course.bean.MasterBean;
 import com.tuodanhuashu.app.course.bean.MasterDetailModel;
 import com.tuodanhuashu.app.course.presenter.MasterDetailPresenter;
 import com.tuodanhuashu.app.course.ui.fragment.CourseListFragment;
+import com.tuodanhuashu.app.course.ui.fragment.WebViewFragment;
 import com.tuodanhuashu.app.course.view.MasterDetailView;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
@@ -125,7 +126,7 @@ public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnC
                 titles.add("个人介绍");
                 titles.add("相关课程");
 
-                MyCourseFragment fragment = new MyCourseFragment();
+                WebViewFragment fragment = new WebViewFragment();
 
                 CourseListFragment courseListFragment = new CourseListFragment();
                 fragments.add(fragment);

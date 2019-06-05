@@ -73,7 +73,7 @@ public class ControlView extends RelativeLayout {
 
     private void findAllViews() {
         ivTitleBack = findViewById(R.id.iv_player_title_back);
-
+        ivTitleBack.getDrawable().setTint(getResources().getColor(R.color.white));
         btnPlayState = findViewById(R.id.btn_player_state);
 //        ivLike = findViewById(R.id.iv_player_like);
 

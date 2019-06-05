@@ -1,5 +1,6 @@
 package com.tuodanhuashu.app.course.ui;
 
+import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,10 +22,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,7 +72,7 @@ import java.util.Map;
 import butterknife.BindView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDetailView {
+public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDetailView, View.OnClickListener {
     private static final String TAG = CourseDetailActivity.class.getSimpleName();
 
     @BindView(R.id.rv_course_detail)
@@ -84,7 +89,8 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     ImageView ivDownload;
     @BindView(R.id.iv_course_detail_head_share)
     ImageView ivShare;
-
+    @BindView(R.id.tv_course_detail_join_now)
+    TextView tvJoinNow;
     private DelegateAdapter delegateAdapter;
 
     private CourseDetailPresenter courseDetailPresenter;
@@ -97,6 +103,10 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     private String mediaType;//文件类型 1音频 2视频
     private String imageUrl;//课程图片
     private String masterId;//导师ID
+    private String shareUrl;
+    private String salePrice;
+
+    private Dialog shareDialog;
     public static final String EXTRA_COURSE_NAME = "course_name";
 
     private String course_name = "";
@@ -130,8 +140,8 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     protected void onResume() {
         super.onResume();
         refresh();
-        initView();
         initData();
+        initView();
     }
 
     private void refresh() {
@@ -141,24 +151,18 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     @Override
     protected void initView() {
         super.initView();
+
+        initShareDialog();
         tvTitle.setText(course_name);
 
+
+        tvJoinNow.setOnClickListener(this);
         ivDownload.getDrawable().setTint(getResources().getColor(R.color.black));
         ivShare.getDrawable().setTint(getResources().getColor(R.color.black));
 
-        ivDownload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(mContext, "下载", Toast.LENGTH_SHORT).show();
-            }
-        });
+        ivDownload.setOnClickListener(this);
 
-        ivShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(mContext, "分享", Toast.LENGTH_SHORT).show();
-            }
-        });
+        ivShare.setOnClickListener(this);
 
 
         ivBack.setOnClickListener(new View.OnClickListener() {
@@ -228,6 +232,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     @Override
     protected void initData() {
         super.initData();
+
         accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN);
         model = ViewModelProviders.of(this).get(CourseDetailModel.class);
         courseDetailPresenter = new CourseDetailPresenter(mContext, this);
@@ -325,7 +330,6 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         tabText.setText(text);
         return view;
     }
-
 
 
     private void initMasterRow() {
@@ -493,8 +497,12 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         recommendCoursesBeanList = courseDetailBean.getRecommendCourses();
         courseBean = courseDetailBean.getCourse();
         isCheckout = courseBean.getIs_checkout();
+        salePrice = courseBean.getSale_price();
+        shareUrl = courseBean.getShare_url();
+        Log.d(TAG, "sale:" + salePrice);
 
         model.setCourseDetail(courseDetailBean);
+        tvJoinNow.setText("立即参加:" + salePrice + "元");
         initCourseTop();
         initMasterRow();
         initCourseTab();
@@ -508,4 +516,79 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     public void getCourseDetailFail(String msg) {
 
     }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tv_course_detail_join_now:
+                joinNow();
+                break;
+
+            case R.id.iv_course_detail_head_download:
+                download();
+                break;
+            case R.id.iv_course_detail_head_share:
+                share();
+                break;
+        }
+
+    }
+
+    private void share() {
+
+        shareDialog.show();
+//        courseDetailPresenter.requestCourseDetail();
+//        Toast.makeText(mContext, shareUrl, Toast.LENGTH_SHORT).show();
+    }
+
+    private void download() {
+        Toast.makeText(mContext, "download", Toast.LENGTH_SHORT).show();
+    }
+
+    private void joinNow() {
+        Toast.makeText(mContext, "joinnow", Toast.LENGTH_SHORT).show();
+    }
+
+    private void initShareDialog() {
+        shareDialog = new Dialog(mContext, R.style.BottomDialog_Animation);
+        View view = getLayoutInflater().inflate(R.layout.dialog_share_layout, null);
+        shareDialog.setContentView(view);
+        LinearLayout youIv = view.findViewById(R.id.share_you_ll);
+        LinearLayout quanLl = view.findViewById(R.id.share_quan_ll);
+        TextView cancelTv = (TextView) view.findViewById(R.id.share_cancel_tv);
+        cancelTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareDialog.dismiss();
+            }
+        });
+        youIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (courseBean != null) {
+                    shareDialog.dismiss();
+
+                    courseDetailPresenter.shareArticle(courseBean.getShare_url(), courseBean.getCourse_name(), courseBean.getCourse_intro(), "you");
+                }
+            }
+        });
+        quanLl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (courseBean != null) {
+                    shareDialog.dismiss();
+
+                    courseDetailPresenter.shareArticle(courseBean.getShare_url(), courseBean.getCourse_name(), courseBean.getCourse_intro(), "quan");
+                }
+            }
+        });
+        shareDialog.setCanceledOnTouchOutside(true);
+        Window window = shareDialog.getWindow();
+        window.setGravity(Gravity.BOTTOM);
+        WindowManager.LayoutParams params = window.getAttributes();
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        params.height = DisplayUtil.dip2px(mContext, 166.0f);
+        window.setAttributes(params);
+    }
+
 }

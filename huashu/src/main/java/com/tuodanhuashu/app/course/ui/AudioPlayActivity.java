@@ -12,7 +12,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -62,6 +64,7 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     LinearLayout layoutSend;
     VideoPlayerView playerView;
 
+    WebView webView;
     ImageView ivPlayShare;
     ImageView ivDownload;
     SeekBar seekBar;
@@ -71,6 +74,8 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     private boolean isPlaying = false;
 
     private String content;
+    private String html;
+    private String sectionName;
     //    private MediaPlayer mediaPlayer;
 //    private MyConnection coon;
     private AudioPlayService.MyBinder audioController;
@@ -128,7 +133,7 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
         section_id = bundle.getString(EXTRA_SECTION_ID);
         course_id = bundle.getString(EXTAR_COURSE_ID);
         initData();
-        initView();
+
 
         if (Build.VERSION.SDK_INT >= 21) {
             View decorView = getWindow().getDecorView();
@@ -145,8 +150,7 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     }
 
     private void initData() {
-        isPay =
-                access_token = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN);
+        isPay = access_token = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN);
         audioPlayPresenter = new AudioPlayPresenter(mContext, this);
         audioPlayPresenter.requestCourseClassList(access_token, section_id);
 
@@ -207,7 +211,10 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
                 rvPlayComment = holder.getView(R.id.rv_play_comment);
-
+                adapter = new CommentAdapter(mContext, commentsBeanList);
+                rvPlayComment.setAdapter(adapter);
+                rvPlayComment.addItemDecoration(new SimpleItemDecoration());
+                rvPlayComment.setLayoutManager(new LinearLayoutManager(mContext));
             }
         };
         adapterList.add(adapterComment);
@@ -215,11 +222,15 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
 
     private void initPlayTop() {
         HomeAdapter adapterTop = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_TOP, R.layout.play_top_layout) {
-
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
                 playerView = holder.getView(R.id.iv_play_iamge);
+                webView = holder.getView(R.id.webview_audio);
+                String content = "<p><font color='red'>hello baidu!</font></p>";
+                String htmll = "<html><header>" + html + "</header></body></html>";
+
+                webView.loadData(htmll, "text/html", "uft-8");
 
                 playerView.onResume();
                 playerView.setOnPreparedListener(new AudioPrepareListener((AudioPlayActivity) mContext));
@@ -236,7 +247,7 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
                 ivDownload = holder.getView(R.id.iv_play_download);
 
                 tvPlayCourseName = holder.getView(R.id.tv_play_course_name);
-
+                tvPlayCourseName.setText(sectionName);
 
                 ivDownload.getDrawable().setTint(getResources().getColor(R.color.white));
                 ivPlayShare.getDrawable().setTint(getResources().getColor(R.color.white));
@@ -294,14 +305,11 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     public void getSectionSuccess(SectionBean section) {
         commentsBeanList = section.getComments();
 
-        adapter = new CommentAdapter(mContext, commentsBeanList);
-        rvPlayComment.setAdapter(adapter);
-
-        rvPlayComment.addItemDecoration(new SimpleItemDecoration());
-        rvPlayComment.setLayoutManager(new LinearLayoutManager(mContext));
+        html = section.getSection_intro();
+        sectionName = section.getSection_name();
+        initView();
 
 
-        tvPlayCourseName.setText(section.getSection_name());
     }
 
     @Override
