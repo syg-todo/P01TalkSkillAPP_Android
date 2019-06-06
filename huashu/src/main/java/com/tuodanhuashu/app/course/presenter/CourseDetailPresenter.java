@@ -100,7 +100,7 @@ public class CourseDetailPresenter extends BasePresenter {
         //设置发送给朋友
         req.transaction = "设置一个tag";  //用于在回调中区分是哪个分享请求
         boolean successed = wxApi.sendReq(req);   //如果调用成功微信,会返回true
-        getBaseView().showToast(successed+"");
+//        getBaseView().showToast(successed+"");
     }
 
 

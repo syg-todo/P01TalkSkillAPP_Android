@@ -147,6 +147,7 @@
         android:layout_height="50dp">
 
         <LinearLayout
+            android:id="@+id/layout_audition"
             android:layout_width="150dp"
             android:layout_height="match_parent"
             android:background="#ffffff">

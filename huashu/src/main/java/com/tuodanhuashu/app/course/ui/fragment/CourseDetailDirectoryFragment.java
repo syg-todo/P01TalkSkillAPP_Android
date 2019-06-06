@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseFragment;
@@ -30,6 +32,8 @@ import butterknife.BindView;
 public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
     @BindView(R.id.rv_course_detail_directory)
     RecyclerView recyclerView;
+    @BindView(R.id.fab_section)
+    FloatingActionButton fabSection;
 
     private CourseDetailModel model;
     private List<CourseDetailBean.SectionsBean> sectionsBeanList = new ArrayList<>();
@@ -48,6 +52,13 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
 
 
         model = ViewModelProviders.of(getActivity()).get(CourseDetailModel.class);
+
+        fabSection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext,"fab",Toast.LENGTH_SHORT).show();
+            }
+        });
         courseDetailBean = model.getCourseDetail().getValue();
 
         sectionsBeanList = courseDetailBean.getSections();

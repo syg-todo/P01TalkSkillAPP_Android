@@ -4,6 +4,7 @@
     android:layout_height="60dp"
     android:background="@color/white">
     <LinearLayout
+        android:id="@+id/ll_search"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_gravity="center_vertical"
@@ -21,7 +22,7 @@
             android:layout_marginBottom="7dp"
             android:layout_gravity="center_vertical"
             android:src="@drawable/sousuo"/>
-        <EditText
+        <TextView
             android:id="@+id/zhuanlan_search_et"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,7 +31,7 @@
             android:textSize="13sp"
             android:textColor="#D1D1D1"
             android:textColorHint="#D1D1D1"
-            android:hint="搜索课程、老师"
+            android:hint="搜索课程"
             android:singleLine="true"
             android:inputType="text"
             android:imeOptions="actionSearch"

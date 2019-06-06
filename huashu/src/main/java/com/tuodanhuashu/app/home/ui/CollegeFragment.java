@@ -25,6 +25,7 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -557,35 +558,34 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
-                final EditText et = holder.getView(R.id.zhuanlan_search_et);
-
-                et.setOnClickListener(new View.OnClickListener() {
+                LinearLayout layoutSearch = holder.getView(R.id.ll_search);
+                layoutSearch.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        readyGo(VideoActivity.class);
+                        readyGo(ZhuanLanSearchActivity.class);
                     }
                 });
-                et.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                    @Override
-                    public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                        if (i == EditorInfo.IME_ACTION_SEARCH) {
-                            String keywords = et.getText().toString();
-                            if (StringUtils.isEmpty(keywords)) {
-                                showToast("请输入搜索内容");
-
-                            } else {
-                                KeyboardUtils.hideSoftInput(getActivity());
-                                Bundle bundle = new Bundle();
-
-                                bundle.putString(ZhuanLanSearchActivity.EXTRA_KEY_WORDS, keywords);
-                                readyGo(ZhuanLanSearchActivity.class, bundle);
-                            }
-
-                            return true;
-                        }
-                        return false;
-                    }
-                });
+//                et.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//                    @Override
+//                    public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+//                        if (i == EditorInfo.IME_ACTION_SEARCH) {
+//                            String keywords = et.getText().toString();
+//                            if (StringUtils.isEmpty(keywords)) {
+//                                showToast("请输入搜索内容");
+//
+//                            } else {
+//                                KeyboardUtils.hideSoftInput(getActivity());
+//                                Bundle bundle = new Bundle();
+//
+//                                bundle.putString(ZhuanLanSearchActivity.EXTRA_KEY_WORDS, keywords);
+//                                readyGo(ZhuanLanSearchActivity.class, bundle);
+//                            }
+//
+//                            return true;
+//                        }
+//                        return false;
+//                    }
+//                });
 
 
             }
