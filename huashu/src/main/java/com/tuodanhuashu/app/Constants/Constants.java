@@ -4,10 +4,10 @@ import android.Manifest;
 
 public class Constants {
 
-    public  static   String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA,Manifest.permission.READ_PHONE_STATE};
+    public static String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE};
 
 
-    public static  class URL{
+    public static class URL {
 
         public static final String BASE_URL = "http://huashu.zhongpin.me";
 
@@ -47,15 +47,15 @@ public class Constants {
 
         public static final String COLLEGE_COURSE_RECORD_MASTER_URL = "/api/Courseuser/record_master";
 
-        public static final String COLLEGE_COURSE_UNRECORD_MASTER_URL ="/api/Courseuser/unrecord_master";
+        public static final String COLLEGE_COURSE_UNRECORD_MASTER_URL = "/api/Courseuser/unrecord_master";
 
         public static final String COLLEGE_COURSE_MY_MASTER_URL = "/api/Courseuser/my_master";
 
         public static final String COLLEGE_COURSE_MY_COURSE_URL = "/api/Courseuser/my_course";
 
-        public static final String COLLEGE_COURSE_SECTION_SEND_COMMENT ="/api/Courseuser/add_comment";
+        public static final String COLLEGE_COURSE_SECTION_SEND_COMMENT = "/api/Courseuser/add_comment";
 
-        public static final String COLLEGE_COURSE_LIKE_COMMENT ="/api/Courseuser/like_comment";
+        public static final String COLLEGE_COURSE_LIKE_COMMENT = "/api/Courseuser/like_comment";
 
         public static final String COLLEGE_MASTER_DETAIL_URL = "/api/Courseuser/master_info";
 
@@ -119,11 +119,11 @@ public class Constants {
 
     }
 
-    public static class PREFERENCE{
+    public static class PREFERENCE {
         public static final String KEY_PERMISSION_GRANTED = "persmission_granted";
     }
 
-    public static class IM{
+    public static class IM {
         public static final String IM_APP_KEY = "1471190314068674#kefuchannelapp67196";
 
         public static final String IM_TENANT_ID = "67196";
@@ -131,7 +131,7 @@ public class Constants {
         public static final String IM_SERVICE_ID = "kefuchannelimid_647553";
     }
 
-    public static class WEIXIN{
+    public static class WEIXIN {
         public static final String WX_APP_ID = "wxd3563efd9c2f7ec0";
 
         public static final String WX_APP_SECRET = "a039d07f990c4a15987d34752de79876";
@@ -141,7 +141,7 @@ public class Constants {
         public static final String WX_INFO_URL = "https://api.weixin.qq.com/sns/userinfo";
     }
 
-    public static class FILE_PATH{
+    public static class FILE_PATH {
 
         public static final String FILE_PROVIDER_AUTHORITIES = "com.tuodanhuashu.app.file_provider";
 
@@ -150,10 +150,9 @@ public class Constants {
         public static final String APK_PATH = "huashu/apk";
 
 
-
     }
 
-    public static class EVENT_TAG{
+    public static class EVENT_TAG {
         public static final int TAG_FINISH = 999;
 
         public static final int TAG_WX_AUTH_SUCCESS = 998;
@@ -167,9 +166,17 @@ public class Constants {
         public static final int TAG_WX_PAY_SUCCESS = 994;
 
         public static final int TAG_WX_PAY_FAIL = 993;
+
+        public static final int TAG_FLOAT_PLAY = 992;
+
+        public static final int TAG_PLAYER_DURATION = 991;
+
+        public static final int TAG_PLAYER_CURRENT = 990;
+
+        public static final int TAG_PLAYER_AUDIO_URL = 990;
     }
 
-    public static class REG{
+    public static class REG {
         public static final String REG_PWD = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,12}$";
     }
 }

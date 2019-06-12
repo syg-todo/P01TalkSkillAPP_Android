@@ -83,7 +83,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             @Override
             public void onClick(View v) {
                 isLike = !isLike;
-
                 v.setSelected(isLike);
                 int like = Integer.parseInt(likeCount);
                 int now = isLike ? like + 1 : like;

@@ -16,9 +16,12 @@ public class SectionBean {
      * sale_price : 300.00
      * activity_price : 100.00
      */
-
+    private String is_pay;
+    private String banner;
     private String media_type;
     private String url;
+    private String media_id;
+    private String duration;
     private String section_name;
     private String section_intro;
     private String course_id;
@@ -26,6 +29,15 @@ public class SectionBean {
     private String sale_price;
     private String activity_price;
     private List<CommentBean> comments;
+    private List<SectionInfo> section_list;
+
+    public String getBanner() {
+        return banner;
+    }
+
+    public void setBanner(String banner) {
+        this.banner = banner;
+    }
 
     public String getMedia_type() {
         return media_type;
@@ -41,6 +53,31 @@ public class SectionBean {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+
+    public String getIs_pay() {
+        return is_pay;
+    }
+
+    public void setIs_pay(String is_pay) {
+        this.is_pay = is_pay;
+    }
+
+    public String getMedia_id() {
+        return media_id;
+    }
+
+    public void setMedia_id(String media_id) {
+        this.media_id = media_id;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
     public String getSection_name() {
@@ -99,4 +136,78 @@ public class SectionBean {
         this.comments = comments;
     }
 
+    public List<SectionInfo> getSection_list() {
+        return section_list;
+    }
+
+    public void setSection_list(List<SectionInfo> section_list) {
+        this.section_list = section_list;
+    }
+
+    public static class SectionInfo {
+
+        /**
+         * id : 18
+         * section_name : 第十一章
+         * duration : 400
+         * is_audition : 2
+         * media_type : 1
+         * banner : http://huashu.zhongpin.me/uploads/course/201905231713111702.png
+         */
+
+        private String id;
+        private String section_name;
+        private String duration;
+        private String is_audition;
+        private String media_type;
+        private String banner;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getSection_name() {
+            return section_name;
+        }
+
+        public void setSection_name(String section_name) {
+            this.section_name = section_name;
+        }
+
+        public String getDuration() {
+            return duration;
+        }
+
+        public void setDuration(String duration) {
+            this.duration = duration;
+        }
+
+        public String getIs_audition() {
+            return is_audition;
+        }
+
+        public void setIs_audition(String is_audition) {
+            this.is_audition = is_audition;
+        }
+
+        public String getMedia_type() {
+            return media_type;
+        }
+
+        public void setMedia_type(String media_type) {
+            this.media_type = media_type;
+        }
+
+        public String getBanner() {
+            return banner;
+        }
+
+        public void setBanner(String banner) {
+            this.banner = banner;
+        }
+    }
 }

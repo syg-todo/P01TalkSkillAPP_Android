@@ -107,7 +107,7 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
 
                     @Override
                     public void onTabReselected(TabLayout.Tab tab) {
-//                        courseListPresenter.requestCourseClassList();
+//                        courseListPresenter.requestAudioSectionInfo();
                     }
                 });
                 break;
@@ -184,10 +184,10 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
         });
 
 //        if (enterType != 2) {
-//        courseListPresenter.requestCourseClassList();
+//        courseListPresenter.requestAudioSectionInfo();
 //        }
 //        if (enterType != 1){
-//            courseListPresenter.requestCourseClassList();
+//            courseListPresenter.requestAudioSectionInfo();
 //        }
 //        requestArticleList(false);
 //        articleListItemBeanList = new ArrayList<>();

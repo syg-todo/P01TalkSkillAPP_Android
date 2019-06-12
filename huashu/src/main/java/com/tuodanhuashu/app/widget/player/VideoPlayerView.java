@@ -21,13 +21,22 @@ import com.aliyun.vodplayer.media.AliyunPlayAuth;
 import com.aliyun.vodplayer.media.AliyunVidSts;
 import com.aliyun.vodplayer.media.AliyunVodPlayer;
 import com.aliyun.vodplayer.media.IAliyunVodPlayer;
+import com.tuodanhuashu.app.Constants.Constants;
 import com.tuodanhuashu.app.R;
+import com.tuodanhuashu.app.eventbus.EventMessage;
 import com.tuodanhuashu.app.utils.NetWatchdog;
+import com.tuodanhuashu.app.utils.TimeFormater;
 import com.tuodanhuashu.app.widget.player.view.control.ControlView;
 import com.tuodanhuashu.app.widget.player.view.gesture.GestureView;
 import com.tuodanhuashu.app.widget.player.view.tips.TipsView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.github.ybq.android.spinkit.animation.AnimationUtils.stop;
 
@@ -94,7 +103,6 @@ public class VideoPlayerView extends RelativeLayout {
     }
 
     private void initVideoView() {
-
         //初始化播放用的surfaceView
         initSurfaceView();
 
@@ -397,11 +405,20 @@ public class VideoPlayerView extends RelativeLayout {
 
         IAliyunVodPlayer.PlayerState playerState = mAliyunVodPlayer.getPlayerState();
         if (playerState == IAliyunVodPlayer.PlayerState.Paused || playerState == IAliyunVodPlayer.PlayerState.Prepared || mAliyunVodPlayer.isPlaying()) {
+            Log.d(TAG,"START");
             mAliyunVodPlayer.start();
         }
 
     }
 
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void goToPause(EventMessage<Map<String,String>> params){
+        if (params.getData().get("play").equals("play")){
+            pause();
+        }
+    }
 
     //暂停播放
     public void pause() {
@@ -415,10 +432,10 @@ public class VideoPlayerView extends RelativeLayout {
 
         IAliyunVodPlayer.PlayerState playerState = mAliyunVodPlayer.getPlayerState();
         if (playerState == IAliyunVodPlayer.PlayerState.Started || mAliyunVodPlayer.isPlaying()) {
+            Log.d(TAG,"pause");
             mAliyunVodPlayer.pause();
         }
     }
-
 
     /**
      * 获取视频时长
@@ -427,6 +444,7 @@ public class VideoPlayerView extends RelativeLayout {
      */
     public int getDuration() {
         if (mAliyunVodPlayer != null && mAliyunVodPlayer.isPlaying()) {
+
             return (int) mAliyunVodPlayer.getDuration();
         }
 
@@ -1041,7 +1059,9 @@ public class VideoPlayerView extends RelativeLayout {
 
 
     public boolean isPlaying() {
-        return mAliyunVodPlayer.isPlaying();
+        IAliyunVodPlayer.PlayerState playerState = mAliyunVodPlayer.getPlayerState();
+        return playerState == IAliyunVodPlayer.PlayerState.Started;
+//         mAliyunVodPlayer.isPlaying();
     }
 
     /**
@@ -1079,6 +1099,7 @@ public class VideoPlayerView extends RelativeLayout {
         public void handleMessage(Message msg) {
             VideoPlayerView aliyunVodPlayerView = viewWeakReference.get();
             if (aliyunVodPlayerView != null) {
+
                 aliyunVodPlayerView.handleProgressUpdateMessage(msg);
             }
             super.handleMessage(msg);
@@ -1092,6 +1113,14 @@ public class VideoPlayerView extends RelativeLayout {
      */
     private void handleProgressUpdateMessage(Message msg) {
         if (mAliyunVodPlayer != null && !inSeek) {
+
+
+            Map<String, String> params = new HashMap<>();
+            params.put("current", TimeFormater.formatMs(mAliyunVodPlayer.getCurrentPosition()));
+            params.put("current_long", String.valueOf(mAliyunVodPlayer.getCurrentPosition()));
+
+            EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_PLAYER_CURRENT, params));
+
             mControlView.setVideoPosition((int) mAliyunVodPlayer.getCurrentPosition());
         }
         //解决bug：在Prepare中开始更新的时候，不会发送更新消息。
@@ -1168,7 +1197,7 @@ public class VideoPlayerView extends RelativeLayout {
     }
 
     private void onWifiTo4G() {
-        Log.d("111", "onWifiTo4G");
+        Log.d(TAG, "onWifiTo4G");
         //如果已经显示错误了，那么就不用显示网络变化的提示了。
         if (mTipsView.isErrorShow()) {
             return;

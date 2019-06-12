@@ -13,7 +13,7 @@ public  class CommentBean {
      * create_date : 1970-01-01
      * reply : {"mobile":"13815030973","nickname":"东东","heade_img":"https://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83erqTAeZqj2xX0M803XtyibGkaxJnRweYk86h0tFXiaTHWY04Mj9sf9GhGDlNmaB0PhUU1ibrKxpaRP3w/132","content":"时的很好的啊","create_date":"1970-01-01"}
      */
-
+    private String id;
     private String mobile;
     private String nickname;
     private String heade_img;
@@ -22,6 +22,14 @@ public  class CommentBean {
     private String is_like;
     private String create_date;
     private List<ReplyBean> reply;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getMobile() {
         return mobile;

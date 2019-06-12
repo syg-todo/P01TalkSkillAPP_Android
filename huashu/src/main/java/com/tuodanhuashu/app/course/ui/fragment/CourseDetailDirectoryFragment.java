@@ -22,6 +22,7 @@ import com.tuodanhuashu.app.course.bean.CourseDetailBean;
 import com.tuodanhuashu.app.course.bean.CourseDetailModel;
 import com.tuodanhuashu.app.course.bean.SectionBean;
 import com.tuodanhuashu.app.course.ui.AudioPlayActivity;
+import com.tuodanhuashu.app.course.ui.AudioPlayerActivity;
 
 
 import java.util.ArrayList;
@@ -151,7 +152,8 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
             Bundle bundle = new Bundle();
             bundle.putString(AudioPlayActivity.EXTRA_SECTION_ID, directory.getId());
             bundle.putString(AudioPlayActivity.EXTAR_COURSE_ID, directory.getCourse_id());
-            readyGo(AudioPlayActivity.class, bundle);
+            readyGo(AudioPlayerActivity.class,bundle);
+//            readyGo(AudioPlayActivity.class, bundle);
         }
 
         @Override
@@ -179,7 +181,5 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
         }
     }
 
-    private void goToAudio(){
 
-    }
 }

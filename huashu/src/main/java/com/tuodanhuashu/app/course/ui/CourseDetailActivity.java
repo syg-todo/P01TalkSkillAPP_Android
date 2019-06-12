@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -37,6 +38,7 @@ import com.company.common.utils.DisplayUtil;
 import com.company.common.utils.PreferencesUtils;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.tuodanhuashu.app.Constants.Constants;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseActivity;
 import com.tuodanhuashu.app.course.bean.CourseDetailBean;
@@ -46,10 +48,15 @@ import com.tuodanhuashu.app.course.ui.fragment.CourseDetailAspectFragment;
 import com.tuodanhuashu.app.course.ui.fragment.CourseDetailCommentFragment;
 import com.tuodanhuashu.app.course.ui.fragment.CourseDetailDirectoryFragment;
 import com.tuodanhuashu.app.course.view.CourseDetailView;
+import com.tuodanhuashu.app.eventbus.EventMessage;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -75,6 +82,15 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     TextView tvJoinNow;
     @BindView(R.id.layout_audition)
     LinearLayout layoutAudiion;
+    @BindView(R.id.layout_float)
+    ConstraintLayout layoutFloat;
+    @BindView(R.id.iv_float_course_play)
+    ImageView ivFloatPlay;
+    @BindView(R.id.tv_float_course_duration)
+    TextView tvFloatDuration;
+    @BindView(R.id.tv_float_course_current)
+    TextView tvFloatCurrent;
+
     private DelegateAdapter delegateAdapter;
 
     private CourseDetailPresenter courseDetailPresenter;
@@ -150,6 +166,8 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
         layoutAudiion.setOnClickListener(this);
 
+        ivFloatPlay.setOnClickListener(this);
+
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -215,13 +233,35 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
 
     @Override
+    public void onEvent(EventMessage message) {
+        super.onEvent(message);
+        switch (message.getTag()) {
+            case Constants.EVENT_TAG.TAG_FLOAT_PLAY:
+                layoutFloat.setVisibility(View.VISIBLE);
+//                TextView textView = layoutFloat.findViewById(R.id.tv_float_course_name);
+//                textView.setText((String)message.getData());
+
+                break;
+            case Constants.EVENT_TAG.TAG_PLAYER_DURATION:
+                String duration = (String) ((HashMap) message.getData()).get("duration");
+                tvFloatDuration.setText("/" + duration);
+                break;
+            case Constants.EVENT_TAG.TAG_PLAYER_CURRENT:
+
+                String current = (String) ((HashMap) message.getData()).get("current");
+                tvFloatCurrent.setText(current);
+                break;
+        }
+    }
+
+    @Override
     protected void initData() {
         super.initData();
 
-        accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN);
+        accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN, "0");
         model = ViewModelProviders.of(this).get(CourseDetailModel.class);
         courseDetailPresenter = new CourseDetailPresenter(mContext, this);
-
+        layoutFloat.getBackground().setAlpha(10);
 
     }
 
@@ -477,7 +517,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     @Override
     protected void getBundleExtras(Bundle extras) {
         super.getBundleExtras(extras);
-        courseName = extras.getString(EXTRA_COURSE_NAME);
+//        courseName = extras.getString(EXTRA_COURSE_NAME);
         courseId = extras.getString(EXTRA_COURSE_ID);
     }
 
@@ -491,8 +531,8 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         isCheckout = courseBean.getIs_checkout();
         salePrice = courseBean.getSale_price();
         shareUrl = courseBean.getShare_url();
-
-        Log.d(TAG,accessToken+"\n"+courseId);
+        courseName = courseBean.getCourse_name();
+        Log.d(TAG, accessToken + "\n" + courseId);
         model.setCourseDetail(courseDetailBean);
         tvJoinNow.setText("立即参加:" + salePrice + "元");
         initCourseTop();
@@ -524,12 +564,23 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
             case R.id.layout_audition:
                 audition();
                 break;
+            case R.id.iv_float_course_play:
+                play();
+                break;
         }
 
     }
 
+
+    private void play() {
+        Log.d(TAG, "play");
+        Map<String, String> params = new HashMap<>();
+        params.put("play", "play");
+        EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_FLOAT_PLAY, params));
+    }
+
     private void audition() {
-        Toast.makeText(mContext,"audition",Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, "audition", Toast.LENGTH_SHORT).show();
     }
 
     private void share() {
@@ -544,15 +595,15 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     }
 
     private void createOrder() {
-        if (isLogin()){
+        if (isLogin()) {
 
             Bundle bundle = new Bundle();
-            bundle.putString(OrderActivity.EXTAR_COURSE_PRICE,salePrice);
-            bundle.putString(OrderActivity.EXTAR_COURSE_NAME,courseName);
-            bundle.putString(OrderActivity.EXTRA_COURSE_MASTER_IMAGE,courseBean.getMaster_avatar_url());
-            bundle.putString(OrderActivity.EXTAR_COURSE_PRICE,salePrice);
-            readyGo(OrderActivity.class,bundle);
-        }else {
+            bundle.putString(OrderActivity.EXTAR_COURSE_PRICE, salePrice);
+            bundle.putString(OrderActivity.EXTAR_COURSE_NAME, courseName);
+            bundle.putString(OrderActivity.EXTRA_COURSE_MASTER_IMAGE, courseBean.getMaster_avatar_url());
+            bundle.putString(OrderActivity.EXTAR_COURSE_PRICE, salePrice);
+            readyGo(OrderActivity.class, bundle);
+        } else {
             goToLogin();
         }
     }

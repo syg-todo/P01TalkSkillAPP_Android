@@ -25,25 +25,24 @@ public class AudioPlayPresenter extends BasePresenter {
     private static final int TAG_LIKE_COMMENT = 3;
 
 
-
     public AudioPlayPresenter(Context context, AudioPlayView playView) {
         this.context = context;
         this.playView = playView;
         playBiz = new PlayBiz(context, this);
     }
 
-    public void requestCourseClassList(String accessToken, String sectionId) {
+    public void requestAudioSectionInfo(String accessToken, String sectionId) {
         playBiz.requestPlaySectionInfo(TAG_PLAY_SECTION, accessToken, sectionId);
     }
 
-    public void sendComment(String accessToken,String courseId,String content){
-        playBiz.sendComment(TAG_SEND_COMMENT,accessToken,courseId,content);
+    public void sendComment(String accessToken, String courseId, String content) {
+        playBiz.sendComment(TAG_SEND_COMMENT, accessToken, courseId, content);
     }
 
     @Override
     public void OnSuccess(ServerResponse serverResponse, int tag) {
         super.OnSuccess(serverResponse, tag);
-        switch (tag){
+        switch (tag) {
             case TAG_PLAY_SECTION:
                 SectionBean sectionBean = JsonUtils.getJsonToBean(serverResponse.getData(), SectionBean.class);
                 playView.getSectionSuccess(sectionBean);
@@ -51,8 +50,8 @@ public class AudioPlayPresenter extends BasePresenter {
         }
     }
 
-    public void likeComment(String accessToken,String commentId){
-        playBiz.likeComment(TAG_LIKE_COMMENT,accessToken,commentId);
+    public void likeComment(String accessToken, String commentId) {
+        playBiz.likeComment(TAG_LIKE_COMMENT, accessToken, commentId);
     }
 
 

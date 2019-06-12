@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,23 +27,32 @@ import com.aliyun.vodplayer.media.IAliyunVodPlayer;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.company.common.CommonConstants;
 import com.company.common.utils.PreferencesUtils;
+import com.company.common.utils.StatusBarUtil;
 import com.company.common.utils.StringUtils;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.SimpleItemDecoration;
 import com.tuodanhuashu.app.course.AudioPlayService;
 import com.tuodanhuashu.app.course.bean.CommentBean;
+import com.tuodanhuashu.app.course.bean.CourseDetailBean;
 import com.tuodanhuashu.app.course.bean.SectionBean;
 import com.tuodanhuashu.app.course.presenter.AudioPlayPresenter;
 import com.tuodanhuashu.app.course.ui.adapter.CommentAdapter;
+import com.tuodanhuashu.app.course.ui.adapter.SectionInfoAdapter;
 import com.tuodanhuashu.app.course.ui.fragment.CommentDialogFragment;
 import com.tuodanhuashu.app.course.view.AudioPlayView;
+import com.tuodanhuashu.app.eventbus.EventMessage;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
 import com.tuodanhuashu.app.user.ui.LoginActivity;
 import com.tuodanhuashu.app.widget.player.VideoPlayerView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,6 +62,7 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     private static final String TAG = AudioPlayActivity.class.getSimpleName();
     private static final int TYPE_TOP = 0;
     private static final int TYPE_COMMENT = 1;
+    private static final int TYPE_TAB = 2;
     @BindView(R.id.rv_play)
     RecyclerView recyclerView;
     @BindView(R.id.edit)
@@ -64,12 +73,18 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     LinearLayout layoutSend;
     VideoPlayerView playerView;
 
+
+    RecyclerView rvTab;
+
+
     WebView webView;
     ImageView ivPlayShare;
     ImageView ivDownload;
     SeekBar seekBar;
     TextView tvPlayCurrent;
     TextView tvPlayCourseName;
+    RecyclerView rvCourseTab;
+
     private String isPay;
     private boolean isPlaying = false;
 
@@ -78,7 +93,7 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     private String sectionName;
     //    private MediaPlayer mediaPlayer;
 //    private MyConnection coon;
-    private AudioPlayService.MyBinder audioController;
+    private AudioPlayService.AudioBinder audioController;
 
     private Context mContext;
 
@@ -124,11 +139,19 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG,"onCreate");
         setContentView(R.layout.activity_audio_play);
         ButterKnife.bind(this);
+
+        StatusBarUtil.setTranslucentStatus(this);
+        EventBus.getDefault().register(this);
+
         mContext = this;
         access_token = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN);
         Bundle bundle = getIntent().getExtras();
+
+
+        initPlayer();
 
         section_id = bundle.getString(EXTRA_SECTION_ID);
         course_id = bundle.getString(EXTAR_COURSE_ID);
@@ -149,13 +172,44 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG,"onPause");
+    }
+
+
+
+
+    private void initPlayer() {
+//        playerView = findViewById(R.id.iv_play_iamge);
+        playerView.onResume();
+        playerView.setOnPreparedListener(new AudioPrepareListener((AudioPlayActivity) mContext));
+        String url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
+
+        AliyunLocalSource.AliyunLocalSourceBuilder alsb = new AliyunLocalSource.AliyunLocalSourceBuilder();
+        alsb.setSource(url);
+        AliyunLocalSource localSource = alsb.build();
+        playerView.setLocalSource(localSource);
+        playerView.setAudio(true);
+        playerView.setAutoPlay(true);//设置自动播放
+    }
+
+
     private void initData() {
         isPay = access_token = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN);
         audioPlayPresenter = new AudioPlayPresenter(mContext, this);
-        audioPlayPresenter.requestCourseClassList(access_token, section_id);
+        audioPlayPresenter.requestAudioSectionInfo(access_token, section_id);
 
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void pasue(EventMessage<Map<String,String>> eventMessage){
+        switch (eventMessage.getTag()){
+
+        }
+//        playerView.pause();
+    }
 
     protected void initView() {
 
@@ -182,11 +236,13 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
 
 
         initPlayTop();
+//        initTab();
         initComment();
         delegateAdapter.setAdapters(adapterList);
 
 
     }
+
 
 
     private boolean isLogin() {
@@ -225,26 +281,16 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
-                playerView = holder.getView(R.id.iv_play_iamge);
                 webView = holder.getView(R.id.webview_audio);
                 String content = "<p><font color='red'>hello baidu!</font></p>";
                 String htmll = "<html><header>" + html + "</header></body></html>";
 
                 webView.loadData(htmll, "text/html", "uft-8");
 
-                playerView.onResume();
-                playerView.setOnPreparedListener(new AudioPrepareListener((AudioPlayActivity) mContext));
-                String url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
+                initRvCourseTab(holder);
 
-                AliyunLocalSource.AliyunLocalSourceBuilder alsb = new AliyunLocalSource.AliyunLocalSourceBuilder();
-                alsb.setSource(url);
-                AliyunLocalSource localSource = alsb.build();
-                playerView.setLocalSource(localSource);
-                playerView.setAudio(true);
-                playerView.setAutoPlay(true);//设置自动播放
-
-                ivPlayShare = holder.getView(R.id.iv_play_share);
-                ivDownload = holder.getView(R.id.iv_play_download);
+//                ivPlayShare = holder.getView(R.id.iv_play_share);
+//                ivDownload = holder.getView(R.id.iv_play_download);
 
                 tvPlayCourseName = holder.getView(R.id.tv_play_course_name);
                 tvPlayCourseName.setText(sectionName);
@@ -301,6 +347,18 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
 
     }
 
+    private void initRvCourseTab(BaseViewHolder holder) {
+        rvCourseTab = holder.getView(R.id.rv_audio_play_tab);
+
+        CourseDetailBean.SectionsBean section = new CourseDetailBean.SectionsBean();
+        section.setSection_name("发刊词:测试测试测试测试测试测试测试测试测试123456789");
+        section.setDuration("26:39");
+
+
+
+//        SectionInfoAdapter adapter = new SectionInfoAdapter(mContext,);
+        rvCourseTab.setAdapter(adapter);
+    }
     @Override
     public void getSectionSuccess(SectionBean section) {
         commentsBeanList = section.getComments();
@@ -359,7 +417,7 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     }
 
 
-    private static class AudioPrepareListener implements IAliyunVodPlayer.OnPreparedListener {
+    public static class AudioPrepareListener implements IAliyunVodPlayer.OnPreparedListener {
         private WeakReference<AudioPlayActivity> activityWeakReference;
 
         public AudioPrepareListener(AudioPlayActivity activityWeakReference) {
@@ -395,24 +453,33 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
     @Override
     protected void onResume() {
         super.onResume();
-
+        Log.d(TAG,"onResume");
         if (playerView != null) {
-
+            Log.d("111","player!=null");
             playerView.onResume();
         }
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG,"onStart");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d(TAG,"onDestory");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        handler.removeCallbacksAndMessages(null);
+        Log.d(TAG,"onStop");
+//        handler.removeCallbacksAndMessages(null);
     }
+
+
 
     private void updateProgress() {
         int currentPosition = audioController.getCurrentPostion();

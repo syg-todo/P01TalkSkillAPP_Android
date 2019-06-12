@@ -11,8 +11,15 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.aliyun.vodplayer.media.AliyunMediaInfo;
+import com.tuodanhuashu.app.Constants.Constants;
 import com.tuodanhuashu.app.R;
+import com.tuodanhuashu.app.eventbus.EventMessage;
 import com.tuodanhuashu.app.utils.TimeFormater;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ControlView extends RelativeLayout {
 
@@ -160,6 +167,12 @@ public class ControlView extends RelativeLayout {
         //先设置小屏的info数据
         if (mAliyunMediaInfo != null) {
             mTvDuration.setText("/" + TimeFormater.formatMs(mAliyunMediaInfo.getDuration()));
+
+//            Map<String, String> params = new HashMap<>();
+//            params.put("duration", TimeFormater.formatMs(mAliyunMediaInfo.getDuration()));
+//            params.put("duration_long",String.valueOf(mAliyunMediaInfo.getDuration()));
+//            EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_PLAYER_DURATION, params));
+
             mSeekbar.setMax((int) mAliyunMediaInfo.getDuration());
         } else {
             mTvDuration.setText("/" + TimeFormater.formatMs(0));
