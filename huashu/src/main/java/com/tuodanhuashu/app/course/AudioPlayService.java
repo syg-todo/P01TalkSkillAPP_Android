@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.aliyun.vodplayer.media.AliyunLocalSource;
 import com.tuodanhuashu.app.Constants.Constants;
@@ -19,26 +20,26 @@ import java.util.Map;
 
 public class AudioPlayService extends Service {
     private static final String TAG = AudioPlayService.class.getSimpleName();
-//    private String path = "mnt/sdcard/123.mp3";
-//    private MediaPlayer player;
+
     private VideoPlayerView playerView;
 
     public static final String EXTAR_AUDIO_URL = "audio_url";
     private AudioBinder mBinder = new AudioBinder();
     private String audioUrl;
+
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(TAG,"onBind");
+        Log.d(TAG, "onBind");
         return mBinder;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d(TAG, "onCreate");
         //这里只执行一次，用于准备播放器
-        Log.d(TAG,"onCreate");
         EventBus.getDefault().register(this);
-       initPlayer(this);
+        initPlayer(this);
 //        player = MediaPlayer.create(this, R.raw.honor);
 //        try {
 //            player.setDataSource(path);
@@ -56,11 +57,11 @@ public class AudioPlayService extends Service {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getEvent(EventMessage eventMessage){
-        switch (eventMessage.getTag()){
+    public void getEvent(EventMessage eventMessage) {
+        switch (eventMessage.getTag()) {
             case Constants.EVENT_TAG.TAG_PLAYER_AUDIO_URL:
-                audioUrl = (String) ((Map)eventMessage.getData()).get("audio_url");
-                Log.d(TAG,audioUrl);
+                audioUrl = (String) ((Map) eventMessage.getData()).get("audio_url");
+                Log.d(TAG, audioUrl);
                 prepraePlayer(audioUrl);
                 break;
         }
@@ -75,7 +76,7 @@ public class AudioPlayService extends Service {
 //        String url = "http://video.zhongpin.me/sv/486550a8-16b030e63aa/486550a8-16b030e63aa.mp3";
         playerView.setAudio(true);
         playerView.setAutoPlay(true);//设置自动播放
-}
+    }
 
     private void prepraePlayer(String audioUrl) {
         AliyunLocalSource.AliyunLocalSourceBuilder alsb = new AliyunLocalSource.AliyunLocalSourceBuilder();
@@ -86,29 +87,28 @@ public class AudioPlayService extends Service {
     }
 
     //该方法包含关于歌曲的操作
-        public class AudioBinder extends Binder {
+    public class AudioBinder extends Binder {
 
-            //判断是否处于播放状态
-            public boolean isPlaying() {
-                return playerView.isPlaying();
-            }
+        //判断是否处于播放状态
+        public boolean isPlaying() {
+            return playerView.isPlaying();
+        }
 
-            //播放或暂停歌曲
-            public void play() {
+        //播放或暂停歌曲
+        public void play() {
             if (isPlaying()) {
-                Log.d("111","pause");
+                Log.d("111", "pause");
                 playerView.pause();
             } else {
-                Log.d("111","start");
+                Log.d("111", "start");
                 playerView.start();
             }
         }
 
 
-
         //返回歌曲的长度，单位为毫秒
         public int getDuration() {
-            Log.d(TAG,"getDuration");
+            Log.d(TAG, "getDuration");
             return playerView.getDuration();
         }
 
@@ -123,5 +123,6 @@ public class AudioPlayService extends Service {
 
         }
     }
+
 
 }

@@ -261,7 +261,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN, "0");
         model = ViewModelProviders.of(this).get(CourseDetailModel.class);
         courseDetailPresenter = new CourseDetailPresenter(mContext, this);
-        layoutFloat.getBackground().setAlpha(10);
+//        layoutFloat.getBackground().setAlpha(10);
 
     }
 

@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_course_detail_toolbar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/white">
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/iv_course_detail_head_back"
@@ -18,9 +22,9 @@
             android:layout_marginLeft="12dp"
             android:layout_marginTop="@dimen/dp_10"
             android:src="@drawable/vector_back_black"
+            android:visibility="visible"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:visibility="visible"
             app:layout_goneMarginLeft="20dp" />
 
         <TextView
@@ -65,64 +69,15 @@
             app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
 
-    <!--<RelativeLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="50dp"-->
-    <!--android:background="@color/white"-->
-    <!--android:id="@+id/common_head_layout">-->
-    <!--<ImageView-->
-    <!--android:id="@+id/iv_course_detail_head_back"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_centerVertical="true"-->
-    <!--android:layout_alignParentLeft="true"-->
-    <!--android:layout_marginLeft="12dp"-->
-    <!--android:scaleType="fitCenter"-->
-    <!--android:src="@drawable/vector_back_black"/>-->
-    <!--<TextView-->
-    <!--android:id="@+id/common_head_title_tv"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_centerInParent="true"-->
-    <!--android:textSize="18sp"-->
-    <!--android:textColor="@color/black"-->
-    <!--android:maxWidth="136dp"-->
-    <!--android:maxLines="1"-->
-    <!--android:ellipsize="end"-->
-    <!--android:text="页面标题页面标题页面标题页面标题"/>-->
-    <!--<View-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0.3dp"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:background="@color/color_bottom_divider" />-->
 
-    <!--<ImageView-->
-    <!--android:id="@+id/iv_course_detail_head_download"-->
-    <!--android:layout_width="16dp"-->
-    <!--android:layout_height="16dp"-->
-    <!--android:src="@drawable/vector_download"-->
-    <!--android:layout_alignParentRight="true"-->
-    <!--android:layout_centerVertical="true"-->
-    <!--android:scaleType="fitCenter"-->
-    <!--android:layout_marginRight="47dp"/>-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/iv_course_detail_head_share"-->
-    <!--android:layout_width="16dp"-->
-    <!--android:layout_height="16dp"-->
-    <!--android:src="@drawable/vector_share"-->
-    <!--android:layout_alignParentRight="true"-->
-    <!--android:layout_centerVertical="true"-->
-    <!--android:scaleType="fitCenter"-->
-    <!--android:layout_marginRight="16dp"/>-->
-
-    <!--</RelativeLayout>-->
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/refresh_course_detail"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@id/layout_course_detail_bottom"
+        app:layout_constraintTop_toBottomOf="@id/layout_course_detail_toolbar"
         app:srlAccentColor="@android:color/white"
         app:srlEnableHeaderTranslationContent="false"
         app:srlEnableLoadMore="false"
@@ -143,10 +98,11 @@
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 
-    <include layout="@layout/common_float_controller"/>
     <LinearLayout
+        android:id="@+id/layout_course_detail_bottom"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:id="@+id/layout_audition"
@@ -181,4 +137,92 @@
             android:textColor="#ffffffff"
             android:textSize="15sp" />
     </LinearLayout>
-</LinearLayout>
+
+    <include
+        layout="@layout/common_float_controller"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_10"
+        app:layout_constraintBottom_toTopOf="@id/layout_course_detail_bottom" />
+    <!--<android.support.constraint.ConstraintLayout-->
+    <!--android:id="@+id/layout_float"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginLeft="10dp"-->
+    <!--android:layout_marginRight="@dimen/dp_10"-->
+    <!--android:layout_marginBottom="10dp"-->
+    <!--android:background="@drawable/shape_float_controller"-->
+    <!--app:layout_constraintBottom_toTopOf="@id/layout_course_detail_bottom">-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/iv_float_close"-->
+    <!--android:layout_width="20dp"-->
+    <!--android:layout_height="20dp"-->
+    <!--android:layout_marginLeft="10dp"-->
+    <!--android:layout_marginTop="15dp"-->
+    <!--android:layout_marginBottom="15dp"-->
+    <!--android:src="@drawable/ic_close"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/iv_float_course_iamge"-->
+    <!--android:layout_width="30dp"-->
+    <!--android:layout_height="30dp"-->
+    <!--android:layout_marginLeft="@dimen/dp_10"-->
+    <!--android:layout_marginTop="@dimen/dp_10"-->
+    <!--android:scaleType="fitXY"-->
+    <!--android:src="@drawable/test"-->
+    <!--app:layout_constraintLeft_toRightOf="@id/iv_float_close"-->
+    <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_float_course_name"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginLeft="5dp"-->
+    <!--android:layout_marginTop="@dimen/dp_10"-->
+    <!--android:text="发刊词：修炼心理能力，实现全年"-->
+    <!--android:textColor="@color/white"-->
+    <!--app:layout_constraintLeft_toRightOf="@id/iv_float_course_iamge"-->
+    <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_float_course_current"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginLeft="5dp"-->
+    <!--android:text="00:10"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:textSize="8sp"-->
+    <!--app:layout_constraintLeft_toRightOf="@id/iv_float_course_iamge"-->
+    <!--app:layout_constraintTop_toBottomOf="@id/tv_float_course_name" />-->
+
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_float_course_duration"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="/04:45"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:textSize="8sp"-->
+    <!--app:layout_constraintLeft_toRightOf="@id/tv_float_course_current"-->
+    <!--app:layout_constraintTop_toBottomOf="@id/tv_float_course_name" />-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/iv_float_course_play"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginRight="10dp"-->
+    <!--android:src="@mipmap/section_play"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintRight_toRightOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent" />-->
+    <!--</android.support.constraint.ConstraintLayout>-->
+
+</android.support.constraint.ConstraintLayout>
+

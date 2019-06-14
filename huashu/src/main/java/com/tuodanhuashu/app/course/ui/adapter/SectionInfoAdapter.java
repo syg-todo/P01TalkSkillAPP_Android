@@ -19,6 +19,7 @@ import com.tuodanhuashu.app.course.bean.CourseDetailBean;
 import com.tuodanhuashu.app.course.bean.SectionBean;
 import com.tuodanhuashu.app.course.ui.AudioPlayActivity;
 import com.tuodanhuashu.app.course.ui.AudioPlayerActivity;
+import com.tuodanhuashu.app.course.ui.fragment.AudioPlayerContentFragment;
 import com.tuodanhuashu.app.utils.TimeFormater;
 
 import java.util.List;
@@ -69,13 +70,14 @@ public class SectionInfoAdapter extends RecyclerView.Adapter<SectionInfoAdapter.
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, AudioPlayerActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString(AudioPlayActivity.EXTRA_SECTION_ID, sectionInfo.getId());
-                    bundle.putString(AudioPlayActivity.EXTAR_COURSE_ID, courseId);
-                    intent.putExtras(bundle);
-                    context.startActivity(intent);
-                    context.finish();
+                    context.changeFragment(sectionInfo.getId());
+//                    Intent intent = new Intent(context, AudioPlayerActivity.class);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString(AudioPlayActivity.EXTRA_SECTION_ID, sectionInfo.getId());
+//                    bundle.putString(AudioPlayActivity.EXTAR_COURSE_ID, courseId);
+//                    intent.putExtras(bundle);
+//                    context.startActivity(intent);
+//                    context.finish();
                 }
             });
         }else {

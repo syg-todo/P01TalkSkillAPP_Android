@@ -1,5 +1,6 @@
 package com.tuodanhuashu.app.course.ui;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -8,6 +9,9 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.VirtualLayoutManager;
@@ -35,9 +40,11 @@ import com.tuodanhuashu.app.course.AudioPlayService;
 import com.tuodanhuashu.app.course.bean.CommentBean;
 import com.tuodanhuashu.app.course.bean.CourseDetailBean;
 import com.tuodanhuashu.app.course.bean.SectionBean;
+import com.tuodanhuashu.app.course.bean.SectionInfoModel;
 import com.tuodanhuashu.app.course.presenter.AudioPlayPresenter;
 import com.tuodanhuashu.app.course.ui.adapter.CommentAdapter;
 import com.tuodanhuashu.app.course.ui.adapter.SectionInfoAdapter;
+import com.tuodanhuashu.app.course.ui.fragment.AudioPlayerContentFragment;
 import com.tuodanhuashu.app.course.ui.fragment.CommentDialogFragment;
 import com.tuodanhuashu.app.course.view.AudioPlayView;
 import com.tuodanhuashu.app.eventbus.EventMessage;
@@ -62,16 +69,11 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     private static final int TYPE_TOP = 0;
     private static final int TYPE_COMMENT = 1;
     private static final int TYPE_TAB = 2;
-    @BindView(R.id.rv_play)
-    RecyclerView recyclerView;
+    //    @BindView(R.id.rv_play)
+//    RecyclerView recyclerView;
     @BindView(R.id.iv_play_image)
     ImageView ivAudioPlayImage;
-    @BindView(R.id.edit)
-    TextView tvAudioComment;
-    @BindView(R.id.tv_audio_play_send)
-    TextView tvAudioPlaySend;
-    @BindView(R.id.layout_send)
-    LinearLayout layoutSend;
+
     @BindView(R.id.iv_audio_play_back)
     ImageView ivAudioPlayBack;
     @BindView(R.id.iv_audio_play_download)
@@ -90,27 +92,24 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     ImageView ivAudioPlayPause;
     @BindView(R.id.seekbar_audio_play)
     SeekBar seekBar;
-
-
-    RecyclerView rvCourseTab;
-    TextView tvAudioPlayShowAll;
-    TextView tvAudioPlayTotalCourse;
-
+    @BindView(R.id.fl_audio_play_container)
+    FrameLayout flAudioPlayContainer;
 
     VideoPlayerView playerView;
+    SectionInfoModel model;
+    AudioPlayerContentFragment fragment;
 
-
-    WebView webView;
-
-    TextView tvPlayCourseName;
-
-    private String isPay;
-    private boolean isPlaying = false;
-
-    private String content;
-    private String html;
-    private String sectionName;
     private String bannerUrl;
+
+    FragmentManager fragmentManager;
+    FragmentTransaction fragmentTransaction;
+    //    private String isPay;
+//    private boolean isPlaying = false;
+//
+//    private String content;
+//    private String html;
+//    private String sectionName;
+//    private String bannerUrl;
     private String audioUrl;
     private String audioDutaion;
     //    private MediaPlayer mediaPlayer;
@@ -118,17 +117,17 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     private AudioPlayService.AudioBinder audioController;
 
 
-    private DelegateAdapter delegateAdapter;
+//    private DelegateAdapter delegateAdapter;
 
-    private List<DelegateAdapter.Adapter> adapterList;
+//    private List<DelegateAdapter.Adapter> adapterList;
 
-    private List<CommentBean> commentsBeanList = new ArrayList<>();
+    //    private List<CommentBean> commentsBeanList = new ArrayList<>();
     private List<SectionBean.SectionInfo> sectionInfoList = new ArrayList<>();
     private AudioPlayPresenter audioPlayPresenter;
 
     private CommentAdapter adapter;
     SectionInfoAdapter adapterSectionInfo;
-    private RecyclerView rvPlayComment;
+    //    private RecyclerView rvPlayComment;
     public static final String EXTRA_SECTION_ID = "section_id";
 
     public static final String EXTAR_COURSE_ID = "course_id";
@@ -163,37 +162,31 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     @Override
     protected void initData() {
         super.initData();
-//        isPay =
-
-
-
-
+        Log.d(TAG, "initData");
         access_token = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN, "0");
+        model = ViewModelProviders.of(this).get(SectionInfoModel.class);
         audioPlayPresenter = new AudioPlayPresenter(mContext, this);
-        Log.d(TAG, section_id);
         audioPlayPresenter.requestAudioSectionInfo(access_token, section_id);
     }
 
     @Override
     protected void initView() {
         super.initView();
+        fragmentManager = getSupportFragmentManager();
 
-        adapterList = new ArrayList<>();
-
-
-
-        VirtualLayoutManager layoutManager = new VirtualLayoutManager(mContext);
-        recyclerView.setLayoutManager(layoutManager);
-        RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
-        recyclerView.setRecycledViewPool(viewPool);
-        viewPool.setMaxRecycledViews(0, 10);
-        delegateAdapter = new DelegateAdapter(layoutManager, true);
-        recyclerView.setAdapter(delegateAdapter);
+//        VirtualLayoutManager layoutManager = new VirtualLayoutManager(mContext);
+//        recyclerView.setLayoutManager(layoutManager);
+//        RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
+//        recyclerView.setRecycledViewPool(viewPool);
+//        viewPool.setMaxRecycledViews(0, 10);
+//        delegateAdapter = new DelegateAdapter(layoutManager, true);
+//        recyclerView.setAdapter(delegateAdapter);
 
         ivAudioPlayDownload.setOnClickListener(this);
         ivAudioPlayShare.setOnClickListener(this);
         ivAudioPlayBack.setOnClickListener(this);
         flAudioPlayController.setOnClickListener(this);
+
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -217,31 +210,24 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
             }
         });
 
-        tvAudioComment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isLogin()) {
-                    goToLogin();
-                } else {
-                    CommentDialogFragment dialogFragment = new CommentDialogFragment();
-                    dialogFragment.show(getFragmentManager(), "tag");
-                }
-            }
-        });
+//        tvAudioComment.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (!isLogin()) {
+//                    goToLogin();
+//                } else {
+//                    CommentDialogFragment dialogFragment = new CommentDialogFragment();
+//                    dialogFragment.show(getFragmentManager(), "tag");
+//                }
+//            }
+//        });
         Intent intent = new Intent(AudioPlayerActivity.this, AudioPlayService.class);
 //        Bundle bundle = new Bundle();
 //        bundle.putString(AudioPlayService.EXTAR_AUDIO_URL,audioUrl);
 //        intent.putExtras(bundle);
+
         bindService(intent, coon, BIND_AUTO_CREATE);
 
-//        initPlayTop();
-//        initTab();
-//        initComment();
-        delegateAdapter.setAdapters(adapterList);
-
-//        Map<String, String> params = new HashMap<>();
-//        params.put(AudioPlayService.EXTAR_AUDIO_URL,audioUrl);
-//        EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_PLAYER_AUDIO_URL, params));
 
     }
 
@@ -261,94 +247,45 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 //        }
     }
 
-    private void initPlayTop() {
-        HomeAdapter adapterTop = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_TOP, R.layout.play_top_layout) {
-            @Override
-            public void onBindViewHolder(BaseViewHolder holder, int position) {
-                super.onBindViewHolder(holder, position);
-                webView = holder.getView(R.id.webview_audio);
-                rvCourseTab = holder.getView(R.id.rv_audio_play_tab);
-                tvAudioPlayShowAll = holder.getView(R.id.tv_audio_play_show_all);
-                tvAudioPlayTotalCourse = holder.getView(R.id.tv_audio_play_tab_total_course);
-                String content = "<p><font color='red'>hello baidu!</font></p>";
-                String htmll = "<html><header>" + html + "</header></body></html>";
-
-                webView.loadData(htmll, "text/html", "uft-8");
-
-                initRvCourseTab(holder);
-//                ivPlayShare = holder.getView(R.id.iv_play_share);
-//                ivDownload = holder.getView(R.id.iv_play_download);
-
-                tvPlayCourseName = holder.getView(R.id.tv_play_course_name);
-                tvPlayCourseName.setText(sectionName);
-
-                tvAudioPlayTotalCourse.setText("共"+sectionInfoList.size()+"个课时");
-                tvAudioPlayShowAll.setOnClickListener(AudioPlayerActivity.this);
-//                ivDownload.getDrawable().setTint(getResources().getColor(R.color.white));
-//                ivPlayShare.getDrawable().setTint(getResources().getColor(R.color.white));
-//                Intent intent = new Intent(mContext, AudioPlayService.class);
-//                coon = new MyConnection();
-//                startService(intent);
-//                bindService(intent, coon, BIND_AUTO_CREATE);
-
-
-//                ivPlayBack.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        onBackPressed();
-//                    }
-//                });
-//                ivPlayController.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
+//    private void initPlayTop() {
+//        HomeAdapter adapterTop = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_TOP, R.layout.play_top_layout) {
+//            @Override
+//            public void onBindViewHolder(BaseViewHolder holder, int position) {
+//                super.onBindViewHolder(holder, position);
+//                webView = holder.getView(R.id.webview_audio);
+//                rvCourseTab = holder.getView(R.id.rv_audio_play_tab);
+//                tvAudioPlayShowAll = holder.getView(R.id.tv_audio_play_show_all);
+//                tvAudioPlayTotalCourse = holder.getView(R.id.tv_audio_play_tab_total_course);
+//                String content = "<p><font color='red'>hello baidu!</font></p>";
+//                String htmll = "<html><header>" + html + "</header></body></html>";
 //
-//                        playerView.switchPlayerState();
-//                        updatePlayText();
-////                        play();
-//                    }
-//                });
-
-
-//                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//                    @Override
-//                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                        //进度条改变
-//                        if (fromUser) {
-//                            audioController.seekTo(progress);
-//                        }
-//                    }
+//                webView.loadData(htmll, "text/html", "uft-8");
 //
-//                    @Override
-//                    public void onStartTrackingTouch(SeekBar seekBar) {
-//                        //开始触摸进度条
-//                    }
+//                initRvCourseTab(holder);
 //
-//                    @Override
-//                    public void onStopTrackingTouch(SeekBar seekBar) {
-//                        //停止触摸进度条
-//                    }
-//                });
+//                tvPlayCourseName = holder.getView(R.id.tv_play_course_name);
+//                tvPlayCourseName.setText(sectionName);
+//
+//                tvAudioPlayTotalCourse.setText("共"+sectionInfoList.size()+"个课时");
+//                tvAudioPlayShowAll.setOnClickListener(AudioPlayerActivity.this);
+//            }
+//        };
+//        adapterList.add(adapterTop);
+//    }
 
-            }
-        };
-        adapterList.add(adapterTop);
-
-
-    }
-
-    private void initRvCourseTab(BaseViewHolder holder) {
-
-
-        CourseDetailBean.SectionsBean section = new CourseDetailBean.SectionsBean();
-        section.setSection_name("发刊词:测试测试测试测试测试测试测试测试测试123456789");
-        section.setDuration("26:39");
-
-
-//       adapterSectionInfo = new SectionInfoAdapter(mContext, sectionInfoList);
-        rvCourseTab.setAdapter(adapterSectionInfo);
-        smoothMoveToPosition(rvCourseTab, 2);
-//        rvCourseTab.smoothScrollToPosition(3);
-    }
+//    private void initRvCourseTab(BaseViewHolder holder) {
+//
+//
+//        CourseDetailBean.SectionsBean section = new CourseDetailBean.SectionsBean();
+//        section.setSection_name("发刊词:测试测试测试测试测试测试测试测试测试123456789");
+//        section.setDuration("26:39");
+//
+//
+////       adapterSectionInfo = new SectionInfoAdapter(mContext, sectionInfoList);
+//        rvCourseTab.setAdapter(adapterSectionInfo);
+//        smoothMoveToPosition(rvCourseTab, 2);
+////        rvCourseTab.smoothScrollToPosition(3);
+//    }
 
     private int mToPosition;
     private boolean mShouldScroll;
@@ -379,20 +316,20 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     }
 
 
-    private void initComment() {
-        HomeAdapter adapterComment = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_COMMENT, R.layout.play_comment_layout) {
-            @Override
-            public void onBindViewHolder(BaseViewHolder holder, int position) {
-                super.onBindViewHolder(holder, position);
-                rvPlayComment = holder.getView(R.id.rv_play_comment);
-                adapter = new CommentAdapter(mContext, commentsBeanList);
-                rvPlayComment.setAdapter(adapter);
-                rvPlayComment.addItemDecoration(new SimpleItemDecoration());
-                rvPlayComment.setLayoutManager(new LinearLayoutManager(mContext));
-            }
-        };
-        adapterList.add(adapterComment);
-    }
+//    private void initComment() {
+//        HomeAdapter adapterComment = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_COMMENT, R.layout.play_comment_layout) {
+//            @Override
+//            public void onBindViewHolder(BaseViewHolder holder, int position) {
+//                super.onBindViewHolder(holder, position);
+//                rvPlayComment = holder.getView(R.id.rv_play_comment);
+//                adapter = new CommentAdapter(mContext, commentsBeanList);
+//                rvPlayComment.setAdapter(adapter);
+//                rvPlayComment.addItemDecoration(new SimpleItemDecoration());
+//                rvPlayComment.setLayoutManager(new LinearLayoutManager(mContext));
+//            }
+//        };
+//        adapterList.add(adapterComment);
+//    }
 
     @Override
     protected void getBundleExtras(Bundle extras) {
@@ -402,46 +339,44 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     }
 
 
-
     @Override
     public void getSectionSuccess(SectionBean section) {
-        Log.d(TAG, section.toString());
-
-        commentsBeanList = section.getComments();
+        Log.d(TAG,"success");
+        model.setSection(section);
+//        commentsBeanList = section.getComments();
         sectionInfoList = section.getSection_list();
-        for (CommentBean comment : commentsBeanList
-        ) {
-            Log.d(TAG, comment.getContent());
-        }
-        Log.d(TAG, commentsBeanList.toString());
-        html = section.getSection_intro();
-        sectionName = section.getSection_name();
+
+        switchFragment(section_id);
         bannerUrl = section.getBanner();
+//        html = section.getSection_intro();
+//        sectionName = section.getSection_name();
         audioUrl = section.getUrl();
         audioDutaion = section.getDuration();
+//
+        setAudioUrl(audioUrl);
+//
+//        Glide.with(mContext).load(bannerUrl).into(ivAudioPlayImage);
 
+        tvAudioPlayDuration.setText("/" + TimeFormater.formatMs(Long.parseLong(audioDutaion) * 1000));
+        seekBar.setMax(Integer.parseInt(audioDutaion) * 1000);
+//        initPlayTop();
+//        initComment();
+//        adapterSectionInfo.notifyDataSetChanged();
+        Collections.reverse(sectionInfoList);
+        adapterSectionInfo = new SectionInfoAdapter(AudioPlayerActivity.this, sectionInfoList, section_id, course_id);
+//        delegateAdapter.setAdapters(adapterList);
+    }
 
+    private void setAudioUrl(String audioUrl) {
         Map<String, String> params = new HashMap<>();
         params.put("audio_url", audioUrl);
 
         EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_PLAYER_AUDIO_URL, params));
-
-        Glide.with(mContext).load(bannerUrl).into(ivAudioPlayImage);
-
-        tvAudioPlayDuration.setText("/"+TimeFormater.formatMs(Long.parseLong(audioDutaion)*1000));
-        seekBar.setMax(Integer.parseInt(audioDutaion)*1000);
-        initPlayTop();
-        initComment();
-//        adapterSectionInfo.notifyDataSetChanged();
-        Collections.reverse(sectionInfoList);
-        adapterSectionInfo = new SectionInfoAdapter(AudioPlayerActivity.this, sectionInfoList, section_id,course_id);
-        delegateAdapter.setAdapters(adapterList);
     }
 
     @Override
     public void getSectionFail(String msg) {
         Log.d(TAG, msg);
-        sectionName = msg;
     }
 
 
@@ -467,8 +402,8 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
     private void showAll() {
         Bundle bundle = new Bundle();
-        bundle.putString(CourseDetailActivity.EXTRA_COURSE_ID,course_id);
-        readyGo(CourseDetailActivity.class,bundle);
+        bundle.putString(CourseDetailActivity.EXTRA_COURSE_ID, course_id);
+        readyGo(CourseDetailActivity.class, bundle);
     }
 
     @Override
@@ -479,7 +414,6 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
                 String current = (String) ((HashMap) message.getData()).get("current");
                 tvAudioPlayCurrent.setText(current);
                 long currentLong = Long.parseLong((String) ((HashMap) message.getData()).get("current_long"));
-                Log.d(TAG, "current:" + currentLong);
                 seekBar.setProgress((int) currentLong);
                 break;
 //            case Constants.EVENT_TAG.TAG_PLAYER_DURATION:
@@ -516,4 +450,36 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     private boolean isPlaying() {
         return mBinder.isPlaying();
     }
+
+    private String currentTag;
+
+    private void switchFragment(String sectionId) {
+        Log.d(TAG,"switchFragment");
+        AudioPlayerContentFragment fragment = new AudioPlayerContentFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(AudioPlayerContentFragment.EXTAR_SECTION_ID, sectionId);
+        fragment.setArguments(bundle);
+
+
+        String tag = fragment.getClass().getSimpleName();
+        Fragment fragFindByTag = fragmentManager.findFragmentByTag(currentTag);
+
+        if (fragFindByTag != null && fragFindByTag.isAdded() && !fragFindByTag.isHidden()) {
+            fragmentManager.beginTransaction().hide(fragFindByTag).commit();
+        }
+        if (fragment.isAdded()) {
+            fragmentManager.beginTransaction().show(fragment).commit();
+        } else {
+            fragmentManager.beginTransaction().add(R.id.fl_audio_play_container, fragment, tag).commit();
+        }
+        currentTag = tag;
+    }
+
+    public void changeFragment(String sectionId) {
+        Log.d(TAG,"changeFragment");
+        section_id = sectionId;
+        audioPlayPresenter.requestAudioSectionInfo(access_token, section_id);
+//        switchFragment(sectionId);
+    }
+
 }

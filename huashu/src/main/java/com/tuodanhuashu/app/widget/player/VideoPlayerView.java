@@ -144,7 +144,6 @@ public class VideoPlayerView extends RelativeLayout {
         mNetWatchdog = new NetWatchdog(context);
         mNetWatchdog.setNetChangeListener(new MyNetChangeListener(this));
         mNetWatchdog.setNetConnectedListener(new MyNetConnectedListener(this));
-
     }
 
 
