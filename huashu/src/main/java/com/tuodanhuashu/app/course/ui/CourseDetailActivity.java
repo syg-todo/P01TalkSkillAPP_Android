@@ -86,8 +86,10 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     ConstraintLayout layoutFloat;
     @BindView(R.id.iv_float_course_play)
     ImageView ivFloatPlay;
-    @BindView(R.id.tv_float_course_duration)
-    TextView tvFloatDuration;
+    @BindView(R.id.tv_float_section_duration)
+    TextView tvFloatSectionDuration;
+    @BindView(R.id.tv_float_section_name)
+    TextView tvFloatSectionName;
     @BindView(R.id.tv_float_course_current)
     TextView tvFloatCurrent;
 
@@ -105,7 +107,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     private String masterId;//导师ID
     private String shareUrl;
     private String salePrice;
-
+    private String currentSectionId;
     private Dialog shareDialog;
     public static final String EXTRA_COURSE_NAME = "course_name";
 
@@ -153,7 +155,6 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         super.initView();
 
         initShareDialog();
-        tvTitle.setText(courseName);
 
         ivDownload.getDrawable().setTint(getResources().getColor(R.color.black));
         ivShare.getDrawable().setTint(getResources().getColor(R.color.black));
@@ -167,6 +168,8 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         layoutAudiion.setOnClickListener(this);
 
         ivFloatPlay.setOnClickListener(this);
+
+        layoutFloat.setOnClickListener(this);
 
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -236,15 +239,17 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     public void onEvent(EventMessage message) {
         super.onEvent(message);
         switch (message.getTag()) {
-            case Constants.EVENT_TAG.TAG_FLOAT_PLAY:
+            case Constants.EVENT_TAG.TAG_SECTION_CHOSEN:
                 layoutFloat.setVisibility(View.VISIBLE);
 //                TextView textView = layoutFloat.findViewById(R.id.tv_float_course_name);
 //                textView.setText((String)message.getData());
-
+                currentSectionId = (String) ((HashMap) message.getData()).get(AudioPlayerActivity.EXTRA_SECTION_ID);
+                tvFloatSectionDuration.setText("/"+(String) ((HashMap) message.getData()).get(Constants.EVENT_TAG.TAG_SECTION_DURATION));
+                tvFloatSectionName.setText((String) ((HashMap) message.getData()).get(Constants.EVENT_TAG.TAG_SECTION_NAME));
                 break;
             case Constants.EVENT_TAG.TAG_PLAYER_DURATION:
                 String duration = (String) ((HashMap) message.getData()).get("duration");
-                tvFloatDuration.setText("/" + duration);
+                tvFloatSectionDuration.setText("/" + duration);
                 break;
             case Constants.EVENT_TAG.TAG_PLAYER_CURRENT:
 
@@ -535,6 +540,8 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         Log.d(TAG, accessToken + "\n" + courseId);
         model.setCourseDetail(courseDetailBean);
         tvJoinNow.setText("立即参加:" + salePrice + "元");
+        tvTitle.setText(courseName);
+
         initCourseTop();
         initMasterRow();
         initCourseTab();
@@ -566,6 +573,12 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                 break;
             case R.id.iv_float_course_play:
                 play();
+                break;
+            case R.id.layout_float:
+                Bundle bundle = new Bundle();
+                bundle.putString(AudioPlayerActivity.EXTRA_SECTION_ID,currentSectionId);
+                bundle.putString(AudioPlayActivity.EXTAR_COURSE_ID, courseId);
+                readyGo(AudioPlayerActivity.class,bundle);
                 break;
         }
 

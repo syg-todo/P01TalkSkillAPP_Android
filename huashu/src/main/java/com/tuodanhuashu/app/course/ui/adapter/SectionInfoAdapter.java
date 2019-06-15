@@ -71,13 +71,7 @@ public class SectionInfoAdapter extends RecyclerView.Adapter<SectionInfoAdapter.
                 @Override
                 public void onClick(View v) {
                     context.changeFragment(sectionInfo.getId());
-//                    Intent intent = new Intent(context, AudioPlayerActivity.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString(AudioPlayActivity.EXTRA_SECTION_ID, sectionInfo.getId());
-//                    bundle.putString(AudioPlayActivity.EXTAR_COURSE_ID, courseId);
-//                    intent.putExtras(bundle);
-//                    context.startActivity(intent);
-//                    context.finish();
+
                 }
             });
         }else {

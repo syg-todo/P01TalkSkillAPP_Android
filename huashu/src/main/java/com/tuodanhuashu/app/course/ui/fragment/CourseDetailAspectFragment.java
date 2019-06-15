@@ -49,7 +49,7 @@ public class CourseDetailAspectFragment extends HuaShuBaseFragment {
         recommendCoursesBeanList = model.getCourseDetail().getValue().getRecommendCourses();
 
         String html = model.getCourseDetail().getValue().getCourse().getCourse_detail();
-
+        Log.d(TAG,html);
         webView.loadData(html, "text/html", "uft-8");
         recyclerView.setAdapter(new RVRecommendationAdapter(mContext, recommendCoursesBeanList));
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));

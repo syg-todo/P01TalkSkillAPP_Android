@@ -107,6 +107,7 @@
         android:text="本期内容"
         android:textColor="#ff000000"
         android:textSize="14sp"
+        android:background="@color/white"
         app:layout_constraintTop_toBottomOf="@id/layout_course_tab"
         android:textStyle="bold"
         />

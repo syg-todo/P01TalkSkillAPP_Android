@@ -92,6 +92,8 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
                 rvCourseTab = holder.getView(R.id.rv_audio_play_tab);
                 tvAudioPlayShowAll = holder.getView(R.id.tv_audio_play_show_all);
                 tvAudioPlayTotalCourse = holder.getView(R.id.tv_audio_play_tab_total_course);
+
+                Log.d(TAG,sectionIntro);
                 String content = "<p><font color='red'>hello baidu!</font></p>";
                 String htmll = "<html><header>" + sectionIntro + "</header></body></html>";
 

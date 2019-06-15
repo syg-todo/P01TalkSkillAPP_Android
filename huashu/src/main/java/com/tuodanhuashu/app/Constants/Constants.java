@@ -141,6 +141,7 @@ public class Constants {
         public static final String WX_INFO_URL = "https://api.weixin.qq.com/sns/userinfo";
     }
 
+
     public static class FILE_PATH {
 
         public static final String FILE_PROVIDER_AUTHORITIES = "com.tuodanhuashu.app.file_provider";
@@ -173,7 +174,16 @@ public class Constants {
 
         public static final int TAG_PLAYER_CURRENT = 990;
 
-        public static final int TAG_PLAYER_AUDIO_URL = 990;
+        public static final int TAG_PLAYER_AUDIO_URL = 989;
+
+        public static final int TAG_SECTION_CHOSEN = 988;
+
+
+        public static final String TAG_SECTION_ID = "section_id";
+        public static final String TAG_SECTION_NAME = "section_name";
+        public static final String TAG_SECTION_DURATION = "section_duration";
+
+
     }
 
     public static class REG {

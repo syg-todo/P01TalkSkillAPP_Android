@@ -8,6 +8,7 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="@dimen/dp_10"
+    android:visibility="invisible"
     android:background="@drawable/shape_float_controller"
 
   >
@@ -35,7 +36,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_float_course_name"
+        android:id="@+id/tv_float_section_name"
         android:layout_width="0dp"
         app:layout_constraintHorizontal_weight="1"
         android:layout_height="wrap_content"
@@ -55,7 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="8sp"
-        app:layout_constraintTop_toBottomOf="@id/tv_float_course_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_float_section_name"
         android:text="00:10"
         android:textColor="@color/white"
         app:layout_constraintLeft_toRightOf="@id/iv_float_course_iamge"
@@ -64,11 +65,11 @@
 
 
     <TextView
-        android:id="@+id/tv_float_course_duration"
+        android:id="@+id/tv_float_section_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="8sp"
-        app:layout_constraintTop_toBottomOf="@id/tv_float_course_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_float_section_name"
         android:text="/04:45"
         android:textColor="@color/white"
         app:layout_constraintLeft_toRightOf="@id/tv_float_course_current"

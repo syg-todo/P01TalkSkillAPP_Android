@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -100,7 +101,8 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     AudioPlayerContentFragment fragment;
 
     private String bannerUrl;
-
+    private String sectionName;
+    private String sectionDuration;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
     //    private String isPay;
@@ -172,6 +174,13 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     @Override
     protected void initView() {
         super.initView();
+
+
+        Map<String, String> params = new HashMap<>();
+        params.put("audio_url", audioUrl);
+        EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_PLAYER_AUDIO_URL, params));
+
+
         fragmentManager = getSupportFragmentManager();
 
 //        VirtualLayoutManager layoutManager = new VirtualLayoutManager(mContext);
@@ -186,7 +195,6 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
         ivAudioPlayShare.setOnClickListener(this);
         ivAudioPlayBack.setOnClickListener(this);
         flAudioPlayController.setOnClickListener(this);
-
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -210,17 +218,7 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
             }
         });
 
-//        tvAudioComment.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (!isLogin()) {
-//                    goToLogin();
-//                } else {
-//                    CommentDialogFragment dialogFragment = new CommentDialogFragment();
-//                    dialogFragment.show(getFragmentManager(), "tag");
-//                }
-//            }
-//        });
+
         Intent intent = new Intent(AudioPlayerActivity.this, AudioPlayService.class);
 //        Bundle bundle = new Bundle();
 //        bundle.putString(AudioPlayService.EXTAR_AUDIO_URL,audioUrl);
@@ -341,21 +339,22 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
     @Override
     public void getSectionSuccess(SectionBean section) {
-        Log.d(TAG,"success");
+        Log.d(TAG, "success");
         model.setSection(section);
 //        commentsBeanList = section.getComments();
         sectionInfoList = section.getSection_list();
 
-        switchFragment(section_id);
         bannerUrl = section.getBanner();
+        sectionName = section.getSection_name();
+        sectionDuration = section.getDuration();
 //        html = section.getSection_intro();
 //        sectionName = section.getSection_name();
         audioUrl = section.getUrl();
         audioDutaion = section.getDuration();
-//
+
         setAudioUrl(audioUrl);
-//
-//        Glide.with(mContext).load(bannerUrl).into(ivAudioPlayImage);
+        Glide.with(mContext).load(bannerUrl).into(ivAudioPlayImage);
+        switchFragment(section_id);
 
         tvAudioPlayDuration.setText("/" + TimeFormater.formatMs(Long.parseLong(audioDutaion) * 1000));
         seekBar.setMax(Integer.parseInt(audioDutaion) * 1000);
@@ -370,7 +369,6 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     private void setAudioUrl(String audioUrl) {
         Map<String, String> params = new HashMap<>();
         params.put("audio_url", audioUrl);
-
         EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_PLAYER_AUDIO_URL, params));
     }
 
@@ -397,6 +395,8 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
                 break;
             case R.id.tv_audio_play_show_all:
                 showAll();
+                break;
+
         }
     }
 
@@ -454,7 +454,13 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     private String currentTag;
 
     private void switchFragment(String sectionId) {
-        Log.d(TAG,"switchFragment");
+
+        Map<String, String> params = new HashMap<>();
+        params.put(Constants.EVENT_TAG.TAG_SECTION_ID, sectionId);
+        params.put(Constants.EVENT_TAG.TAG_SECTION_NAME,sectionName);
+        params.put(Constants.EVENT_TAG.TAG_SECTION_DURATION,TimeFormater.formatMs(Long.parseLong(sectionDuration)));
+        EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_SECTION_CHOSEN, params));
+
         AudioPlayerContentFragment fragment = new AudioPlayerContentFragment();
         Bundle bundle = new Bundle();
         bundle.putString(AudioPlayerContentFragment.EXTAR_SECTION_ID, sectionId);
@@ -476,7 +482,7 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     }
 
     public void changeFragment(String sectionId) {
-        Log.d(TAG,"changeFragment");
+        Log.d(TAG, "changeFragment");
         section_id = sectionId;
         audioPlayPresenter.requestAudioSectionInfo(access_token, section_id);
 //        switchFragment(sectionId);
