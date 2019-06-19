@@ -1,12 +1,17 @@
 package com.tuodanhuashu.app.course.ui;
 
 import android.app.Dialog;
+import android.app.IntentService;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -50,6 +55,7 @@ import com.tuodanhuashu.app.course.ui.fragment.CourseDetailDirectoryFragment;
 import com.tuodanhuashu.app.course.view.CourseDetailView;
 import com.tuodanhuashu.app.eventbus.EventMessage;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
+import com.tuodanhuashu.app.utils.PriceFormater;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -92,6 +98,11 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     TextView tvFloatSectionName;
     @BindView(R.id.tv_float_course_current)
     TextView tvFloatCurrent;
+    @BindView(R.id.iv_float_course_image)
+    ImageView ivFloatImage;
+    @BindView(R.id.iv_float_close)
+    ImageView ivFloatClose;
+
 
     private DelegateAdapter delegateAdapter;
 
@@ -105,10 +116,13 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     private String mediaType;//文件类型 1音频 2视频
     private String imageUrl;//课程图片
     private String masterId;//导师ID
+    private String activityPrice;
+    private String price;
     private String shareUrl;
     private String salePrice;
     private String currentSectionId;
     private Dialog shareDialog;
+    private boolean isPlaying = true;
     public static final String EXTRA_COURSE_NAME = "course_name";
 
     private String courseName = "";
@@ -132,6 +146,18 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
     private static final int TYPE_RECOMMEND = 4;
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestory");
+    }
 
     @Override
     protected int getContentViewLayoutID() {
@@ -171,6 +197,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
         layoutFloat.setOnClickListener(this);
 
+        ivFloatClose.setOnClickListener(this);
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,6 +206,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         });
 
         ivBack.getDrawable().setTint(getResources().getColor(R.color.black));
+
 
         adapterList = new ArrayList<>();
         refresheaderCourseDetail.setColorSchemeColors(mContext.getResources().getColor(R.color.colorAccent));
@@ -244,17 +272,30 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 //                TextView textView = layoutFloat.findViewById(R.id.tv_float_course_name);
 //                textView.setText((String)message.getData());
                 currentSectionId = (String) ((HashMap) message.getData()).get(AudioPlayerActivity.EXTRA_SECTION_ID);
-                tvFloatSectionDuration.setText("/"+(String) ((HashMap) message.getData()).get(Constants.EVENT_TAG.TAG_SECTION_DURATION));
+                tvFloatSectionDuration.setText("/" + (String) ((HashMap) message.getData()).get(Constants.EVENT_TAG.TAG_SECTION_DURATION));
                 tvFloatSectionName.setText((String) ((HashMap) message.getData()).get(Constants.EVENT_TAG.TAG_SECTION_NAME));
+                Glide.with(mContext).load((String) ((HashMap) message.getData()).get(Constants.EVENT_TAG.TAG_SECTION_BANNER_URL)).into(ivFloatImage);
                 break;
             case Constants.EVENT_TAG.TAG_PLAYER_DURATION:
                 String duration = (String) ((HashMap) message.getData()).get("duration");
                 tvFloatSectionDuration.setText("/" + duration);
                 break;
             case Constants.EVENT_TAG.TAG_PLAYER_CURRENT:
-
                 String current = (String) ((HashMap) message.getData()).get("current");
                 tvFloatCurrent.setText(current);
+                break;
+            case Constants.EVENT_TAG.TAG_SECTION_STATE_CHANGED:
+                String state = (String) ((HashMap) message.getData()).get(Constants.EVENT_TAG.TAG_SECTION_STATE);
+                if (state.equals("start")) {
+                    Glide.with(mContext).load(R.drawable.vector_circle_pause).into(ivFloatPlay);
+                    isPlaying = true;
+
+                } else if (state.equals("pause")) {
+                    Glide.with(mContext).load(R.drawable.vector_circle_start).into(ivFloatPlay);
+                    isPlaying = false;
+//                    Toast.makeText(mContext,"pause",Toast.LENGTH_SHORT).show();
+                }
+                model.setIsPlaying(isPlaying);
                 break;
         }
     }
@@ -472,43 +513,81 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                 mCourseSalePrice = courseBean.getSale_price();
                 isPay = courseBean.getIs_pay();
                 imageUrl = courseBean.getImage_url();
+                activityPrice = courseBean.getActivity_price();
+                price = courseBean.getPrice();
                 FrameLayout flPurchase = holder.getView(R.id.fl_course_detail_purchase_status);
                 ImageView ivCourseDetailImage = holder.getView(R.id.iv_course_detail_top);
-                TextView tvCourseDetailPrice = holder.getView(R.id.tv_course_detail_course_price);
-                TextView tvCourseDetailSalePrice = holder.getView(R.id.tv_course_detail_course_sale_price);
+                TextView tvCourseDetailPrice = holder.getView(R.id.tv_course_detail_course_price);//原价
+                TextView tvCourseDetailSalePrice = holder.getView(R.id.tv_course_detail_course_sale_price);//销售价
                 TextView tvCourseDetailJoin = holder.getView(R.id.tv_course_detail_course_join);
                 TextView tvCourseDetailBrief = holder.getView(R.id.tv_course_detail_course_brief);
                 TextView tvCourseDetailCourseName = holder.getView(R.id.tv_course_detail_course_name);
-                TextView tvCourseDetailCourseBought = holder.getView(R.id.tv_course_detail_course_bought);
-                TextView tvCourseDetailCourseFree = holder.getView(R.id.tv_course_detail_course_free);
-                TextView tvCourseDetailCourseBuy = holder.getView(R.id.tv_course_detail_course_buy);
+                TextView tvCourseDetailCourseBought = holder.getView(R.id.tv_course_detail_course_bought);//已购买
+//                TextView tvCourseDetailCourseFree = holder.getView(R.id.tv_course_detail_course_free);//免费
+                TextView tvCourseDetailCourseBuy = holder.getView(R.id.tv_course_detail_course_buy);//购买
                 TextView tvCourseDetailMediaType = holder.getView(R.id.tv_course_detail_course_audio);
+                tvCourseDetailPrice.setText("￥" + price);
+                tvCourseDetailPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
 
+                tvCourseDetailSalePrice.setText("￥" + courseBean.getSale_price());
 
-                if (mCourseSalePrice.equals("0.00")) {
-                    tvCourseDetailSalePrice.setVisibility(View.GONE);
-                    tvCourseDetailCourseFree.setVisibility(View.VISIBLE);
-                    tvCourseDetailCourseBought.setVisibility(View.GONE);
-                    tvCourseDetailCourseBuy.setVisibility(View.GONE);
-                } else if (isPay.equals("1")) {
-                    tvCourseDetailCourseFree.setVisibility(View.GONE);
-                    tvCourseDetailCourseBought.setVisibility(View.VISIBLE);
+//                if (Float.parseFloat(activityPrice)<= 0f){//无活动 走销售价
+//                    if (Float.parseFloat(salePrice) == 0f){//免费
+//                        Log.d(TAG,salePrice+"------11111111111--------"+activityPrice);
+//                        tvCourseDetailSalePrice.setVisibility(View.GONE);
+//                        tvCourseDetailCourseBought.setVisibility(View.GONE);
+//                        tvCourseDetailCourseFree.setVisibility(View.VISIBLE);
+//                    }else {//不免费
+//                    }
+//                }else {//有活动 走活动价,且不免费
+//                    Log.d(TAG,salePrice+"-------222222-------"+activityPrice);
+//                    tvCourseDetailSalePrice.setText("￥"+Math.min(Long.parseLong(salePrice),Long.parseLong(activityPrice)));
+//                }
+                String finalPrice = PriceFormater.formatPrice(activityPrice, salePrice, price);
+                tvCourseDetailSalePrice.setText(finalPrice);
+                if (finalPrice.equals(getResources().getString(R.string.free))) {
                     tvCourseDetailCourseBuy.setVisibility(View.GONE);
                 } else {
-                    tvCourseDetailCourseFree.setVisibility(View.GONE);
-                    tvCourseDetailCourseBought.setVisibility(View.GONE);
-                    tvCourseDetailCourseBuy.setVisibility(View.VISIBLE);
+                    if (isPay.equals("1")) {//已购买
+                        tvCourseDetailCourseBuy.setVisibility(View.GONE);
+                        tvCourseDetailCourseBought.setVisibility(View.VISIBLE);
+                        tvCourseDetailSalePrice.setVisibility(View.GONE);
+                    } else {
+
+                    }
                 }
+                Log.d(TAG, salePrice + "-------444444444-----" + activityPrice);
+//                if (Float.parseFloat(activityPrice) <= 0f) {//没有活动
+//                    if (Float.parseFloat(salePrice) == 0f) {//免费
+//                        tvCourseDetailSalePrice.setVisibility(View.GONE);
+//                        tvCourseDetailCourseFree.setVisibility(View.VISIBLE);
+//                        tvCourseDetailCourseBought.setVisibility(View.GONE);
+//                        tvCourseDetailCourseBuy.setVisibility(View.GONE);
+//
+//                    } else {//不免费
+//                        if (isPay.equals("2")) {//未购买
+//                            tvCourseDetailCourseFree.setVisibility(View.GONE);
+//                            tvCourseDetailCourseBought.setVisibility(View.VISIBLE);
+//                            tvCourseDetailCourseBuy.setVisibility(View.GONE);
+//                        } else {//已购买
+//                            tvCourseDetailCourseFree.setVisibility(View.GONE);
+//                            tvCourseDetailCourseBought.setVisibility(View.GONE);
+//                            tvCourseDetailCourseBuy.setVisibility(View.VISIBLE);
+//                        }
+//
+//                    }
+//                } else {
+//                }
+
 
                 Glide.with(mContext).load(imageUrl).into(ivCourseDetailImage);
-                tvCourseDetailSalePrice.setText("￥" + courseBean.getSale_price());
+
                 tvCourseDetailJoin.setText(courseBean.getJoin_count() + "人参加");
                 tvCourseDetailBrief.setText(courseBean.getCourse_intro());
                 tvCourseDetailCourseName.setText(courseBean.getCourse_name());
-                tvCourseDetailPrice.setText("￥" + courseBean.getPrice());
-                tvCourseDetailPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+
                 tvCourseDetailMediaType.setText(mediaType.equals("1") ? "音频" : "视频");
-                flPurchase.setOnClickListener(new View.OnClickListener() {
+                tvCourseDetailCourseBuy.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         createOrder();
@@ -539,6 +618,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         courseName = courseBean.getCourse_name();
         Log.d(TAG, accessToken + "\n" + courseId);
         model.setCourseDetail(courseDetailBean);
+        model.setIsPlaying(true);
         tvJoinNow.setText("立即参加:" + salePrice + "元");
         tvTitle.setText(courseName);
 
@@ -554,6 +634,17 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     @Override
     public void getCourseDetailFail(String msg) {
 
+    }
+
+    @Override
+    public void getBuyCourseSuccess() {
+        Log.d(TAG,"success buy");
+    }
+
+    @Override
+    public void getBuyCourseFail(String msg) {
+        Toast.makeText(mContext,msg,Toast.LENGTH_SHORT).show();
+        readyGo(OrderActivity.class);
     }
 
     @Override
@@ -576,20 +667,34 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                 break;
             case R.id.layout_float:
                 Bundle bundle = new Bundle();
-                bundle.putString(AudioPlayerActivity.EXTRA_SECTION_ID,currentSectionId);
-                bundle.putString(AudioPlayActivity.EXTAR_COURSE_ID, courseId);
-                readyGo(AudioPlayerActivity.class,bundle);
+                bundle.putString(AudioPlayerActivity.EXTRA_SECTION_ID, currentSectionId);
+                bundle.putString(AudioPlayerActivity.EXTRA_COURSE_ID, courseId);
+                bundle.putBoolean(AudioPlayerActivity.EXTRA_IS_PLAYING, isPlaying);
+                readyGo(AudioPlayerActivity.class, bundle);
                 break;
+            case R.id.iv_float_close:
+                closeFloat();
+                break;
+
         }
 
     }
 
+    private void closeFloat() {
+
+//        EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_STOP_SERVICE, null));
+        layoutFloat.setVisibility(View.INVISIBLE);
+    }
 
     private void play() {
-        Log.d(TAG, "play");
         Map<String, String> params = new HashMap<>();
-        params.put("play", "play");
-        EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_FLOAT_PLAY, params));
+        if (isPlaying) {
+            params.put(Constants.EVENT_TAG.TAG_SECTION_STATE, "start");
+        } else {
+            params.put(Constants.EVENT_TAG.TAG_SECTION_STATE, "pause");
+
+        }
+        EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_SECTION_STATE_CHANGING, params));
     }
 
     private void audition() {
@@ -609,13 +714,29 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
     private void createOrder() {
         if (isLogin()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle("确定购买吗")
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.d(TAG,"sure");
+                            courseDetailPresenter.requesetBuyCourse(accessToken,courseId);
 
-            Bundle bundle = new Bundle();
-            bundle.putString(OrderActivity.EXTAR_COURSE_PRICE, salePrice);
-            bundle.putString(OrderActivity.EXTAR_COURSE_NAME, courseName);
-            bundle.putString(OrderActivity.EXTRA_COURSE_MASTER_IMAGE, courseBean.getMaster_avatar_url());
-            bundle.putString(OrderActivity.EXTAR_COURSE_PRICE, salePrice);
-            readyGo(OrderActivity.class, bundle);
+                        }
+                    })
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+            builder.create().show();
+//            Bundle bundle = new Bundle();
+//            bundle.putString(OrderActivity.EXTAR_COURSE_PRICE, salePrice);
+//            bundle.putString(OrderActivity.EXTAR_COURSE_NAME, courseName);
+//            bundle.putString(OrderActivity.EXTRA_COURSE_MASTER_IMAGE, courseBean.getMaster_avatar_url());
+//            bundle.putString(OrderActivity.EXTRA_COURSE_JOIN_COUNT, courseBean.getJoin_count());
+//            readyGo(OrderActivity.class, bundle);
         } else {
             goToLogin();
         }

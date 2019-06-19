@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,18 +16,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tuodanhuashu.app.Constants.Constants;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseFragment;
 import com.tuodanhuashu.app.base.SimpleItemDecoration;
 import com.tuodanhuashu.app.course.bean.CourseDetailBean;
 import com.tuodanhuashu.app.course.bean.CourseDetailModel;
 import com.tuodanhuashu.app.course.bean.SectionBean;
-import com.tuodanhuashu.app.course.ui.AudioPlayActivity;
 import com.tuodanhuashu.app.course.ui.AudioPlayerActivity;
+import com.tuodanhuashu.app.eventbus.EventMessage;
 
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -41,6 +48,7 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
     private String isAudition;//是否可以试听 1可以
     private String isPay;//是否已购买
     private CourseDetailBean courseDetailBean;
+    private boolean isPlaying;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -51,17 +59,18 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
     protected void initView(View view) {
         super.initView(view);
 
+        EventBus.getDefault().register(this);
 
         model = ViewModelProviders.of(getActivity()).get(CourseDetailModel.class);
 
         fabSection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext,"fab",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "fab", Toast.LENGTH_SHORT).show();
             }
         });
         courseDetailBean = model.getCourseDetail().getValue();
-
+//        isPlaying = model.getIsPlaying().getValue();
         sectionsBeanList = courseDetailBean.getSections();
         isPay = courseDetailBean.getCourse().getIs_pay();
 
@@ -70,6 +79,16 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView.addItemDecoration(new SimpleItemDecoration());
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(EventMessage<Map<String,String>> eventMessage) {
+        switch (eventMessage.getTag()) {
+            case Constants.EVENT_TAG.TAG_SECTION_STATE_CHANGING:
+                isPlaying = !eventMessage.getData().get(Constants.EVENT_TAG.TAG_SECTION_STATE).equals("start");
+                Log.d("111","isPlaying:"+isPlaying);
+                break;
+        }
     }
 
     public CourseDetailDirectoryFragment() {
@@ -150,10 +169,11 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
 
         private void goToAudio(CourseDetailBean.SectionsBean directory) {
             Bundle bundle = new Bundle();
-            bundle.putString(AudioPlayActivity.EXTRA_SECTION_ID, directory.getId());
-            bundle.putString(AudioPlayActivity.EXTAR_COURSE_ID, directory.getCourse_id());
-            readyGo(AudioPlayerActivity.class,bundle);
-//            readyGo(AudioPlayActivity.class, bundle);
+            bundle.putString(AudioPlayerActivity.EXTRA_SECTION_ID, directory.getId());
+            bundle.putString(AudioPlayerActivity.EXTRA_COURSE_ID, directory.getCourse_id());
+            bundle.putBoolean(AudioPlayerActivity.EXTRA_IS_PLAYING, isPlaying);
+            Log.d("111","isplaying:"+isPlaying);
+            readyGo(AudioPlayerActivity.class, bundle);
         }
 
         @Override
@@ -181,5 +201,9 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
         }
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

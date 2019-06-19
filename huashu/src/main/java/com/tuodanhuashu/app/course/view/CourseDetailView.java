@@ -9,4 +9,7 @@ public interface CourseDetailView extends BaseView {
 
     void getCourseDetailFail(String msg);
 
+    void getBuyCourseSuccess();
+
+    void getBuyCourseFail(String msg);
 }

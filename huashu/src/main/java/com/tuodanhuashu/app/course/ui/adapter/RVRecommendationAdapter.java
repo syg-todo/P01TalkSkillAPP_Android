@@ -23,6 +23,7 @@ import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.course.bean.CourseDetailBean;
 import com.tuodanhuashu.app.course.ui.CourseDetailActivity;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
+import com.tuodanhuashu.app.utils.PriceFormater;
 
 import java.util.List;
 
@@ -45,15 +46,23 @@ public class RVRecommendationAdapter extends RecyclerView.Adapter<RVRecommendati
 
     @Override
     public void onBindViewHolder(@NonNull final RecommendationHolder holder, final int position) {
+
+        CourseDetailBean.RecommendCoursesBean recommendCoursesBean = courseBeanList.get(position);
         RequestOptions options = new RequestOptions().override(DisplayUtil.dp2px(163), DisplayUtil.dp2px(93));
         Glide.with(mContext).load(courseBeanList.get(position).getImage_url())
                 .apply(options)
                 .into(holder.imgImage);
-        holder.tvPrice.setText("￥" + courseBeanList.get(position).getPrice());
+        holder.tvPrice.setText("￥" + recommendCoursesBean.getPrice());
         holder.tvPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-        holder.tvSalePrice.setText("￥" + courseBeanList.get(position).getSale_price());
-        holder.tvJoinCount.setText(courseBeanList.get(position).getJoin_count() + "人参加");
-        holder.tvCourseName.setText(courseBeanList.get(position).getCourse_name());
+
+
+        String activityPrice = recommendCoursesBean.getActivity_price();
+        String salePrice = recommendCoursesBean.getSale_price();
+        String price = recommendCoursesBean.getPrice();
+        String finalPrice = PriceFormater.formatPrice(activityPrice,salePrice,price);
+        holder.tvSalePrice.setText((finalPrice.equals(mContext.getResources().getString(R.string.free))?finalPrice:"￥"+finalPrice));
+        holder.tvJoinCount.setText(recommendCoursesBean.getJoin_count() + "人参加");
+        holder.tvCourseName.setText(recommendCoursesBean.getCourse_name());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -116,7 +116,11 @@ public class Constants {
 
         public static final String CHECK_VERSION_URL = "/api/index/AndroidVer";
 
+        public static final String ADD_LGOOLDS_URL = "/api/order/add_lgoods";
 
+        public static final String COLLEGE_BUY_COURSE_URL = "/api/courseuser/buy_course";
+
+        public static final String GET_LOVE_GOODS_LIST_URL = "/api/courseuser/lovegoods";
     }
 
     public static class PREFERENCE {
@@ -174,16 +178,24 @@ public class Constants {
 
         public static final int TAG_PLAYER_CURRENT = 990;
 
-        public static final int TAG_PLAYER_AUDIO_URL = 989;
+        public static final int TAG_PLAYER_CURRENT_SECTION = 989;
 
         public static final int TAG_SECTION_CHOSEN = 988;
+
+        public static final int TAG_SECTION_STATE_CHANGED = 987;
+
+        public static final int TAG_SECTION_STATE_CHANGING = 986;
+
+        public static final int TAG_STOP_SERVICE = 985;
 
 
         public static final String TAG_SECTION_ID = "section_id";
         public static final String TAG_SECTION_NAME = "section_name";
         public static final String TAG_SECTION_DURATION = "section_duration";
+        public static final String TAG_SECTION_STATE = "section_state";
 
 
+        public static final String TAG_SECTION_BANNER_URL = "section_banner_url";
     }
 
     public static class REG {

@@ -196,10 +196,7 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
 
 
     private void initRvCourseTab(BaseViewHolder holder) {
-        CourseDetailBean.SectionsBean section = new CourseDetailBean.SectionsBean();
-        section.setSection_name("发刊词:测试测试测试测试测试测试测试测试测试123456789");
-        section.setDuration("26:39");
-        adapterSectionInfo = new SectionInfoAdapter((AudioPlayerActivity) getActivity(), sectionInfoList,currentSectionId,courseId);
+        adapterSectionInfo = new SectionInfoAdapter((AudioPlayerActivity) getActivity(), sectionInfoList,currentSectionId,courseId,isPay);
         rvCourseTab.setAdapter(adapterSectionInfo);
 //        smoothMoveToPosition(rvCourseTab, 2);
 //        rvCourseTab.smoothScrollToPosition(3);

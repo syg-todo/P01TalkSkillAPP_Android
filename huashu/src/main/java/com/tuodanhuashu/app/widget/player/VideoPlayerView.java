@@ -103,6 +103,8 @@ public class VideoPlayerView extends RelativeLayout {
     }
 
     private void initVideoView() {
+
+        EventBus.getDefault().register(this);
         //初始化播放用的surfaceView
         initSurfaceView();
 
@@ -404,8 +406,10 @@ public class VideoPlayerView extends RelativeLayout {
 
         IAliyunVodPlayer.PlayerState playerState = mAliyunVodPlayer.getPlayerState();
         if (playerState == IAliyunVodPlayer.PlayerState.Paused || playerState == IAliyunVodPlayer.PlayerState.Prepared || mAliyunVodPlayer.isPlaying()) {
-            Log.d(TAG,"START");
             mAliyunVodPlayer.start();
+            Map<String, String> params = new HashMap<>();
+            params.put(Constants.EVENT_TAG.TAG_SECTION_STATE, "start");
+            EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_SECTION_STATE_CHANGED, params));
         }
 
     }
@@ -413,10 +417,17 @@ public class VideoPlayerView extends RelativeLayout {
 
 
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
-    public void goToPause(EventMessage<Map<String,String>> params){
-        if (params.getData().get("play").equals("play")){
-            pause();
+    public void goToPause(EventMessage<Map<String,String>> eventMessage){
+        switch (eventMessage.getTag()){
+            case Constants.EVENT_TAG.TAG_SECTION_STATE_CHANGING:
+                if (eventMessage.getData().get(Constants.EVENT_TAG.TAG_SECTION_STATE).equals("start")){
+                    Log.d(TAG,"pause");
+                    pause();
+                }else {
+                    start();
+                }
         }
+
     }
 
     //暂停播放
@@ -431,8 +442,11 @@ public class VideoPlayerView extends RelativeLayout {
 
         IAliyunVodPlayer.PlayerState playerState = mAliyunVodPlayer.getPlayerState();
         if (playerState == IAliyunVodPlayer.PlayerState.Started || mAliyunVodPlayer.isPlaying()) {
-            Log.d(TAG,"pause");
             mAliyunVodPlayer.pause();
+            Map<String, String> params = new HashMap<>();
+            params.put(Constants.EVENT_TAG.TAG_SECTION_STATE, "pause");
+            EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_SECTION_STATE_CHANGED, params));
+
         }
     }
 
@@ -1112,7 +1126,6 @@ public class VideoPlayerView extends RelativeLayout {
      */
     private void handleProgressUpdateMessage(Message msg) {
         if (mAliyunVodPlayer != null && !inSeek) {
-
 
             Map<String, String> params = new HashMap<>();
             params.put("current", TimeFormater.formatMs(mAliyunVodPlayer.getCurrentPosition()));

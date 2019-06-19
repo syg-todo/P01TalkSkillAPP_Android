@@ -16,4 +16,14 @@ public class CourseDetailModel extends ViewModel {
         courseDetail.setValue(course);
 
     }
+
+    private MutableLiveData<Boolean> isPlaying = new MutableLiveData<>();
+
+    public MutableLiveData<Boolean> getIsPlaying(){
+        return isPlaying;
+    }
+
+    public void setIsPlaying(Boolean b){
+        isPlaying.setValue(b);
+    }
 }

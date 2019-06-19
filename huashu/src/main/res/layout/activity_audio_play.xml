@@ -30,10 +30,10 @@
 
         <ImageView
             android:id="@+id/iv_audio_play_back"
-            android:layout_width="8dp"
-            android:layout_height="16dp"
+            android:layout_width="16dp"
+            android:layout_height="32dp"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="25dp"
             android:elevation="3dp"
 
             android:src="@drawable/vector_back"
@@ -76,14 +76,15 @@
                 android:id="@+id/iv_audio_play_play"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/vector_play"
-                android:visibility="invisible" />
+                android:src="@drawable/vector_pause"
+               />
 
             <ImageView
                 android:id="@+id/iv_audio_play_pause"
                 android:layout_width="match_parent"
                 android:layout_height="11dp"
-                android:src="@drawable/vector_pause" />
+                android:visibility="invisible"
+               />
         </FrameLayout>
 
         <TextView

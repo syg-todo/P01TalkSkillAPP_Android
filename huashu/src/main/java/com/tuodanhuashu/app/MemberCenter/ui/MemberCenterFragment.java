@@ -82,7 +82,8 @@ public class MemberCenterFragment extends HuaShuBaseFragment implements MemberCe
     FrameLayout memberSettingFr;
     @BindView(R.id.member_center_root_ll)
     LinearLayout memberCenterRootLl;
-
+    @BindView(R.id.member_love_count_tv)
+    TextView memberCenterLoveCountTv;
     @BindView(R.id.user_level_tv)
     TextView userLevelTv;
 
@@ -306,6 +307,7 @@ public class MemberCenterFragment extends HuaShuBaseFragment implements MemberCe
         }
 
         Glide.with(mContext).load(memberCenterBean.getUserinfo().getHeade_img()).into(userAvatarIv);
+        memberCenterLoveCountTv.setText(memberCenterBean.getUserinfo().getLove_count());
     }
 
     @Override

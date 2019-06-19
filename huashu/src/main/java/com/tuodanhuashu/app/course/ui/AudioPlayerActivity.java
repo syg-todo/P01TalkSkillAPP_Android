@@ -9,51 +9,39 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.android.vlayout.DelegateAdapter;
-import com.alibaba.android.vlayout.VirtualLayoutManager;
-import com.alibaba.android.vlayout.layout.LinearLayoutHelper;
 import com.bumptech.glide.Glide;
-import com.chad.library.adapter.base.BaseViewHolder;
 import com.company.common.CommonConstants;
 import com.company.common.utils.PreferencesUtils;
 import com.company.common.utils.StatusBarUtil;
 import com.tuodanhuashu.app.Constants.Constants;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseActivity;
-import com.tuodanhuashu.app.base.SimpleItemDecoration;
 import com.tuodanhuashu.app.course.AudioPlayService;
-import com.tuodanhuashu.app.course.bean.CommentBean;
-import com.tuodanhuashu.app.course.bean.CourseDetailBean;
 import com.tuodanhuashu.app.course.bean.SectionBean;
 import com.tuodanhuashu.app.course.bean.SectionInfoModel;
 import com.tuodanhuashu.app.course.presenter.AudioPlayPresenter;
 import com.tuodanhuashu.app.course.ui.adapter.CommentAdapter;
 import com.tuodanhuashu.app.course.ui.adapter.SectionInfoAdapter;
 import com.tuodanhuashu.app.course.ui.fragment.AudioPlayerContentFragment;
-import com.tuodanhuashu.app.course.ui.fragment.CommentDialogFragment;
 import com.tuodanhuashu.app.course.view.AudioPlayView;
 import com.tuodanhuashu.app.eventbus.EventMessage;
-import com.tuodanhuashu.app.home.adapter.HomeAdapter;
 import com.tuodanhuashu.app.utils.TimeFormater;
 import com.tuodanhuashu.app.widget.player.VideoPlayerView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -103,8 +91,11 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     private String bannerUrl;
     private String sectionName;
     private String sectionDuration;
+    private String currentSectionId;
+    public boolean isPlaying = true;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
+
     //    private String isPay;
 //    private boolean isPlaying = false;
 //
@@ -128,13 +119,13 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     private AudioPlayPresenter audioPlayPresenter;
 
     private CommentAdapter adapter;
-    SectionInfoAdapter adapterSectionInfo;
+    //    SectionInfoAdapter adapterSectionInfo;
     //    private RecyclerView rvPlayComment;
     public static final String EXTRA_SECTION_ID = "section_id";
 
-    public static final String EXTAR_COURSE_ID = "course_id";
+    public static final String EXTRA_COURSE_ID = "course_id";
 
-
+    public static final String EXTRA_IS_PLAYING = "is_playing";
     private String section_id = "";
     private String access_token = "";
 
@@ -160,6 +151,18 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
         return R.layout.activity_audio_play;
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        Log.d(TAG, "onDestory");
+    }
 
     @Override
     protected void initData() {
@@ -168,33 +171,32 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
         access_token = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN, "0");
         model = ViewModelProviders.of(this).get(SectionInfoModel.class);
         audioPlayPresenter = new AudioPlayPresenter(mContext, this);
+        currentSectionId = PreferencesUtils.getString(mContext, CommonConstants.KEY_CURRENT_SECTION, "");
+//        if (!section_id.equals(currentSectionId)){
         audioPlayPresenter.requestAudioSectionInfo(access_token, section_id);
+        PreferencesUtils.putString(mContext, CommonConstants.KEY_CURRENT_SECTION, section_id);
+//        }else {
+//
+//        }
     }
 
     @Override
     protected void initView() {
+        Log.d(TAG, "initView");
         super.initView();
-
-
-        Map<String, String> params = new HashMap<>();
-        params.put("audio_url", audioUrl);
-        EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_PLAYER_AUDIO_URL, params));
-
 
         fragmentManager = getSupportFragmentManager();
 
-//        VirtualLayoutManager layoutManager = new VirtualLayoutManager(mContext);
-//        recyclerView.setLayoutManager(layoutManager);
-//        RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
-//        recyclerView.setRecycledViewPool(viewPool);
-//        viewPool.setMaxRecycledViews(0, 10);
-//        delegateAdapter = new DelegateAdapter(layoutManager, true);
-//        recyclerView.setAdapter(delegateAdapter);
+        ivAudioPlayDownload.getDrawable().setTint(getResources().getColor(R.color.white));
+        ivAudioPlayShare.getDrawable().setTint(getResources().getColor(R.color.white));
 
         ivAudioPlayDownload.setOnClickListener(this);
         ivAudioPlayShare.setOnClickListener(this);
         ivAudioPlayBack.setOnClickListener(this);
         flAudioPlayController.setOnClickListener(this);
+
+        Log.d(TAG, "initview:isPlaying:" + isPlaying);
+        Glide.with(mContext).load(isPlaying?R.drawable.vector_pause:R.drawable.vector_start).into(ivAudioPlayPlay);
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -219,14 +221,6 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
         });
 
 
-        Intent intent = new Intent(AudioPlayerActivity.this, AudioPlayService.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putString(AudioPlayService.EXTAR_AUDIO_URL,audioUrl);
-//        intent.putExtras(bundle);
-
-        bindService(intent, coon, BIND_AUTO_CREATE);
-
-
     }
 
     private void play() {
@@ -235,6 +229,7 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState, persistentState);
         StatusBarUtil.setTranslucentStatus(this);
         StatusBarUtil.setStatusBarColor(this, Color.TRANSPARENT);
@@ -333,24 +328,27 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     protected void getBundleExtras(Bundle extras) {
         super.getBundleExtras(extras);
         section_id = extras.getString(EXTRA_SECTION_ID);
-        course_id = extras.getString(EXTAR_COURSE_ID);
+        course_id = extras.getString(EXTRA_COURSE_ID);
+        Log.d(TAG, "isPlaying:" + isPlaying);
+        isPlaying = extras.getBoolean(EXTRA_IS_PLAYING);
     }
 
 
     @Override
     public void getSectionSuccess(SectionBean section) {
-        Log.d(TAG, "success");
+//        swithController();
+
         model.setSection(section);
-//        commentsBeanList = section.getComments();
         sectionInfoList = section.getSection_list();
 
         bannerUrl = section.getBanner();
         sectionName = section.getSection_name();
         sectionDuration = section.getDuration();
-//        html = section.getSection_intro();
-//        sectionName = section.getSection_name();
+
         audioUrl = section.getUrl();
         audioDutaion = section.getDuration();
+
+        startService();
 
         setAudioUrl(audioUrl);
         Glide.with(mContext).load(bannerUrl).into(ivAudioPlayImage);
@@ -358,18 +356,32 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
         tvAudioPlayDuration.setText("/" + TimeFormater.formatMs(Long.parseLong(audioDutaion) * 1000));
         seekBar.setMax(Integer.parseInt(audioDutaion) * 1000);
+
 //        initPlayTop();
 //        initComment();
 //        adapterSectionInfo.notifyDataSetChanged();
-        Collections.reverse(sectionInfoList);
-        adapterSectionInfo = new SectionInfoAdapter(AudioPlayerActivity.this, sectionInfoList, section_id, course_id);
+//        Collections.reverse(sectionInfoList);
+//        adapterSectionInfo = new SectionInfoAdapter(AudioPlayerActivity.this, sectionInfoList, section_id, course_id);
 //        delegateAdapter.setAdapters(adapterList);
     }
 
+    private void startService() {
+        Intent intent = new Intent(AudioPlayerActivity.this, AudioPlayService.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(AudioPlayService.EXTAR_AUDIO_URL, audioUrl);
+        intent.putExtras(bundle);
+        startService(intent);
+        bindService(intent, coon, BIND_AUTO_CREATE);
+    }
+
     private void setAudioUrl(String audioUrl) {
+        Log.d(TAG, "setAudioUrl");
         Map<String, String> params = new HashMap<>();
+        params.put(Constants.EVENT_TAG.TAG_SECTION_ID, section_id);
         params.put("audio_url", audioUrl);
-        EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_PLAYER_AUDIO_URL, params));
+        EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_PLAYER_CURRENT_SECTION, params));
+
+
     }
 
     @Override
@@ -416,6 +428,26 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
                 long currentLong = Long.parseLong((String) ((HashMap) message.getData()).get("current_long"));
                 seekBar.setProgress((int) currentLong);
                 break;
+            case Constants.EVENT_TAG.TAG_SECTION_STATE_CHANGED:
+                Log.d(TAG, "TAG_SECTION_STATE_CHANGED");
+                String state = (String) ((HashMap) message.getData()).get(Constants.EVENT_TAG.TAG_SECTION_STATE);
+                if (state.equals("start")) {
+                    Log.d(TAG, "onEvent-start");
+                    Glide.with(mContext).load(R.drawable.vector_pause).into(ivAudioPlayPlay);
+//                    ivAudioPlayPlay.setVisibility(View.INVISIBLE);
+//                    ivAudioPlayPause.setVisibility(View.VISIBLE);
+                    isPlaying = true;
+                } else if (state.equals("pause")) {
+                    Log.d(TAG, "onEvent-pause");
+                    Glide.with(mContext).load(R.drawable.vector_start).into(ivAudioPlayPlay);
+//                    ivAudioPlayPlay.setVisibility(View.VISIBLE);
+//                    ivAudioPlayPause.setVisibility(View.INVISIBLE);
+                    isPlaying = false;
+                }
+                break;
+            case Constants.EVENT_TAG.TAG_STOP_SERVICE:
+             Toast.makeText(mContext,"stop",Toast.LENGTH_SHORT).show();
+                break;
 //            case Constants.EVENT_TAG.TAG_PLAYER_DURATION:
 //                String duraion = (String) ((HashMap) message.getData()).get("duration");
 //                tvAudioPlayDuration.setText("/" + duraion);
@@ -426,12 +458,23 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
         }
     }
 
+
     private void control() {
         mBinder.play();
-        changeControl();
+//        Map<String, String> params = new HashMap<>();
+//        if (!isPlaying()){
+//            params.put(Constants.EVENT_TAG.TAG_SECTION_STATE, "start");
+//        }else {
+//            params.put(Constants.EVENT_TAG.TAG_SECTION_STATE, "pause");
+//
+//        }
+//        EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_SECTION_STATE_CHANGING, params));
+
+
+//        swithController();
     }
 
-    private void changeControl() {
+    private void swithController() {
         if (isPlaying()) {
             ivAudioPlayPlay.setVisibility(View.INVISIBLE);
             ivAudioPlayPause.setVisibility(View.VISIBLE);
@@ -453,12 +496,14 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
     private String currentTag;
 
+
     private void switchFragment(String sectionId) {
 
         Map<String, String> params = new HashMap<>();
         params.put(Constants.EVENT_TAG.TAG_SECTION_ID, sectionId);
-        params.put(Constants.EVENT_TAG.TAG_SECTION_NAME,sectionName);
-        params.put(Constants.EVENT_TAG.TAG_SECTION_DURATION,TimeFormater.formatMs(Long.parseLong(sectionDuration)));
+        params.put(Constants.EVENT_TAG.TAG_SECTION_NAME, sectionName);
+        params.put(Constants.EVENT_TAG.TAG_SECTION_DURATION, TimeFormater.formatMs(Long.parseLong(sectionDuration) * 1000));
+        params.put(Constants.EVENT_TAG.TAG_SECTION_BANNER_URL, bannerUrl);
         EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_SECTION_CHOSEN, params));
 
         AudioPlayerContentFragment fragment = new AudioPlayerContentFragment();
@@ -482,9 +527,9 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     }
 
     public void changeFragment(String sectionId) {
-        Log.d(TAG, "changeFragment");
         section_id = sectionId;
         audioPlayPresenter.requestAudioSectionInfo(access_token, section_id);
+        PreferencesUtils.putString(mContext, CommonConstants.KEY_CURRENT_SECTION, sectionId);
 //        switchFragment(sectionId);
     }
 

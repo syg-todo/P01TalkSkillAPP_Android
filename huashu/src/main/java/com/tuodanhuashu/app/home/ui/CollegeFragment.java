@@ -56,9 +56,11 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.tuodanhuashu.app.Constants.Constants;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseFragment;
+import com.tuodanhuashu.app.course.bean.CourseDetailBean;
 import com.tuodanhuashu.app.course.ui.CourseDetailActivity;
 import com.tuodanhuashu.app.course.ui.CourseListActivity;
 import com.tuodanhuashu.app.course.ui.MasterDetailActivity;
+import com.tuodanhuashu.app.course.ui.OrderActivity;
 import com.tuodanhuashu.app.course.ui.VideoActivity;
 import com.tuodanhuashu.app.course.ui.VideoPlayerActivity;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
@@ -71,6 +73,7 @@ import com.tuodanhuashu.app.home.presenter.HomeCollegePresenter;
 import com.tuodanhuashu.app.home.presenter.HomeZhuanLanPresenter;
 import com.tuodanhuashu.app.home.view.HomeCollegeView;
 import com.tuodanhuashu.app.huashu.ui.HuaShuaListActivity;
+import com.tuodanhuashu.app.utils.PriceFormater;
 import com.tuodanhuashu.app.zhuanlan.ui.ZhuanLanDetailActivity;
 import com.tuodanhuashu.app.zhuanlan.ui.ZhuanLanListActivity;
 import com.tuodanhuashu.app.zhuanlan.ui.ZhuanLanSearchActivity;
@@ -197,7 +200,8 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                 super.onBindViewHolder(holder, position);
                 ImageView imageView = holder.getView(R.id.iv_college_activity);
                 HomeCollegePageBean.ActivityCourse activityCourse = collegePageBean.getActivityCourse();
-                String imageUrl = activityCourse.getActivity_image_url();
+//                String imageUrl = activityCourse.getActivity_image_url();
+                String imageUrl = "https://imgsa.baidu.com/forum/w%3D580%3B/sign=96008d2a6e2762d0803ea4b790d709fa/6159252dd42a28340b77040256b5c9ea14cebfe1.jpg";
                 Glide.with(mContext).load(imageUrl).into(imageView);
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -322,16 +326,22 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
 
         @Override
         public void onBindViewHolder(@NonNull final ChoicenessHolder holder, final int position) {
+
+            HomeCourseBean course = courseBeanList.get(position);
             RequestOptions options = new RequestOptions()
                     .override((mScreenWidth-DisplayUtil.dp2px(50))/2,DisplayUtil.dp2px(93))
                     .centerCrop();
 
-            Glide.with(mContext).load(courseBeanList.get(position).getImage_url())
+            Glide.with(mContext).load(course.getImage_url())
 //                    .apply(options)
                     .into(holder.imgImage);
-            holder.txtCourseName.setText(courseBeanList.get(position).getCourse_name());
-            holder.txtCourseMasterName.setText(courseBeanList.get(position).getMaster_name());
-            holder.txtCoursePrice.setText("￥" + courseBeanList.get(position).getPrice());
+            holder.txtCourseName.setText(course.getCourse_name());
+            holder.txtCourseMasterName.setText(course.getMaster_name());
+            String activityPrice = course.getActivity_price();
+            String salePrice = course.getSale_price();
+            String price = course.getPrice();
+            String finalPrice = PriceFormater.formatPrice(activityPrice,salePrice,price);
+            holder.txtCoursePrice.setText((finalPrice.equals(getResources().getString(R.string.free))?finalPrice:"￥"+finalPrice));
 
             holder.txtCourseMasterName.setOnClickListener(new View.OnClickListener() {
                 @Override

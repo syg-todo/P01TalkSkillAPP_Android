@@ -25,7 +25,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/iv_float_course_iamge"
+        android:id="@+id/iv_float_course_image"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginLeft="@dimen/dp_10"
@@ -46,7 +46,7 @@
         android:ellipsize="end"
         android:text="发刊词：修炼心理能力修炼心理能力修炼心理能力，实现全年"
         android:textColor="@color/white"
-        app:layout_constraintLeft_toRightOf="@id/iv_float_course_iamge"
+        app:layout_constraintLeft_toRightOf="@id/iv_float_course_image"
         app:layout_constraintRight_toLeftOf="@id/iv_float_course_play"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -59,7 +59,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_float_section_name"
         android:text="00:10"
         android:textColor="@color/white"
-        app:layout_constraintLeft_toRightOf="@id/iv_float_course_iamge"
+        app:layout_constraintLeft_toRightOf="@id/iv_float_course_image"
         android:layout_marginLeft="10dp"
         />
 
@@ -77,12 +77,12 @@
 
     <ImageView
         android:id="@+id/iv_float_course_play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginRight="10dp"
-        android:src="@mipmap/section_play"
+        android:src="@drawable/vector_circle_start"
         app:layout_constraintBottom_toBottomOf="parent"
         />
 </android.support.constraint.ConstraintLayout>

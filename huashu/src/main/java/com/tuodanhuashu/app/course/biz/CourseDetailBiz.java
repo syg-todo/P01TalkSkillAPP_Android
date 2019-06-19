@@ -1,6 +1,7 @@
 package com.tuodanhuashu.app.course.biz;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.company.common.net.OkNetUtils;
 import com.company.common.net.OnRequestListener;
@@ -40,5 +41,12 @@ public class CourseDetailBiz {
         params.put("access_token",accseeToken);
         params.put("master_id",masterId);
         OkNetUtils.get(tag,Constants.URL.BASE_URL+Constants.URL.COLLEGE_COURSE_UNRECORD_MASTER_URL,params,context,listener);
+    }
+
+    public void requestBuyCourse(int tag, String accessToken, String courseId) {
+        Map<String,String> params = new HashMap<>();
+        params.put("access_token",accessToken);
+        params.put("course_id",courseId);
+        OkNetUtils.get(tag,Constants.URL.BASE_URL+Constants.URL.COLLEGE_BUY_COURSE_URL,params,context,listener);
     }
 }

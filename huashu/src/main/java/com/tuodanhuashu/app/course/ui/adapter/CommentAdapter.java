@@ -15,18 +15,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.company.common.base.BasePresenter;
-import com.company.common.net.OkNetUtils;
 import com.company.common.utils.DisplayUtil;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.course.bean.CommentBean;
-import com.tuodanhuashu.app.course.bean.CourseDetailBean;
-import com.tuodanhuashu.app.course.presenter.AudioPlayPresenter;
-import com.tuodanhuashu.app.course.presenter.CourseDetailPresenter;
-import com.tuodanhuashu.app.course.ui.AudioPlayActivity;
-import com.tuodanhuashu.app.course.ui.fragment.CourseDetailCommentFragment;
+import com.tuodanhuashu.app.course.ui.AudioPlayerActivity;
 
 import java.util.List;
 
@@ -34,7 +27,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     private Context mContext;
     private List<CommentBean> commentList;
-    private AudioPlayActivity mContextActivity;
+    private AudioPlayerActivity mContextActivity;
 
     private BasePresenter presenter;
     private boolean isLike = false;//是否点赞，默认为点赞

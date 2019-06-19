@@ -5,9 +5,9 @@ public class HomeCourseBean {
     private String course_name;
     private String image_url;
     private String image_small_url;
-    private float price;
-    private float sale_price;
-    private int join_count;
+    private String price;
+    private String sale_price;
+    private String join_count;
     private String master_name;
     private String activity_price;
 
@@ -51,27 +51,27 @@ public class HomeCourseBean {
         this.image_small_url = image_small_url;
     }
 
-    public float getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
-    public float getSale_price() {
+    public String getSale_price() {
         return sale_price;
     }
 
-    public void setSale_price(float sale_price) {
+    public void setSale_price(String sale_price) {
         this.sale_price = sale_price;
     }
 
-    public int getJoin_count() {
+    public String getJoin_count() {
         return join_count;
     }
 
-    public void setJoin_count(int join_count) {
+    public void setJoin_count(String join_count) {
         this.join_count = join_count;
     }
 

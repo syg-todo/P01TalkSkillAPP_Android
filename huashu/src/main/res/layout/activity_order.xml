@@ -7,68 +7,13 @@
 
     <include layout="@layout/common_head_layout"/>
 
-    <android.support.constraint.ConstraintLayout
+
+
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_10"
-        android:layout_marginRight="@dimen/dp_10"
-        android:layout_marginTop="20dp"
-        android:paddingBottom="@dimen/dp_10"
-        android:background="@drawable/shape_vip_selected">
-
-        <com.github.siyamed.shapeimageview.mask.PorterShapeImageView
-            android:id="@+id/iv_order_course_master"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/test"
-            android:scaleType="center"
-            app:siSquare="true"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"/>
-        <TextView
-            android:id="@+id/tv_order_course_name"
-            android:layout_width="0dp"
-            app:layout_constraintHorizontal_weight="1"
-
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toRightOf="@id/iv_order_course_master"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_10"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:textColor="@color/black"
-            android:textSize="17sp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:text="施琪嘉创伤30讲：走出心理阴影，重塑强大内心"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <TextView
-            android:id="@+id/tv_order_course_join_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tv_order_course_name"
-            app:layout_constraintLeft_toRightOf="@id/iv_order_course_master"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_10"
-            android:textSize="12sp"
-            android:text="442201人已学习"/>
-
-        <TextView
-            android:id="@+id/tv_order_course_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorAccent"
-            android:text="￥13"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_order_course_name"
-            android:layout_marginRight="@dimen/dp_10"
-            android:textSize="24sp"
-
-          />
-    </android.support.constraint.ConstraintLayout>
+        android:id="@+id/rv_love_goods"
+        />
     <Button
         android:id="@+id/pay_btn"
         android:layout_width="match_parent"

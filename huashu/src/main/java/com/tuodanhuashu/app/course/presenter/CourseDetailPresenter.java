@@ -33,6 +33,7 @@ public class CourseDetailPresenter extends BasePresenter {
 
     private static final int TAG_UNRECORD_MASTER = 3;
 
+    private static final int TAG_BUY_COURSE = 4;
 
     public CourseDetailPresenter(Context context, CourseDetailView courseDetailView) {
         this.context = context;
@@ -52,31 +53,47 @@ public class CourseDetailPresenter extends BasePresenter {
         courseDetailBiz.unrecordMaster(TAG_UNRECORD_MASTER, accessToken, masterId);
     }
 
+    public void requesetBuyCourse(String accessToken, String courseId) {
+        courseDetailBiz.requestBuyCourse(TAG_BUY_COURSE, accessToken, courseId);
+    }
+
     @Override
     public void OnSuccess(ServerResponse serverResponse, int tag) {
         super.OnSuccess(serverResponse, tag);
+        Log.d("111", tag + "tag");
         switch (tag) {
             case TAG_COURSE_DETAIL:
                 CourseDetailBean courseDetailBean = JsonUtils.getJsonToBean(serverResponse.getData(), CourseDetailBean.class);
-                Log.d("CourseDetailActivity","presenter:"+courseDetailBean.getCourse().getIs_checkout());
                 courseDetailView.getCourseDetailSuccess(courseDetailBean);
                 break;
             case TAG_RECORD_MASTER:
-                Log.d("111",serverResponse.getCode()+"");
 //                CourseDetailBean courseDetailRecord = JsonUtils.getJsonToBean(serverResponse.getData(),CourseDetailBean.class);
 //                courseDetailView.getCourseDetailSuccess(courseDetailRecord);
                 break;
             case TAG_UNRECORD_MASTER:
-                Log.d("111",serverResponse.getCode()+"");
 //                CourseDetailBean courseDetailUnrecord = JsonUtils.getJsonToBean(serverResponse.getData(),CourseDetailBean.class);
 //                courseDetailView.getCourseDetailSuccess(courseDetailUnrecord);
                 break;
+            case TAG_BUY_COURSE:
+                Log.d("111", "PRESENT");
+
+                courseDetailView.getBuyCourseSuccess();
+                break;
+
+
         }
     }
 
-    public void shareArticle(String url,String title,String desc,String type){
+    @Override
+    public void onError(int tag) {
+        super.onError(tag);
+        Log.d("111", tag + "tag");
+    }
+
+
+    public void shareArticle(String url, String title, String desc, String type) {
         IWXAPI wxApi = WXAPIFactory.createWXAPI(context, Constants.WEIXIN.WX_APP_ID);
-        wxApi.registerApp( Constants.WEIXIN.WX_APP_ID);
+        wxApi.registerApp(Constants.WEIXIN.WX_APP_ID);
         WXWebpageObject webpage = new WXWebpageObject();
         webpage.webpageUrl = url;
         final WXMediaMessage msg = new WXMediaMessage(webpage);
@@ -91,9 +108,9 @@ public class CourseDetailPresenter extends BasePresenter {
 //        }
         SendMessageToWX.Req req = new SendMessageToWX.Req();    //创建一个请求对象
         req.message = msg;
-        if(type.equals("quan")){
+        if (type.equals("quan")) {
             req.scene = SendMessageToWX.Req.WXSceneTimeline;
-        }else{
+        } else {
             req.scene = SendMessageToWX.Req.WXSceneSession;
         }
         //req.scene = SendMessageToWX.Req.WXSceneTimeline;    //设置发送到朋友圈
@@ -107,7 +124,14 @@ public class CourseDetailPresenter extends BasePresenter {
     @Override
     public void onFail(String msg, int code, int tag) {
         super.onFail(msg, code, tag);
-        courseDetailView.getCourseDetailFail(msg);
+        switch (tag) {
+            case TAG_BUY_COURSE:
+               courseDetailView.getBuyCourseFail(msg);
+                break;
+            case TAG_COURSE_DETAIL:
+                courseDetailView.getCourseDetailFail(msg);
+                break;
+        }
     }
 
     @Override
