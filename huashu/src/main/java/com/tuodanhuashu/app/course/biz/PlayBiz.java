@@ -41,4 +41,11 @@ public class PlayBiz {
         params.put("comment_id",commentId);
         OkNetUtils.get(tag,Constants.URL.BASE_URL+Constants.URL.COLLEGE_COURSE_UNRECORD_MASTER_URL,params,context,listener);
     }
+
+    public void requestBuyCourse(int tag, String accessToken, String courseId) {
+        Map<String,String> params = new HashMap<>();
+        params.put("access_token",accessToken);
+        params.put("course_id",courseId);
+        OkNetUtils.get(tag,Constants.URL.BASE_URL+Constants.URL.COLLEGE_BUY_COURSE_URL,params,context,listener);
+    }
 }

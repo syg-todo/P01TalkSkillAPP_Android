@@ -145,6 +145,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     private static final int TYPE_COURSE_TAB = 3;
 
     private static final int TYPE_RECOMMEND = 4;
+    private boolean isFirstRefresh = true;
 
 
     @Override
@@ -512,10 +513,10 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                 mediaType = courseBean.getMedia_type();
                 mCourseSalePrice = courseBean.getSale_price();
                 isPay = courseBean.getIs_pay();
+                Log.d(TAG,isPay);
                 imageUrl = courseBean.getImage_url();
                 activityPrice = courseBean.getActivity_price();
                 price = courseBean.getPrice();
-                FrameLayout flPurchase = holder.getView(R.id.fl_course_detail_purchase_status);
                 ImageView ivCourseDetailImage = holder.getView(R.id.iv_course_detail_top);
                 TextView tvCourseDetailPrice = holder.getView(R.id.tv_course_detail_course_price);//原价
                 TextView tvCourseDetailSalePrice = holder.getView(R.id.tv_course_detail_course_sale_price);//销售价
@@ -531,18 +532,6 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
                 tvCourseDetailSalePrice.setText("￥" + courseBean.getSale_price());
 
-//                if (Float.parseFloat(activityPrice)<= 0f){//无活动 走销售价
-//                    if (Float.parseFloat(salePrice) == 0f){//免费
-//                        Log.d(TAG,salePrice+"------11111111111--------"+activityPrice);
-//                        tvCourseDetailSalePrice.setVisibility(View.GONE);
-//                        tvCourseDetailCourseBought.setVisibility(View.GONE);
-//                        tvCourseDetailCourseFree.setVisibility(View.VISIBLE);
-//                    }else {//不免费
-//                    }
-//                }else {//有活动 走活动价,且不免费
-//                    Log.d(TAG,salePrice+"-------222222-------"+activityPrice);
-//                    tvCourseDetailSalePrice.setText("￥"+Math.min(Long.parseLong(salePrice),Long.parseLong(activityPrice)));
-//                }
                 String finalPrice = PriceFormater.formatPrice(activityPrice, salePrice, price);
                 tvCourseDetailSalePrice.setText(finalPrice);
                 if (finalPrice.equals(getResources().getString(R.string.free))) {
@@ -556,28 +545,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
                     }
                 }
-                Log.d(TAG, salePrice + "-------444444444-----" + activityPrice);
-//                if (Float.parseFloat(activityPrice) <= 0f) {//没有活动
-//                    if (Float.parseFloat(salePrice) == 0f) {//免费
-//                        tvCourseDetailSalePrice.setVisibility(View.GONE);
-//                        tvCourseDetailCourseFree.setVisibility(View.VISIBLE);
-//                        tvCourseDetailCourseBought.setVisibility(View.GONE);
-//                        tvCourseDetailCourseBuy.setVisibility(View.GONE);
-//
-//                    } else {//不免费
-//                        if (isPay.equals("2")) {//未购买
-//                            tvCourseDetailCourseFree.setVisibility(View.GONE);
-//                            tvCourseDetailCourseBought.setVisibility(View.VISIBLE);
-//                            tvCourseDetailCourseBuy.setVisibility(View.GONE);
-//                        } else {//已购买
-//                            tvCourseDetailCourseFree.setVisibility(View.GONE);
-//                            tvCourseDetailCourseBought.setVisibility(View.GONE);
-//                            tvCourseDetailCourseBuy.setVisibility(View.VISIBLE);
-//                        }
-//
-//                    }
-//                } else {
-//                }
+
 
 
                 Glide.with(mContext).load(imageUrl).into(ivCourseDetailImage);
@@ -621,14 +589,17 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         model.setIsPlaying(true);
         tvJoinNow.setText("立即参加:" + salePrice + "元");
         tvTitle.setText(courseName);
-
-        initCourseTop();
-        initMasterRow();
-        initCourseTab();
+        if (isFirstRefresh){
+            initCourseTop();
+            initMasterRow();
+            initCourseTab();
 //        initRecommendation();
-        delegateAdapter.setAdapters(adapterList);
+            delegateAdapter.setAdapters(adapterList);
 //        initCourseTab();
-
+            isFirstRefresh = false;
+        }else {
+            delegateAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -638,7 +609,8 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
     @Override
     public void getBuyCourseSuccess() {
-        Log.d(TAG,"success buy");
+        Toast.makeText(mContext,"购买成功",Toast.LENGTH_SHORT).show();
+        refresh();
     }
 
     @Override
@@ -719,24 +691,16 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Log.d(TAG,"sure");
                             courseDetailPresenter.requesetBuyCourse(accessToken,courseId);
-
                         }
                     })
                     .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
                         }
                     });
             builder.create().show();
-//            Bundle bundle = new Bundle();
-//            bundle.putString(OrderActivity.EXTAR_COURSE_PRICE, salePrice);
-//            bundle.putString(OrderActivity.EXTAR_COURSE_NAME, courseName);
-//            bundle.putString(OrderActivity.EXTRA_COURSE_MASTER_IMAGE, courseBean.getMaster_avatar_url());
-//            bundle.putString(OrderActivity.EXTRA_COURSE_JOIN_COUNT, courseBean.getJoin_count());
-//            readyGo(OrderActivity.class, bundle);
+
         } else {
             goToLogin();
         }
@@ -760,7 +724,6 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
             public void onClick(View v) {
                 if (courseBean != null) {
                     shareDialog.dismiss();
-
                     courseDetailPresenter.shareArticle(courseBean.getShare_url(), courseBean.getCourse_name(), courseBean.getCourse_intro(), "you");
                 }
             }
@@ -770,7 +733,6 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
             public void onClick(View v) {
                 if (courseBean != null) {
                     shareDialog.dismiss();
-
                     courseDetailPresenter.shareArticle(courseBean.getShare_url(), courseBean.getCourse_name(), courseBean.getCourse_intro(), "quan");
                 }
             }

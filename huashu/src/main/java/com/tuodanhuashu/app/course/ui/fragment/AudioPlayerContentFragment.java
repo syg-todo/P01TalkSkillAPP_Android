@@ -1,9 +1,11 @@
 package com.tuodanhuashu.app.course.ui.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,6 +18,8 @@ import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.VirtualLayoutManager;
 import com.alibaba.android.vlayout.layout.LinearLayoutHelper;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.company.common.CommonConstants;
+import com.company.common.utils.PreferencesUtils;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseFragment;
 import com.tuodanhuashu.app.base.SimpleItemDecoration;
@@ -29,6 +33,7 @@ import com.tuodanhuashu.app.course.ui.adapter.CommentAdapter;
 import com.tuodanhuashu.app.course.ui.adapter.SectionInfoAdapter;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
 import com.tuodanhuashu.app.home.ui.HuaShuFragment;
+import com.tuodanhuashu.app.utils.PriceFormater;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +50,8 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
     LinearLayout layoutSend;
     @BindView(R.id.rv_play)
     RecyclerView recyclerView;
-
+    @BindView(R.id.tv_audio_join_now)
+    TextView tvAudioJoin;
 
     public static final String EXTAR_SECTION_ID = "section_id";
     RecyclerView rvCourseTab;
@@ -66,6 +72,11 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
     private String audioDutaion;
     private String currentSectionId;
     private String courseId;
+    private String accessToken;
+    private String salePrice;
+    private String activityPrice;
+    private String price;
+
 
     private CommentAdapter adapterComment;
     private SectionInfoAdapter adapterSectionInfo;
@@ -141,9 +152,8 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
     @Override
     protected void initView(View view) {
         super.initView(view);
-        Log.d(TAG,"initView");
         model = ViewModelProviders.of(getActivity()).get(SectionInfoModel.class);
-
+        accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN,"");
         SectionBean section = model.getSection().getValue();
 
         isPay = section.getIs_pay();
@@ -156,7 +166,10 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
         courseId = section.getCourse_id();
         currentSectionId = getArguments().getString(EXTAR_SECTION_ID);
 
-
+        salePrice = section.getSale_price();
+        activityPrice = section.getActivity_price();
+        price = section.getPrice();
+        String finalPrice = PriceFormater.formatPrice(activityPrice,salePrice,price);
         adapterList = new ArrayList<>();
         VirtualLayoutManager layoutManager = new VirtualLayoutManager(mContext);
         recyclerView.setLayoutManager(layoutManager);
@@ -164,8 +177,13 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
         recyclerView.setRecycledViewPool(viewPool);
         viewPool.setMaxRecycledViews(0, 10);
         delegateAdapter = new DelegateAdapter(layoutManager, true);
-        recyclerView.setAdapter(delegateAdapter);
-
+        if (isPay.equals("1")){
+            layoutSend.setVisibility(View.VISIBLE);
+            tvAudioJoin.setVisibility(View.GONE);
+        }else {
+            layoutSend.setVisibility(View.GONE);
+            tvAudioJoin.setVisibility(View.VISIBLE);
+        }
         tvAudioComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,14 +191,45 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
                     goToLogin();
                 } else {
                     CommentDialogFragment dialogFragment = new CommentDialogFragment();
-//                    dialogFragment.show(getFragmentManager(), "tag");
+                    dialogFragment.show(getFragmentManager(),"tag");
                 }
             }
         });
 
+
+
+
+        tvAudioJoin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isLogin()){
+                    goToLogin();
+                }else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("确定购买吗")
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+//                                    courseDetailPresenter.requesetBuyCourse(accessToken,courseId);
+                                    ((AudioPlayerActivity)getActivity()).buy();
+                                }
+                            })
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            });
+                    builder.create().show();
+
+                }
+            }
+        });
         initPlayTop();
         initComment();
+        Log.d(TAG,"HERE");
         delegateAdapter.setAdapters(adapterList);
+        recyclerView.setAdapter(delegateAdapter);
+
 
     }
 

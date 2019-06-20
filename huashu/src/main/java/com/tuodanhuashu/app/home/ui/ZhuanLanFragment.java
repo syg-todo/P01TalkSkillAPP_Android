@@ -521,7 +521,6 @@ public class ZhuanLanFragment extends HuaShuBaseFragment implements HomeZhuanLan
             arr[2] = 0;
         }
         if (isFirstRefresh) {
-
             initBanner();
             initSearch();
             //initArticle();

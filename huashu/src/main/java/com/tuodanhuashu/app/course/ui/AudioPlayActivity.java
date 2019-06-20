@@ -229,7 +229,7 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
                     goToLogin();
                 } else {
                     CommentDialogFragment dialogFragment = new CommentDialogFragment();
-                    dialogFragment.show(getFragmentManager(), "tag");
+                    dialogFragment.show(getSupportFragmentManager(), "tag");
                 }
             }
         });
@@ -372,6 +372,16 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
 
     @Override
     public void getSectionFail(String msg) {
+    }
+
+    @Override
+    public void getBuyCourseSuccess() {
+
+    }
+
+    @Override
+    public void getBuyCourseFail(String msg) {
+
     }
 
     @Override

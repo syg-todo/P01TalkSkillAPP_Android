@@ -51,7 +51,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 
-public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlayView, View.OnClickListener {
+public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlayView, View.OnClickListener,DialogFragmentDataCallback {
 
 
     private static final String TAG = AudioPlayerActivity.class.getSimpleName();
@@ -96,7 +96,6 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
 
-    //    private String isPay;
 //    private boolean isPlaying = false;
 //
 //    private String content;
@@ -347,7 +346,6 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
         audioUrl = section.getUrl();
         audioDutaion = section.getDuration();
-
         startService();
 
         setAudioUrl(audioUrl);
@@ -387,6 +385,16 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     @Override
     public void getSectionFail(String msg) {
         Log.d(TAG, msg);
+    }
+
+    @Override
+    public void getBuyCourseSuccess() {
+        Toast.makeText(mContext,"购买成功",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void getBuyCourseFail(String msg) {
+
     }
 
 
@@ -459,6 +467,10 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     }
 
 
+    public void buy(){
+        audioPlayPresenter.requesetBuyCourse(access_token,course_id);
+
+    }
     private void control() {
         mBinder.play();
 //        Map<String, String> params = new HashMap<>();
@@ -533,4 +545,9 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 //        switchFragment(sectionId);
     }
 
+    @Override
+    public void setCommentText(String content) {
+        audioPlayPresenter.sendComment(access_token, course_id, content);
+
+    }
 }

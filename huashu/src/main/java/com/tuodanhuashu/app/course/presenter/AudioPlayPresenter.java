@@ -24,6 +24,7 @@ public class AudioPlayPresenter extends BasePresenter {
     private static final int TAG_SEND_COMMENT = 2;
     private static final int TAG_LIKE_COMMENT = 3;
 
+    private static final int TAG_BUY_COURSE = 4;
 
     public AudioPlayPresenter(Context context, AudioPlayView playView) {
         this.context = context;
@@ -47,11 +48,19 @@ public class AudioPlayPresenter extends BasePresenter {
                 SectionBean sectionBean = JsonUtils.getJsonToBean(serverResponse.getData(), SectionBean.class);
                 playView.getSectionSuccess(sectionBean);
                 break;
+            case TAG_BUY_COURSE:
+                playView.getBuyCourseSuccess();
+                break;
         }
     }
 
     public void likeComment(String accessToken, String commentId) {
         playBiz.likeComment(TAG_LIKE_COMMENT, accessToken, commentId);
+    }
+
+
+    public void requesetBuyCourse(String accessToken,String courseId){
+        playBiz.requestBuyCourse(TAG_BUY_COURSE,accessToken,courseId);
     }
 
 

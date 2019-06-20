@@ -7,4 +7,7 @@ public interface AudioPlayView extends BaseView {
 
     void getSectionSuccess(SectionBean section);
     void getSectionFail(String msg);
+
+    void getBuyCourseSuccess();
+    void getBuyCourseFail(String msg);
 }
