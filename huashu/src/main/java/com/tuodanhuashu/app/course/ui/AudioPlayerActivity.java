@@ -126,7 +126,7 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
     public static final String EXTRA_IS_PLAYING = "is_playing";
     private String section_id = "";
-    private String access_token = "";
+    private String accessToken = "";
 
     private String course_id = "";
     private final int UPDATE_PROGRESS = 1;
@@ -136,7 +136,6 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             mBinder = (AudioPlayService.AudioBinder) service;
-
         }
 
         @Override
@@ -167,12 +166,12 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     protected void initData() {
         super.initData();
         Log.d(TAG, "initData");
-        access_token = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN, "0");
+        accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN, "0");
         model = ViewModelProviders.of(this).get(SectionInfoModel.class);
         audioPlayPresenter = new AudioPlayPresenter(mContext, this);
         currentSectionId = PreferencesUtils.getString(mContext, CommonConstants.KEY_CURRENT_SECTION, "");
 //        if (!section_id.equals(currentSectionId)){
-        audioPlayPresenter.requestAudioSectionInfo(access_token, section_id);
+        audioPlayPresenter.requestAudioSectionInfo(accessToken, section_id);
         PreferencesUtils.putString(mContext, CommonConstants.KEY_CURRENT_SECTION, section_id);
 //        }else {
 //
@@ -397,6 +396,30 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
     }
 
+    @Override
+    public void getLikeCommentSuccess() {
+        Map<String, String> params = new HashMap<>();
+        params.put(CommentAdapter.LIKE_COMMENT_SUCCESS,getResources().getString(R.string.comment_like_success));
+        EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_COMMENT_LIKE_SUCCESS, params));
+
+        Toast.makeText(mContext,"点赞成功",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void getLikeCommentFail(String msg) {
+
+    }
+
+    @Override
+    public void getUnlikeCommentSuccess() {
+        Toast.makeText(mContext,"取消点赞成功",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void getUnlikeCommentFail(String msg) {
+
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -468,7 +491,7 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
 
     public void buy(){
-        audioPlayPresenter.requesetBuyCourse(access_token,course_id);
+        audioPlayPresenter.requesetBuyCourse(accessToken,course_id);
 
     }
     private void control() {
@@ -540,14 +563,31 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
     public void changeFragment(String sectionId) {
         section_id = sectionId;
-        audioPlayPresenter.requestAudioSectionInfo(access_token, section_id);
+        audioPlayPresenter.requestAudioSectionInfo(accessToken, section_id);
         PreferencesUtils.putString(mContext, CommonConstants.KEY_CURRENT_SECTION, sectionId);
 //        switchFragment(sectionId);
     }
 
+    public void likeComment(String commentId){
+        Log.d(TAG,commentId);
+        if (isLogin()){
+            audioPlayPresenter.likeComment(accessToken,commentId);
+        }else {
+            goToLogin();
+        }
+    }
+    public void unlikeComment(String commentId){
+        if (isLogin()){
+            audioPlayPresenter.unlikeComment(accessToken,commentId);
+        }else {
+            goToLogin();
+        }
+
+    }
+
     @Override
     public void setCommentText(String content) {
-        audioPlayPresenter.sendComment(access_token, course_id, content);
+        audioPlayPresenter.sendComment(accessToken, course_id, content);
 
     }
 }

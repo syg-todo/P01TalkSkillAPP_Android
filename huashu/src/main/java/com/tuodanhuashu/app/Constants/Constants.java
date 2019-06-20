@@ -57,6 +57,8 @@ public class Constants {
 
         public static final String COLLEGE_COURSE_LIKE_COMMENT = "/api/Courseuser/like_comment";
 
+        public static final String COLLEGE_COURSE_UNLIKE_COMMENT = "/api/Courseuser/unlike_comment";
+
         public static final String COLLEGE_MASTER_DETAIL_URL = "/api/Courseuser/master_info";
 
 
@@ -188,12 +190,14 @@ public class Constants {
 
         public static final int TAG_STOP_SERVICE = 985;
 
+        public static final int TAG_COMMENT_LIKE_SUCCESS = 984;
 
         public static final String TAG_SECTION_ID = "section_id";
         public static final String TAG_SECTION_NAME = "section_name";
         public static final String TAG_SECTION_DURATION = "section_duration";
         public static final String TAG_SECTION_STATE = "section_state";
 
+//        public static  final String TAG_COMMENT_LIKE_SUCCESS = "comment_like_success";
 
         public static final String TAG_SECTION_BANNER_URL = "section_banner_url";
     }

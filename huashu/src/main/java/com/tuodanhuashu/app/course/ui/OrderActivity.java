@@ -133,7 +133,7 @@ public class OrderActivity extends HuaShuBaseActivity implements View.OnClickLis
                 if (!StringUtils.isEmpty(osn)) {
                     Toast.makeText(mContext,osn,Toast.LENGTH_LONG).show();
                     orderPresenter.requestWXPay(accessToken,osn);
-                }
+            }
                 dialog.dismiss();
             }
         });

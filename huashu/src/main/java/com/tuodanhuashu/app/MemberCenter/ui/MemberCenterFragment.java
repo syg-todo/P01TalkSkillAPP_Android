@@ -86,6 +86,8 @@ public class MemberCenterFragment extends HuaShuBaseFragment implements MemberCe
     TextView memberCenterLoveCountTv;
     @BindView(R.id.user_level_tv)
     TextView userLevelTv;
+    @BindView(R.id.layout_user_love_count)
+    LinearLayout layoutUesrLoveCount;
 
 
     private MemberCenterBean memberCenterBean;
@@ -95,6 +97,7 @@ public class MemberCenterFragment extends HuaShuBaseFragment implements MemberCe
     private static final int REQUEST_TAKE_PHOTO_CODE = 1;
     private Uri mUri;
 
+    private String accessToken;
     public MemberCenterFragment() {
         // Required empty public constructor
     }
@@ -113,7 +116,6 @@ public class MemberCenterFragment extends HuaShuBaseFragment implements MemberCe
     protected void initData() {
         super.initData();
         memberCenterPresenter = new MemberCenterPresenter(mContext, this);
-
     }
 
     @Override
@@ -315,6 +317,7 @@ public class MemberCenterFragment extends HuaShuBaseFragment implements MemberCe
         userNameTv.setVisibility(View.GONE);
         userLevelTv.setVisibility(View.GONE);
         memberCenterLoginBtn.setVisibility(View.VISIBLE);
+        layoutUesrLoveCount.setVisibility(View.GONE);
     }
 
     @Override

@@ -237,7 +237,7 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
 
         initPlayTop();
 //        initTab();
-        initComment();
+//        initComment();
         delegateAdapter.setAdapters(adapterList);
 
 
@@ -261,20 +261,20 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
         startActivity(intent);
     }
 
-    private void initComment() {
-        HomeAdapter adapterComment = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_COMMENT, R.layout.play_comment_layout) {
-            @Override
-            public void onBindViewHolder(BaseViewHolder holder, int position) {
-                super.onBindViewHolder(holder, position);
-                rvPlayComment = holder.getView(R.id.rv_play_comment);
-                adapter = new CommentAdapter(mContext, commentsBeanList);
-                rvPlayComment.setAdapter(adapter);
-                rvPlayComment.addItemDecoration(new SimpleItemDecoration());
-                rvPlayComment.setLayoutManager(new LinearLayoutManager(mContext));
-            }
-        };
-        adapterList.add(adapterComment);
-    }
+//    private void initComment() {
+//        HomeAdapter adapterComment = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_COMMENT, R.layout.play_comment_layout) {
+//            @Override
+//            public void onBindViewHolder(BaseViewHolder holder, int position) {
+//                super.onBindViewHolder(holder, position);
+//                rvPlayComment = holder.getView(R.id.rv_play_comment);
+//                adapter = new CommentAdapter(mContext, commentsBeanList);
+//                rvPlayComment.setAdapter(adapter);
+//                rvPlayComment.addItemDecoration(new SimpleItemDecoration());
+//                rvPlayComment.setLayoutManager(new LinearLayoutManager(mContext));
+//            }
+//        };
+//        adapterList.add(adapterComment);
+//    }
 
     private void initPlayTop() {
         HomeAdapter adapterTop = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_TOP, R.layout.play_top_layout) {
@@ -381,6 +381,26 @@ public class AudioPlayActivity extends AppCompatActivity implements AudioPlayVie
 
     @Override
     public void getBuyCourseFail(String msg) {
+
+    }
+
+    @Override
+    public void getLikeCommentSuccess() {
+
+    }
+
+    @Override
+    public void getLikeCommentFail(String msg) {
+
+    }
+
+    @Override
+    public void getUnlikeCommentSuccess() {
+
+    }
+
+    @Override
+    public void getUnlikeCommentFail(String msg) {
 
     }
 

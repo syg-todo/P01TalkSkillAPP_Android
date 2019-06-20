@@ -12,4 +12,10 @@ public interface CourseDetailView extends BaseView {
     void getBuyCourseSuccess();
 
     void getBuyCourseFail(String msg);
+
+    void getLikeCommentSuccess();
+    void getLikeCommentFail(String msg);
+
+    void getUnlikeCommentSuccess();
+    void getUnlikeCommentFail(String msg);
 }

@@ -23,8 +23,9 @@ public class AudioPlayPresenter extends BasePresenter {
 
     private static final int TAG_SEND_COMMENT = 2;
     private static final int TAG_LIKE_COMMENT = 3;
+    private static final int TAG_UNLIKE_COMMENT =4;
 
-    private static final int TAG_BUY_COURSE = 4;
+    private static final int TAG_BUY_COURSE = 5;
 
     public AudioPlayPresenter(Context context, AudioPlayView playView) {
         this.context = context;
@@ -51,11 +52,21 @@ public class AudioPlayPresenter extends BasePresenter {
             case TAG_BUY_COURSE:
                 playView.getBuyCourseSuccess();
                 break;
+            case TAG_LIKE_COMMENT:
+                playView.getLikeCommentSuccess();
+                break;
+            case TAG_UNLIKE_COMMENT:
+                playView.getUnlikeCommentSuccess();
+                break;
         }
     }
 
     public void likeComment(String accessToken, String commentId) {
         playBiz.likeComment(TAG_LIKE_COMMENT, accessToken, commentId);
+    }
+
+    public void unlikeComment(String accessToken, String commentId) {
+        playBiz.unlikeComment(TAG_UNLIKE_COMMENT, accessToken, commentId);
     }
 
 
@@ -67,7 +78,20 @@ public class AudioPlayPresenter extends BasePresenter {
     @Override
     public void onFail(String msg, int code, int tag) {
         super.onFail(msg, code, tag);
-        playView.getSectionFail(msg);
+        switch (tag){
+            case TAG_BUY_COURSE:
+                playView.getBuyCourseFail(msg);
+                break;
+            case TAG_LIKE_COMMENT:
+                playView.getLikeCommentFail(msg);
+                break;
+            case TAG_UNLIKE_COMMENT:
+                playView.getUnlikeCommentFail(msg);
+                break;
+            case TAG_PLAY_SECTION:
+                playView.getSectionFail(msg);
+                break;
+        }
     }
 
     @Override

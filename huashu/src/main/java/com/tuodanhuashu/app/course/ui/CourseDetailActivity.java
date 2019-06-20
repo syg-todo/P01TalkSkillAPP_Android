@@ -102,6 +102,8 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     ImageView ivFloatImage;
     @BindView(R.id.iv_float_close)
     ImageView ivFloatClose;
+    @BindView(R.id.layout_course_detail_bottom)
+    LinearLayout layoutCourseDetailBottom;
 
 
     private DelegateAdapter delegateAdapter;
@@ -121,6 +123,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     private String shareUrl;
     private String salePrice;
     private String currentSectionId;
+    private String firstSectionId;
     private Dialog shareDialog;
     private boolean isPlaying = true;
     public static final String EXTRA_COURSE_NAME = "course_name";
@@ -168,9 +171,9 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     @Override
     protected void onResume() {
         super.onResume();
-        refresh();
-        initData();
-        initView();
+//        refresh();
+//        initData();
+//        initView();
     }
 
     private void refresh() {
@@ -308,7 +311,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN, "0");
         model = ViewModelProviders.of(this).get(CourseDetailModel.class);
         courseDetailPresenter = new CourseDetailPresenter(mContext, this);
-//        layoutFloat.getBackground().setAlpha(10);
+        courseDetailPresenter.requestCourseDetail(accessToken,courseId);
 
     }
 
@@ -512,7 +515,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                 masterAvatarUrl = courseBean.getMaster_avatar_url();
                 mediaType = courseBean.getMedia_type();
                 mCourseSalePrice = courseBean.getSale_price();
-                isPay = courseBean.getIs_pay();
+
                 Log.d(TAG,isPay);
                 imageUrl = courseBean.getImage_url();
                 activityPrice = courseBean.getActivity_price();
@@ -587,6 +590,11 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         Log.d(TAG, accessToken + "\n" + courseId);
         model.setCourseDetail(courseDetailBean);
         model.setIsPlaying(true);
+        isPay = courseBean.getIs_pay();
+        firstSectionId = courseDetailBean.getSections().get(0).getId();
+        if (isPay.equals("1")){
+            layoutCourseDetailBottom.setVisibility(View.GONE);
+        }
         tvJoinNow.setText("立即参加:" + salePrice + "元");
         tvTitle.setText(courseName);
         if (isFirstRefresh){
@@ -610,13 +618,34 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     @Override
     public void getBuyCourseSuccess() {
         Toast.makeText(mContext,"购买成功",Toast.LENGTH_SHORT).show();
-        refresh();
+//        refresh();
     }
 
     @Override
     public void getBuyCourseFail(String msg) {
         Toast.makeText(mContext,msg,Toast.LENGTH_SHORT).show();
         readyGo(OrderActivity.class);
+    }
+
+    @Override
+    public void getLikeCommentSuccess() {
+        Toast.makeText(mContext,"点赞成功",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void getLikeCommentFail(String msg) {
+
+    }
+
+    @Override
+    public void getUnlikeCommentSuccess() {
+        Toast.makeText(mContext,"取消点赞成功",Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void getUnlikeCommentFail(String msg) {
+
     }
 
     @Override
@@ -670,18 +699,26 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     }
 
     private void audition() {
-        Toast.makeText(mContext, "audition", Toast.LENGTH_SHORT).show();
+        Bundle bundle = new Bundle();
+        bundle.putString(AudioPlayerActivity.EXTRA_SECTION_ID,firstSectionId);
+        readyGo(AudioPlayerActivity.class,bundle);
+//        Toast.makeText(mContext, "audition", Toast.LENGTH_SHORT).show();
     }
 
     private void share() {
-
-        shareDialog.show();
-//        courseDetailPresenter.requestCourseDetail();
-//        Toast.makeText(mContext, shareUrl, Toast.LENGTH_SHORT).show();
+        if (!isLogin()){
+            goToLogin();
+        }else {
+            shareDialog.show();
+        }
     }
 
     private void download() {
-        Toast.makeText(mContext, "download", Toast.LENGTH_SHORT).show();
+        if (!isLogin()){
+            goToLogin();
+        }else {
+
+        }
     }
 
     private void createOrder() {
@@ -746,4 +783,12 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         window.setAttributes(params);
     }
 
+
+    public void likeComment(String commentId){
+        Log.d(TAG,commentId);
+        courseDetailPresenter.likeComment(accessToken,commentId);
+    }
+    public void unlikeComment(String commentId){
+        courseDetailPresenter.unlikeComment(accessToken,commentId);
+    }
 }

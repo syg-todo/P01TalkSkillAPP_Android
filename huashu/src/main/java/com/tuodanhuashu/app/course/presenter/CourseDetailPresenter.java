@@ -35,6 +35,10 @@ public class CourseDetailPresenter extends BasePresenter {
 
     private static final int TAG_BUY_COURSE = 4;
 
+    private static final int TAG_LIKE_COMMENT = 5;
+
+    private static final int TAG_UNLIKE_COMMENT = 6;
+
     public CourseDetailPresenter(Context context, CourseDetailView courseDetailView) {
         this.context = context;
         this.courseDetailView = courseDetailView;
@@ -57,10 +61,18 @@ public class CourseDetailPresenter extends BasePresenter {
         courseDetailBiz.requestBuyCourse(TAG_BUY_COURSE, accessToken, courseId);
     }
 
+    public void likeComment(String accessToken, String commentId) {
+        courseDetailBiz.likeComment(TAG_LIKE_COMMENT, accessToken, commentId);
+    }
+
+    public void unlikeComment(String accessToken, String commentId) {
+        courseDetailBiz.unlikeComment(TAG_UNLIKE_COMMENT, accessToken, commentId);
+    }
+
+
     @Override
     public void OnSuccess(ServerResponse serverResponse, int tag) {
         super.OnSuccess(serverResponse, tag);
-        Log.d("111", tag + "tag");
         switch (tag) {
             case TAG_COURSE_DETAIL:
                 CourseDetailBean courseDetailBean = JsonUtils.getJsonToBean(serverResponse.getData(), CourseDetailBean.class);
@@ -75,10 +87,14 @@ public class CourseDetailPresenter extends BasePresenter {
 //                courseDetailView.getCourseDetailSuccess(courseDetailUnrecord);
                 break;
             case TAG_BUY_COURSE:
-                Log.d("111", "PRESENT");
-
                 courseDetailView.getBuyCourseSuccess();
                 break;
+
+            case TAG_LIKE_COMMENT:
+                courseDetailView.getLikeCommentSuccess();
+                break;
+            case TAG_UNLIKE_COMMENT:
+                courseDetailView.getUnlikeCommentSuccess();
 
 
         }

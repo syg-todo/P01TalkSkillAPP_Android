@@ -140,7 +140,7 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
                 rvPlayComment = holder.getView(R.id.rv_play_comment);
-                adapterComment = new CommentAdapter(mContext, commentsBeanList);
+                adapterComment = new CommentAdapter((AudioPlayerActivity)getActivity(), commentsBeanList,accessToken);
                 rvPlayComment.setAdapter(adapterComment);
                 rvPlayComment.addItemDecoration(new SimpleItemDecoration());
                 rvPlayComment.setLayoutManager(new LinearLayoutManager(mContext));
