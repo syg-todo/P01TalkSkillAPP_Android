@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.tuodanhuashu.app.course.ui.CourseDetailActivity;
 import com.tuodanhuashu.app.course.view.MyCourseView;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
 import com.tuodanhuashu.app.home.bean.MyCourseBean;
+import com.tuodanhuashu.app.utils.PriceFormater;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ import java.util.List;
 import butterknife.BindView;
 
 public class MyCourseFragment extends HuaShuBaseFragment implements MyCourseView {
+    private static final String TAG = MyCourseFragment.class.getSimpleName();
     @BindView(R.id.rv_my_course)
     RecyclerView recyclerView;
 
@@ -95,18 +98,18 @@ public class MyCourseFragment extends HuaShuBaseFragment implements MyCourseView
         @Override
         public void onBindViewHolder(@NonNull final MyCourseHolder holder, int position) {
             final MyCourseBean course = courseList.get(position);
-
-            Glide.with(mContext).load(course.getImage_url()).into(holder.imgImage);
+            Glide.with(mContext).load("http://huashu.zhongpin.me"+course.getImage_url()).into(holder.imgImage);
             holder.txtNmae.setText(course.getCourse_name());
 
-            if (course.getSale_price().equals("0.00")){
-                holder.txtPrice.setText("免费");
-            }else {
-                holder.txtPrice.setText("¥" + course.getSale_price());
-            }
-            if (course.getIs_buy().equals("1")){
+            String salePrice = course.getSale_price();
+            String activityPrice = course.getActivity_price();
+            String pirce = course.getPrice();
+            String finalPrice = PriceFormater.formatPrice(activityPrice,salePrice,pirce);
+
+            holder.txtPrice.setText(finalPrice);
+            if (course.getIs_buy().equals("1")) {
                 holder.txtTag.setText("已付费");
-            }else {
+            } else {
                 holder.txtTag.setText("听过的");
             }
 
