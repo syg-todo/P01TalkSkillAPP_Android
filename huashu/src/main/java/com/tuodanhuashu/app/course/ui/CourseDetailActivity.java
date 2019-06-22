@@ -41,6 +41,10 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.company.common.CommonConstants;
 import com.company.common.utils.DisplayUtil;
 import com.company.common.utils.PreferencesUtils;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloadListener;
+import com.liulishuo.filedownloader.FileDownloadQueueSet;
+import com.liulishuo.filedownloader.FileDownloader;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.tuodanhuashu.app.Constants.Constants;
@@ -52,6 +56,7 @@ import com.tuodanhuashu.app.course.presenter.CourseDetailPresenter;
 import com.tuodanhuashu.app.course.ui.fragment.CourseDetailAspectFragment;
 import com.tuodanhuashu.app.course.ui.fragment.CourseDetailCommentFragment;
 import com.tuodanhuashu.app.course.ui.fragment.CourseDetailDirectoryFragment;
+import com.tuodanhuashu.app.course.ui.fragment.PaymentChooseFragment;
 import com.tuodanhuashu.app.course.view.CourseDetailView;
 import com.tuodanhuashu.app.eventbus.EventMessage;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
@@ -110,6 +115,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
     private CourseDetailPresenter courseDetailPresenter;
     private List<DelegateAdapter.Adapter> adapterList;
+    private List<String> URLS = new ArrayList<>();
 
     private String mCourseSalePrice;
     private String isPay; //1已支付
@@ -120,6 +126,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     private String masterId;//导师ID
     private String activityPrice;
     private String price;
+    private String finalPrice;
     private String shareUrl;
     private String salePrice;
     private String currentSectionId;
@@ -311,7 +318,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN, "0");
         model = ViewModelProviders.of(this).get(CourseDetailModel.class);
         courseDetailPresenter = new CourseDetailPresenter(mContext, this);
-        courseDetailPresenter.requestCourseDetail(accessToken,courseId);
+        courseDetailPresenter.requestCourseDetail(accessToken, courseId);
 
     }
 
@@ -516,7 +523,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                 mediaType = courseBean.getMedia_type();
                 mCourseSalePrice = courseBean.getSale_price();
 
-                Log.d(TAG,isPay);
+                Log.d(TAG, isPay);
                 imageUrl = courseBean.getImage_url();
                 activityPrice = courseBean.getActivity_price();
                 price = courseBean.getPrice();
@@ -535,7 +542,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
                 tvCourseDetailSalePrice.setText("￥" + courseBean.getSale_price());
 
-                String finalPrice = PriceFormater.formatPrice(activityPrice, salePrice, price);
+                finalPrice = PriceFormater.formatPrice(activityPrice, salePrice, price);
                 tvCourseDetailSalePrice.setText(finalPrice);
                 if (finalPrice.equals(getResources().getString(R.string.free))) {
                     tvCourseDetailCourseBuy.setVisibility(View.GONE);
@@ -548,7 +555,6 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
                     }
                 }
-
 
 
                 Glide.with(mContext).load(imageUrl).into(ivCourseDetailImage);
@@ -588,16 +594,20 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         shareUrl = courseBean.getShare_url();
         courseName = courseBean.getCourse_name();
         Log.d(TAG, accessToken + "\n" + courseId);
+        List<CourseDetailBean.SectionsBean> sectionsBeanList = courseDetailBean.getSections();
+        for (int i = 0; i < sectionsBeanList.size(); i++) {
+            URLS.add(sectionsBeanList.get(i).getUrl());
+        }
         model.setCourseDetail(courseDetailBean);
         model.setIsPlaying(true);
         isPay = courseBean.getIs_pay();
         firstSectionId = courseDetailBean.getSections().get(0).getId();
-        if (isPay.equals("1")){
+        if (isPay.equals("1")) {
             layoutCourseDetailBottom.setVisibility(View.GONE);
         }
         tvJoinNow.setText("立即参加:" + salePrice + "元");
         tvTitle.setText(courseName);
-        if (isFirstRefresh){
+        if (isFirstRefresh) {
             initCourseTop();
             initMasterRow();
             initCourseTab();
@@ -605,31 +615,32 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
             delegateAdapter.setAdapters(adapterList);
 //        initCourseTab();
             isFirstRefresh = false;
-        }else {
+        } else {
             delegateAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
     public void getCourseDetailFail(String msg) {
-
+        Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     @Override
     public void getBuyCourseSuccess() {
-        Toast.makeText(mContext,"购买成功",Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, "购买成功", Toast.LENGTH_SHORT).show();
 //        refresh();
     }
 
     @Override
     public void getBuyCourseFail(String msg) {
-        Toast.makeText(mContext,msg,Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
         readyGo(OrderActivity.class);
     }
 
     @Override
     public void getLikeCommentSuccess() {
-        Toast.makeText(mContext,"点赞成功",Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, "点赞成功", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -639,7 +650,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
     @Override
     public void getUnlikeCommentSuccess() {
-        Toast.makeText(mContext,"取消点赞成功",Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, "取消点赞成功", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -700,47 +711,55 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
     private void audition() {
         Bundle bundle = new Bundle();
-        bundle.putString(AudioPlayerActivity.EXTRA_SECTION_ID,firstSectionId);
-        readyGo(AudioPlayerActivity.class,bundle);
+        bundle.putString(AudioPlayerActivity.EXTRA_SECTION_ID, firstSectionId);
+        readyGo(AudioPlayerActivity.class, bundle);
 //        Toast.makeText(mContext, "audition", Toast.LENGTH_SHORT).show();
     }
 
     private void share() {
-        if (!isLogin()){
+        if (!isLogin()) {
             goToLogin();
-        }else {
+        } else {
             shareDialog.show();
         }
     }
 
     private void download() {
-        if (!isLogin()){
+        if (!isLogin()) {
             goToLogin();
-        }else {
-
+        } else {
+            if (!(isPay.equals("1") || finalPrice.equals("免费"))) {
+                Toast.makeText(mContext, "请先购买课程", Toast.LENGTH_SHORT).show();
+            } else {
+                startMultiTask();
+                Toast.makeText(mContext, "已开始下载课程", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
     private void createOrder() {
-        if (isLogin()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-            builder.setTitle("确定购买吗")
-                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            courseDetailPresenter.requesetBuyCourse(accessToken,courseId);
-                        }
-                    })
-                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
-                    });
-            builder.create().show();
+        PaymentChooseFragment fragment = new PaymentChooseFragment();
+        fragment.show(getSupportFragmentManager(), "PaymentChooseFragment");
 
-        } else {
-            goToLogin();
-        }
+//        if (isLogin()) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+//            builder.setTitle("确定购买吗")
+//                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            courseDetailPresenter.requesetBuyCourse(accessToken, courseId);
+//                        }
+//                    })
+//                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                        }
+//                    });
+//            builder.create().show();
+//
+//        } else {
+//            goToLogin();
+//        }
     }
 
     private void initShareDialog() {
@@ -784,11 +803,130 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     }
 
 
-    public void likeComment(String commentId){
-        Log.d(TAG,commentId);
-        courseDetailPresenter.likeComment(accessToken,commentId);
+    public void likeComment(String commentId) {
+        Log.d(TAG, commentId);
+        courseDetailPresenter.likeComment(accessToken, commentId);
     }
-    public void unlikeComment(String commentId){
-        courseDetailPresenter.unlikeComment(accessToken,commentId);
+
+    public void unlikeComment(String commentId) {
+        courseDetailPresenter.unlikeComment(accessToken, commentId);
     }
+
+
+    private FileDownloadListener downloadListener;
+
+    private void startMultiTask() {
+        FileDownloader.setup(mContext);
+        downloadListener = createLis();
+        final FileDownloadQueueSet queueSet = new FileDownloadQueueSet(downloadListener);
+
+        final List<BaseDownloadTask> tasks = new ArrayList<>();
+        for (int i = 0; i < URLS.size(); i++) {
+            tasks.add(FileDownloader.getImpl().create(URLS.get(i)).setTag(i + 1));
+            Log.d(TAG, URLS.get(i));
+        }
+        queueSet.disableCallbackProgressTimes(); // do not want each task's download progress's callback,
+
+        queueSet.setAutoRetryTimes(1);
+
+
+        queueSet.downloadTogether(tasks);
+
+
+        queueSet.start();
+    }
+
+    private FileDownloadListener createLis() {
+        return new FileDownloadListener() {
+
+            @Override
+            protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                // 之所以加这句判断，是因为有些异步任务在pause以后，会持续回调pause回来，而有些任务在pause之前已经完成，
+                // 但是通知消息还在线程池中还未回调回来，这里可以优化
+                // 后面所有在回调中加这句都是这个原因
+                if (task.getListener() != downloadListener) {
+                    return;
+                }
+
+            }
+
+            @Override
+            protected void connected(BaseDownloadTask task, String etag, boolean isContinue,
+                                     int soFarBytes, int totalBytes) {
+
+                super.connected(task, etag, isContinue, soFarBytes, totalBytes);
+                if (task.getListener() != downloadListener) {
+                    return;
+                }
+
+
+            }
+
+            @Override
+            protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                if (task.getListener() != downloadListener) {
+                    return;
+                }
+
+            }
+
+            @Override
+            protected void blockComplete(BaseDownloadTask task) {
+                if (task.getListener() != downloadListener) {
+                    return;
+                }
+            }
+
+            @Override
+            protected void retry(BaseDownloadTask task, Throwable ex, int retryingTimes, int soFarBytes) {
+                super.retry(task, ex, retryingTimes, soFarBytes);
+                if (task.getListener() != downloadListener) {
+                    return;
+                }
+
+
+            }
+
+            @Override
+            protected void completed(BaseDownloadTask task) {
+                if (task.getListener() != downloadListener) {
+                    return;
+                }
+
+                if (task.isReusedOldFile()) {
+
+                } else {
+
+                }
+
+            }
+
+            @Override
+            protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                if (task.getListener() != downloadListener) {
+                    return;
+                }
+
+            }
+
+            @Override
+            protected void error(BaseDownloadTask task, Throwable e) {
+                if (task.getListener() != downloadListener) {
+                    return;
+                }
+
+            }
+
+            @Override
+            protected void warn(BaseDownloadTask task) {
+                if (task.getListener() != downloadListener) {
+                    return;
+                }
+
+
+            }
+        };
+    }
+
+
 }

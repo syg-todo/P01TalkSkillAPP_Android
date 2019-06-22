@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_payment_title"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:text="选择支付方式"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@id/tv_balance"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <ImageView
+        android:id="@+id/iv_balance_pay"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/love_icon"
+        app:layout_constraintBottom_toTopOf="@id/tv_wechat_pay"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_balance"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:gravity="center_vertical"
+        android:text="余额支付"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/tv_wechat_pay"
+        app:layout_constraintLeft_toRightOf="@id/iv_balance_pay" />
+
+    <TextView
+        android:id="@+id/tv_payment_love_count"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginLeft="5dp"
+        android:gravity="center"
+        android:text="（当前余额：0）"
+        android:textColor="@color/text_gray"
+        app:layout_constraintBottom_toTopOf="@id/tv_wechat_pay"
+        app:layout_constraintLeft_toRightOf="@id/tv_balance" />
+
+    <TextView
+        android:id="@+id/tv_wechat_pay"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:gravity="center_vertical"
+        android:text="微信支付"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/tv_ali_pay"
+        app:layout_constraintLeft_toRightOf="@id/iv_wechat_pay" />
+
+    <ImageView
+        android:id="@+id/iv_wechat_pay"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/icon64_wx_logo"
+        app:layout_constraintBottom_toTopOf="@id/tv_ali_pay"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_ali_pay"
+        android:layout_width="20dp"
+        android:layout_height="17dp"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/alipay"
+        app:layout_constraintBottom_toTopOf="@id/layout_payment_bottom"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_ali_pay"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginLeft="10dp"
+        android:gravity="center_vertical"
+        android:text="支付宝支付"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/layout_payment_bottom"
+        app:layout_constraintLeft_toRightOf="@id/iv_ali_pay" />
+
+
+    <LinearLayout
+        android:id="@+id/layout_payment_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/tv_payment_cancel"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="取消"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/text_gray" />
+
+        <TextView
+            android:id="@+id/tv_payment_buy"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="购买"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/radio_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkedButton="@id/radio_balance"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_payment_title">
+
+        <RadioButton
+            android:id="@+id/radio_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_payment_title" />
+
+        <RadioButton
+            android:id="@+id/radio_wechat"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/radio_balance" />
+
+        <RadioButton
+            android:id="@+id/radio_ali"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/radio_wechat" />
+
+
+    </RadioGroup>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_main_bg"
+        app:layout_constraintTop_toBottomOf="@id/tv_payment_title" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_main_bg"
+        app:layout_constraintTop_toBottomOf="@id/tv_wechat_pay" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_main_bg"
+        app:layout_constraintTop_toBottomOf="@id/tv_balance" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_main_bg"
+        app:layout_constraintTop_toBottomOf="@id/tv_ali_pay" />
+
+
+</android.support.constraint.ConstraintLayout>

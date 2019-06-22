@@ -32,7 +32,6 @@ import com.tuodanhuashu.app.course.ui.CourseDetailActivity;
 import com.tuodanhuashu.app.course.ui.adapter.CommentAdapter;
 import com.tuodanhuashu.app.course.ui.adapter.SectionInfoAdapter;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
-import com.tuodanhuashu.app.home.ui.HuaShuFragment;
 import com.tuodanhuashu.app.utils.PriceFormater;
 
 import java.util.ArrayList;
@@ -76,7 +75,7 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
     private String salePrice;
     private String activityPrice;
     private String price;
-
+    private String finalPrice;
 
     private CommentAdapter adapterComment;
     private SectionInfoAdapter adapterSectionInfo;
@@ -169,7 +168,7 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
         salePrice = section.getSale_price();
         activityPrice = section.getActivity_price();
         price = section.getPrice();
-        String finalPrice = PriceFormater.formatPrice(activityPrice,salePrice,price);
+        finalPrice = PriceFormater.formatPrice(activityPrice,salePrice,price);
         adapterList = new ArrayList<>();
         VirtualLayoutManager layoutManager = new VirtualLayoutManager(mContext);
         recyclerView.setLayoutManager(layoutManager);
@@ -177,7 +176,7 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
         recyclerView.setRecycledViewPool(viewPool);
         viewPool.setMaxRecycledViews(0, 10);
         delegateAdapter = new DelegateAdapter(layoutManager, true);
-        if (isPay.equals("1")){
+        if (isPay.equals("1")||finalPrice.equals("免费")){
             layoutSend.setVisibility(View.VISIBLE);
             tvAudioJoin.setVisibility(View.GONE);
         }else {
@@ -245,7 +244,7 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
 
 
     private void initRvCourseTab(BaseViewHolder holder) {
-        adapterSectionInfo = new SectionInfoAdapter((AudioPlayerActivity) getActivity(), sectionInfoList,currentSectionId,courseId,isPay);
+        adapterSectionInfo = new SectionInfoAdapter((AudioPlayerActivity) getActivity(), sectionInfoList,currentSectionId,courseId,isPay,finalPrice);
         rvCourseTab.setAdapter(adapterSectionInfo);
 //        smoothMoveToPosition(rvCourseTab, 2);
 //        rvCourseTab.smoothScrollToPosition(3);

@@ -86,8 +86,6 @@ public class MemberCenterFragment extends HuaShuBaseFragment implements MemberCe
     TextView memberCenterLoveCountTv;
     @BindView(R.id.user_level_tv)
     TextView userLevelTv;
-    @BindView(R.id.layout_user_love_count)
-    LinearLayout layoutUesrLoveCount;
 
 
     private MemberCenterBean memberCenterBean;
@@ -317,7 +315,6 @@ public class MemberCenterFragment extends HuaShuBaseFragment implements MemberCe
         userNameTv.setVisibility(View.GONE);
         userLevelTv.setVisibility(View.GONE);
         memberCenterLoginBtn.setVisibility(View.VISIBLE);
-        layoutUesrLoveCount.setVisibility(View.GONE);
     }
 
     @Override

@@ -367,7 +367,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
 
         @Override
         public int getItemCount() {
-            return 4;
+            return courseBeanList.size();
         }
 
         class ChoicenessHolder extends RecyclerView.ViewHolder {
@@ -420,7 +420,11 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                     .apply(options).into(holder.imgImage);
             holder.txtCourseName.setText(courseBeanList.get(position).getCourse_name());
             holder.txtCourseMasterName.setText(courseBeanList.get(position).getMaster_name());
-            holder.txtCoursePrice.setText("￥" + courseBeanList.get(position).getPrice());
+
+            String activityPrice = courseBeanList.get(position).getActivity_price();
+            String salePrice = courseBeanList.get(position).getSale_price();
+            String price = courseBeanList.get(position).getPrice();
+            holder.txtCoursePrice.setText(PriceFormater.formatPrice(activityPrice,salePrice,price));
 
             holder.txtCourseMasterName.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -552,6 +556,12 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                             case "3":
                                 i.setClass(mContext, ZhuanLanDetailActivity.class);
                                 b.putString(ZhuanLanDetailActivity.EXTRA_ARTICLE_ID, homeBannerBeanList.get(position).getArticle_id());
+                                i.putExtras(b);
+                                startActivity(i);
+                                break;
+                            case "4":
+                                i.setClass(mContext,CourseDetailActivity.class);
+                                b.putString(CourseDetailActivity.EXTRA_COURSE_ID,homeBannerBeanList.get(position).getCourseId());
                                 i.putExtras(b);
                                 startActivity(i);
                                 break;

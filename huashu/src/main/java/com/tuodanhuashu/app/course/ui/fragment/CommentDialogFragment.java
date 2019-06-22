@@ -37,6 +37,7 @@ public class CommentDialogFragment extends DialogFragment implements View.OnClic
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = new Dialog(getActivity(), R.style.CommentDialog);
+
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.comment_dialog_fragment_layout);
         dialog.setCanceledOnTouchOutside(true);

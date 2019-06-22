@@ -7,7 +7,6 @@ public class HomeCollegePageBean {
     private ActivityCourse activityCourse;
 
 
-
     private List<HomeCourseBean> choicenessCourses;
     private List<HomeCourseBean> recommendCourses;
     public List<HomeBannerBean> getBanners() {

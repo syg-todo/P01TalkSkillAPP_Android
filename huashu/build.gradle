@@ -88,4 +88,5 @@ dependencies {
 //    implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
     implementation 'com.aliyun.dpa:oss-android-sdk:+'
     implementation 'com.github.siyamed:android-shape-imageview:0.9.+@aar'
+    implementation 'com.liulishuo.filedownloader:library:1.7.6'
 }

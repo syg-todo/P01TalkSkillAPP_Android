@@ -30,13 +30,14 @@ public class SectionInfoAdapter extends RecyclerView.Adapter<SectionInfoAdapter.
     private String currentSectionId;
     private String courseId;
     private String isPay;
-
-    public SectionInfoAdapter(AudioPlayerActivity context, List<SectionBean.SectionInfo> sectionsList, String currentSectionId, String courseId, String isPay) {
+    private String finalPrice;
+    public SectionInfoAdapter(AudioPlayerActivity context, List<SectionBean.SectionInfo> sectionsList, String currentSectionId, String courseId, String isPay,String finalPrice) {
         this.context = context;
         this.sectionsList = sectionsList;
         this.currentSectionId = currentSectionId;
         this.courseId = courseId;
         this.isPay = isPay;
+        this.finalPrice = finalPrice;
     }
 
     @NonNull
@@ -67,7 +68,7 @@ public class SectionInfoAdapter extends RecyclerView.Adapter<SectionInfoAdapter.
             holder.tvCourseName.setTextColor(context.getResources().getColor(R.color.text_gray));
         }
 
-        if (isPay.equals("1") || sectionInfo.getIs_audition().equals("1")) {
+        if (isPay.equals("1") || sectionInfo.getIs_audition().equals("1")||finalPrice.equals("免费")) {
             holder.ivCourseLock.setVisibility(View.INVISIBLE);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

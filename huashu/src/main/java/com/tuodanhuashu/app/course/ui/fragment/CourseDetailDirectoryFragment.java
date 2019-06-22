@@ -25,6 +25,7 @@ import com.tuodanhuashu.app.course.bean.CourseDetailModel;
 import com.tuodanhuashu.app.course.bean.SectionBean;
 import com.tuodanhuashu.app.course.ui.AudioPlayerActivity;
 import com.tuodanhuashu.app.eventbus.EventMessage;
+import com.tuodanhuashu.app.utils.PriceFormater;
 
 
 import org.greenrobot.eventbus.EventBus;
@@ -121,8 +122,8 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
             String time = String.format("%02d:%02d", minutes, seconds);
             holder.tvTime.setText(time);
 
-
-            if (isPay.equals("1")) {
+            String finalPrice = PriceFormater.formatPrice(courseDetailBean.getCourse().getActivity_price(),courseDetailBean.getCourse().getSale_price(),courseDetailBean.getCourse().getPrice());
+            if (isPay.equals("1")||finalPrice.equals("免费")) {//已支付
                 holder.ivPause.setVisibility(View.GONE);
                 holder.ivPlay.setVisibility(View.VISIBLE);
                 holder.ivLock.setVisibility(View.GONE);
@@ -135,7 +136,7 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
                     }
                 });
 
-            } else {
+            } else {//未支付
                 if (isAudition.equals("1")) {
                     holder.ivPause.setVisibility(View.GONE);
                     holder.ivPlay.setVisibility(View.GONE);
