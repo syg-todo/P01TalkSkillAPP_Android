@@ -487,8 +487,13 @@ public class VideoPlayerView extends RelativeLayout {
             return;
         }
         inSeek = true;
+        Log.d(TAG,"inSeek:"+inSeek);
         mAliyunVodPlayer.seekTo(position);
         mAliyunVodPlayer.start();
+
+        Map<String, String> params = new HashMap<>();
+        params.put(Constants.EVENT_TAG.TAG_SECTION_STATE, "start");
+        EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_SECTION_STATE_CHANGED, params));
         if (mControlView != null) {
             mControlView.setPlayState(ControlView.PlayState.Playing);
         }
@@ -798,16 +803,16 @@ public class VideoPlayerView extends RelativeLayout {
             }
         });
         //seek结束事件
-//        mAliyunVodPlayer.setOnSeekCompleteListener(new IAliyunVodPlayer.OnSeekCompleteListener() {
-//            @Override
-//            public void onSeekComplete() {
-//                inSeek = false;
-//
+        mAliyunVodPlayer.setOnSeekCompleteListener(new IAliyunVodPlayer.OnSeekCompleteListener() {
+            @Override
+            public void onSeekComplete() {
+                inSeek = false;
+
 //                if (mOuterSeekCompleteListener != null) {
 //                    mOuterSeekCompleteListener.onSeekComplete();
 //                }
-//            }
-//        });
+            }
+        });
         //PCM原始数据监听
 //        mAliyunVodPlayer.setOnPcmDataListener(new IAliyunVodPlayer.OnPcmDataListener() {
 //            @Override
@@ -1125,12 +1130,12 @@ public class VideoPlayerView extends RelativeLayout {
      * @param msg
      */
     private void handleProgressUpdateMessage(Message msg) {
+        Log.d(TAG,"inSeek:"+inSeek);
         if (mAliyunVodPlayer != null && !inSeek) {
 
             Map<String, String> params = new HashMap<>();
             params.put("current", TimeFormater.formatMs(mAliyunVodPlayer.getCurrentPosition()));
             params.put("current_long", String.valueOf(mAliyunVodPlayer.getCurrentPosition()));
-
             EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_PLAYER_CURRENT, params));
 
             mControlView.setVideoPosition((int) mAliyunVodPlayer.getCurrentPosition());

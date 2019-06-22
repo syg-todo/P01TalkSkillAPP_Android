@@ -198,9 +198,7 @@ public class ControlView extends RelativeLayout {
      * 更新播放按钮的状态
      */
     private void updatePlayStateBtn() {
-
         if (mPlayState != PlayState.NotPlaying) {
-
             btnPlayState.setSelected(true);
         } else {
             btnPlayState.setSelected(false);
