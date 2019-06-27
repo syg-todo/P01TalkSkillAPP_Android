@@ -34,20 +34,20 @@ public class CourseDetailAspectFragment extends HuaShuBaseFragment {
 
     private List<CourseDetailBean.RecommendCoursesBean> recommendCoursesBeanList = new ArrayList<>();
     private CourseDetailModel model;
-
+    private String courseId;
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.fragment_course_detail_aspect;
     }
-
 
     @Override
     protected void initView(View view) {
         super.initView(view);
 
         model = ViewModelProviders.of(getActivity()).get(CourseDetailModel.class);
-        recommendCoursesBeanList = model.getCourseDetail().getValue().getRecommendCourses();
 
+        recommendCoursesBeanList = model.getCourseDetail().getValue().getRecommendCourses();
+        courseId = model.getCourseDetail().getValue().getCourse().getId();
         String html = model.getCourseDetail().getValue().getCourse().getCourse_detail();
         Log.d(TAG,html);
         webView.loadData(html, "text/html", "uft-8");
@@ -60,6 +60,7 @@ public class CourseDetailAspectFragment extends HuaShuBaseFragment {
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putInt(CourseListActivity.EXTRA_ENTER_TYPE,5);
+                bundle.putString(CourseListActivity.EXTRA_COURSE_ID,courseId);
                 readyGo(CourseListActivity.class,bundle);
             }
         });

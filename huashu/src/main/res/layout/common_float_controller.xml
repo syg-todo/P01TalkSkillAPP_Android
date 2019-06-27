@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:textSize="8sp"
         app:layout_constraintTop_toBottomOf="@id/tv_float_section_name"
-        android:text="00:10"
+        android:text="00:00"
         android:textColor="@color/white"
         app:layout_constraintLeft_toRightOf="@id/iv_float_course_image"
         android:layout_marginLeft="10dp"

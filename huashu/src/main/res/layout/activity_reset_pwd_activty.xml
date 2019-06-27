@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#f4f4f3"
+    tools:context=".MemberCenter.ui.ResetPwdActivty">
+    <include layout="@layout/common_head_layout"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/white">
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:text="旧密码"
+            />
+        <EditText
+            android:id="@+id/old_pwd_et"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="14dp"
+            android:hint="请输入旧密码"
+            android:singleLine="true"
+            android:textSize="15sp"
+            android:inputType="textPassword"
+            android:background="@null"/>
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="14dp"
+        android:background="@color/divider_color"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+
+        android:background="@color/white">
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:text="新密码"
+            />
+        <EditText
+            android:id="@+id/new_pwd_et"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="14dp"
+            android:hint="请输入新密码"
+            android:textSize="15sp"
+            android:singleLine="true"
+            android:inputType="textPassword"
+            android:background="@null"/>
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="14dp"
+        android:background="@color/divider_color"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+
+        android:background="@color/white">
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:text="确认新密码"
+            />
+        <EditText
+            android:id="@+id/confirm_new_pwd_et"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="14dp"
+            android:hint="请确认新密码"
+            android:singleLine="true"
+            android:textSize="15sp"
+            android:inputType="textPassword"
+            android:background="@null"/>
+    </RelativeLayout>
+    <TextView
+        android:layout_width="334dp"
+        android:layout_height="16dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="10dp"
+        android:text="密码长度为6-12位，可由数字、字母、符号组成，字母区分大小写。"
+        android:textColor="#ff999999"
+        android:textSize="11sp"
+        />
+    <Button
+        android:id="@+id/reset_pwd_btn"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:text="确认提交"
+        android:background="@drawable/shape_user_btn"/>
+</LinearLayout>

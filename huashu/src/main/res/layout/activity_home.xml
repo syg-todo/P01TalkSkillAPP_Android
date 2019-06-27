@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_main_bg"
+    android:orientation="vertical"
+    tools:context=".home.ui.HomeActivity">
+
+    <include
+        layout="@layout/main_header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#F9F9F9"></FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/main_container_frl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="51dp">
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="50dp"
+            android:background="#F9F9F9"></FrameLayout>
+
+        <include
+            layout="@layout/common_float_controller"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginBottom="60dp"
+            android:layout_gravity="bottom"
+            />
+
+        <com.chaychan.library.BottomBarLayout
+            android:id="@+id/bbl"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
+            android:background="@color/white"
+            android:orientation="horizontal">
+
+            <com.chaychan.library.BottomBarItem
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:iconHeight="20dp"
+                app:iconNormal="@drawable/home_unselected"
+                app:iconSelected="@drawable/home_selected"
+                app:iconWidth="19dp"
+                app:itemMarginTop="5dp"
+                app:itemText="首页"
+                app:itemTextSize="12sp"
+                app:textColorNormal="@color/color_unselected"
+                app:textColorSelected="@color/colorAccent" />
+
+            <com.chaychan.library.BottomBarItem
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:iconHeight="20dp"
+                app:iconNormal="@drawable/zhanwei"
+                app:iconSelected="@drawable/zhanwei"
+                app:iconWidth="19dp"
+                app:itemMarginTop="5dp"
+                app:itemText="话术"
+                app:itemTextSize="12sp"
+                app:textColorNormal="@color/color_unselected"
+                app:textColorSelected="@color/colorAccent" />
+
+            <com.chaychan.library.BottomBarItem
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:iconHeight="20dp"
+                app:iconNormal="@drawable/my_unselected"
+                app:iconSelected="@drawable/my_selected"
+                app:iconWidth="19dp"
+                app:itemMarginTop="5dp"
+                app:itemText="会员"
+                app:itemTextSize="12sp"
+                app:textColorNormal="@color/color_unselected"
+                app:textColorSelected="@color/colorAccent" />
+
+        </com.chaychan.library.BottomBarLayout>
+
+        <ImageView
+            android:layout_width="53dp"
+            android:layout_height="37dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="25dp"
+            android:src="@drawable/home_middle_tab_pic" />
+    </FrameLayout>
+</LinearLayout>

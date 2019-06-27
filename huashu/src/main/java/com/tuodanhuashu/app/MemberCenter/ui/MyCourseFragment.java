@@ -106,7 +106,7 @@ public class MyCourseFragment extends HuaShuBaseFragment implements MyCourseView
             String pirce = course.getPrice();
             String finalPrice = PriceFormater.formatPrice(activityPrice,salePrice,pirce);
 
-            holder.txtPrice.setText(finalPrice);
+            holder.txtPrice.setText(finalPrice.equals("免费")?finalPrice:finalPrice+getResources().getString(R.string.love_money));
             if (course.getIs_buy().equals("1")) {
                 holder.txtTag.setText("已付费");
             } else {

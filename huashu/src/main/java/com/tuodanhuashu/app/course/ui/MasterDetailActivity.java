@@ -1,5 +1,6 @@
 package com.tuodanhuashu.app.course.ui;
 
+import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,9 +15,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -77,12 +81,13 @@ public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnC
     private List<HomeCourseBean> courseBeanList = new ArrayList<>();
     private List<DelegateAdapter.Adapter> adapterList = new ArrayList<>();
 
+    private MasterBean masterBean;
     public static final String EXTRA_MASTER_NAME = "master_name";
     private String master_name = "";
 
     public static final String EXTRA_MASTER_ID = "master_id";
     private String master_id = "";
-
+    private Dialog shareDialog;
 
     private MasterDetailModel model;
     @Override
@@ -97,7 +102,7 @@ public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnC
 
         ivHeadShare.getDrawable().setTint(getResources().getColor(R.color.black));
         ivHeadShare.setOnClickListener(this);
-
+        initShareDialog();
 
         VirtualLayoutManager layoutManager = new VirtualLayoutManager(mContext);
         recyclerView.setLayoutManager(layoutManager);
@@ -116,6 +121,45 @@ public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnC
             }
         });
 
+    }
+    private void initShareDialog() {
+        shareDialog = new Dialog(mContext, R.style.BottomDialog_Animation);
+        View view = getLayoutInflater().inflate(R.layout.dialog_share_layout, null);
+        shareDialog.setContentView(view);
+        LinearLayout youIv = view.findViewById(R.id.share_you_ll);
+        LinearLayout quanLl = view.findViewById(R.id.share_quan_ll);
+        TextView cancelTv = view.findViewById(R.id.share_cancel_tv);
+        cancelTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareDialog.dismiss();
+            }
+        });
+        youIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (masterBean != null) {
+                    shareDialog.dismiss();
+                    masterDetailPresenter.shareArticle(masterBean.getShare_url(), masterBean.getName(), masterBean.getIntro(), "you");
+                }
+            }
+        });
+        quanLl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (masterBean != null) {
+                    shareDialog.dismiss();
+                    masterDetailPresenter.shareArticle(masterBean.getShare_url(), masterBean.getName(), masterBean.getIntro(), "quan");
+                }
+            }
+        });
+        shareDialog.setCanceledOnTouchOutside(true);
+        Window window = shareDialog.getWindow();
+        window.setGravity(Gravity.BOTTOM);
+        WindowManager.LayoutParams params = window.getAttributes();
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        params.height = DisplayUtil.dip2px(mContext, 166.0f);
+        window.setAttributes(params);
     }
 
     private void initTab() {
@@ -296,13 +340,18 @@ public class MasterDetailActivity extends HuaShuBaseActivity implements View.OnC
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_master_detail_head_share:
-                Toast.makeText(mContext, "分享", Toast.LENGTH_SHORT).show();
+                share();
                 break;
         }
     }
 
+    private void share() {
+        shareDialog.show();
+    }
+
     @Override
     public void getMasterDetailSuccess(MasterBean masterBean) {
+        this.masterBean = masterBean;
         masterName = masterBean.getName();
         signature = masterBean.getP_signature();
         isRecord = masterBean.getIs_record();

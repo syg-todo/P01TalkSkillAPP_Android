@@ -2,16 +2,20 @@ package com.tuodanhuashu.app.course.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +25,16 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alivc.player.VcPlayerLog;
+import com.aliyun.vodplayer.downloader.AliyunDownloadConfig;
+import com.aliyun.vodplayer.downloader.AliyunDownloadInfoListener;
+import com.aliyun.vodplayer.downloader.AliyunDownloadManager;
+import com.aliyun.vodplayer.downloader.AliyunDownloadMediaInfo;
+import com.aliyun.vodplayer.downloader.AliyunRefreshStsCallback;
+import com.aliyun.vodplayer.downloader.AliyunRefreshVidSourceCallback;
+import com.aliyun.vodplayer.media.AliyunPlayAuth;
+import com.aliyun.vodplayer.media.AliyunVidSource;
+import com.aliyun.vodplayer.media.AliyunVidSts;
 import com.bumptech.glide.Glide;
 import com.company.common.CommonConstants;
 import com.company.common.utils.PreferencesUtils;
@@ -36,13 +50,18 @@ import com.tuodanhuashu.app.course.ui.adapter.CommentAdapter;
 import com.tuodanhuashu.app.course.ui.adapter.SectionInfoAdapter;
 import com.tuodanhuashu.app.course.ui.fragment.AudioPlayerContentFragment;
 import com.tuodanhuashu.app.course.view.AudioPlayView;
+import com.tuodanhuashu.app.download.VidStsUtil;
 import com.tuodanhuashu.app.eventbus.EventMessage;
+import com.tuodanhuashu.app.utils.NetWatchdog;
+import com.tuodanhuashu.app.utils.PriceFormater;
 import com.tuodanhuashu.app.utils.TimeFormater;
 import com.tuodanhuashu.app.widget.player.VideoPlayerView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,7 +70,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 
-public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlayView, View.OnClickListener,DialogFragmentDataCallback {
+public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlayView, View.OnClickListener, DialogFragmentDataCallback {
 
 
     private static final String TAG = AudioPlayerActivity.class.getSimpleName();
@@ -67,8 +86,7 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     ImageView ivAudioPlayBack;
     @BindView(R.id.iv_audio_play_download)
     ImageView ivAudioPlayDownload;
-    @BindView(R.id.iv_audio_play_share)
-    ImageView ivAudioPlayShare;
+
     @BindView(R.id.fl_audio_play_controller)
     FrameLayout flAudioPlayController;
     @BindView(R.id.tv_audio_play_current)
@@ -77,8 +95,7 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     TextView tvAudioPlayDuration;
     @BindView(R.id.iv_audio_play_play)
     ImageView ivAudioPlayPlay;
-    @BindView(R.id.iv_audio_play_pause)
-    ImageView ivAudioPlayPause;
+
     @BindView(R.id.seekbar_audio_play)
     SeekBar seekBar;
     @BindView(R.id.fl_audio_play_container)
@@ -92,34 +109,29 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     private String sectionName;
     private String sectionDuration;
     private String currentSectionId;
-    public boolean isPlaying = true;
+
+    private String isPay;
+    private String finalPrice;
+    public boolean isPlaying = false;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
 
-//    private boolean isPlaying = false;
-//
-//    private String content;
-//    private String html;
-//    private String sectionName;
-//    private String bannerUrl;
+
     private String audioUrl;
     private String audioDutaion;
-    //    private MediaPlayer mediaPlayer;
-//    private MyConnection coon;
+
+    private NetWatchdog mNetWatchdog;
     private AudioPlayService.AudioBinder audioController;
 
+    //下载相关
+    private AliyunDownloadMediaInfo downloadTag;
+    private AliyunDownloadManager downloadManager;
+    private AliyunDownloadConfig config;
 
-//    private DelegateAdapter delegateAdapter;
-
-//    private List<DelegateAdapter.Adapter> adapterList;
-
-    //    private List<CommentBean> commentsBeanList = new ArrayList<>();
     private List<SectionBean.SectionInfo> sectionInfoList = new ArrayList<>();
     private AudioPlayPresenter audioPlayPresenter;
 
     private CommentAdapter adapter;
-    //    SectionInfoAdapter adapterSectionInfo;
-    //    private RecyclerView rvPlayComment;
     public static final String EXTRA_SECTION_ID = "section_id";
 
     public static final String EXTRA_COURSE_ID = "course_id";
@@ -130,7 +142,7 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
     private String course_id = "";
     private final int UPDATE_PROGRESS = 1;
-
+    AliyunDownloadMediaInfo info;
     private AudioPlayService.AudioBinder mBinder;
     private ServiceConnection coon = new ServiceConnection() {
         @Override
@@ -152,7 +164,6 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate");
     }
 
     @Override
@@ -165,7 +176,6 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     @Override
     protected void initData() {
         super.initData();
-        Log.d(TAG, "initData");
         accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN, "0");
         model = ViewModelProviders.of(this).get(SectionInfoModel.class);
         audioPlayPresenter = new AudioPlayPresenter(mContext, this);
@@ -180,21 +190,106 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
     @Override
     protected void initView() {
-        Log.d(TAG, "initView");
         super.initView();
-
+        mNetWatchdog = new NetWatchdog(mContext);
+        mNetWatchdog.startWatch();
+        if (NetWatchdog.is4GConnected(mContext)){
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle("4g")
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .setPositiveButton("继续", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startService();
+                        }
+                    });
+            builder.create().show();
+            Toast.makeText(mContext,"4g",Toast.LENGTH_SHORT).show();
+        }else {
+            startService();
+        }
         fragmentManager = getSupportFragmentManager();
+        downloadManager = AliyunDownloadManager.getInstance(this);
+
+        downloadTag = new AliyunDownloadMediaInfo();
+
+        config = new AliyunDownloadConfig();
+//        config.setSecretImagePath(
+//                Environment.getExternalStorageDirectory().getAbsolutePath() + "/aliyun/encryptedApp.dat");
+        //        config.setDownloadPassword("123456789");
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/test_save/");
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        config.setDownloadDir(file.getAbsolutePath());
+
+        //设置同时下载个数
+        config.setMaxNums(2);
+
+        AliyunDownloadManager.getInstance(this).setDownloadConfig(config);
+        downloadManager.setRefreshStsCallback(new MyRefreshStsCallback());
+
+
+        downloadManager.setDownloadInfoListener(new AliyunDownloadInfoListener() {
+            @Override
+            public void onPrepared(List<AliyunDownloadMediaInfo> list) {
+                Log.d(TAG,"onPrepared");
+            }
+
+            @Override
+            public void onStart(AliyunDownloadMediaInfo aliyunDownloadMediaInfo) {
+                Log.d(TAG,"onStart");
+            }
+
+            @Override
+            public void onProgress(AliyunDownloadMediaInfo aliyunDownloadMediaInfo, int i) {
+                Log.d(TAG,"onProgress");
+            }
+
+            @Override
+            public void onStop(AliyunDownloadMediaInfo aliyunDownloadMediaInfo) {
+                Log.d(TAG,"onStop");
+            }
+
+            @Override
+            public void onCompletion(AliyunDownloadMediaInfo aliyunDownloadMediaInfo) {
+                Log.d(TAG,"onCompletion");
+            }
+
+            @Override
+            public void onError(AliyunDownloadMediaInfo aliyunDownloadMediaInfo, int i, String s, String s1) {
+                Log.d(TAG,"onError"+s+"----"+s1+"----"+aliyunDownloadMediaInfo.getTitle());
+            }
+
+            @Override
+            public void onWait(AliyunDownloadMediaInfo aliyunDownloadMediaInfo) {
+                Log.d(TAG,"onWait");
+            }
+
+            @Override
+            public void onM3u8IndexUpdate(AliyunDownloadMediaInfo aliyunDownloadMediaInfo, int i) {
+                Log.d(TAG,"onM3u8IndexUpdate");
+            }
+        });
+
+        Log.d(TAG,AliyunDownloadManager.getInstance(this).getSaveDir());
+
+//        prepareDownload();
+
 
         ivAudioPlayDownload.getDrawable().setTint(getResources().getColor(R.color.white));
-        ivAudioPlayShare.getDrawable().setTint(getResources().getColor(R.color.white));
 
+        ivAudioPlayBack.getDrawable().setTint(getResources().getColor(R.color.white));
         ivAudioPlayDownload.setOnClickListener(this);
-        ivAudioPlayShare.setOnClickListener(this);
         ivAudioPlayBack.setOnClickListener(this);
         flAudioPlayController.setOnClickListener(this);
 
-        Log.d(TAG, "initview:isPlaying:" + isPlaying);
-        Glide.with(mContext).load(isPlaying?R.drawable.vector_pause:R.drawable.vector_start).into(ivAudioPlayPlay);
+        Glide.with(mContext).load(isPlaying ? R.drawable.vector_pause : R.drawable.vector_start).into(ivAudioPlayPlay);
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -220,6 +315,39 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
 
     }
+    private static class MyRefreshStsCallback implements AliyunRefreshStsCallback {
+
+        @Override
+        public AliyunVidSts refreshSts(String vid, String quality, String format, String title, boolean encript) {
+            //NOTE: 注意：这个不能启动线程去请求。因为这个方法已经在线程中调用了。
+            AliyunVidSts vidSts = VidStsUtil.getVidSts(vid);
+            if (vidSts == null) {
+                return null;
+            } else {
+                Log.d(TAG,vid+"---"+quality+"---"+format+"---"+title);
+                vidSts.setVid(vid);
+                vidSts.setQuality(quality);
+                vidSts.setTitle(title);
+                return vidSts;
+            }
+        }
+    }
+
+
+    private void setConfig() {
+        config = new AliyunDownloadConfig();
+//        config.setSecretImagePath(
+//                Environment.getExternalStorageDirectory().getAbsolutePath() + "/aliyun/encryptedApp.dat");
+        //        config.setDownloadPassword("123456789");
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/test_save/");
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        config.setDownloadDir(file.getAbsolutePath());
+        //设置同时下载个数
+        config.setMaxNums(2);
+    }
+
 
     private void play() {
         mBinder.play();
@@ -227,84 +355,16 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState, persistentState);
         StatusBarUtil.setTranslucentStatus(this);
         StatusBarUtil.setStatusBarColor(this, Color.TRANSPARENT);
 
-//        ActionBar actionBar = getSupportActionBar();
-//        if (actionBar != null) {
-//            actionBar.hide();
-//        }
+
     }
 
-//    private void initPlayTop() {
-//        HomeAdapter adapterTop = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_TOP, R.layout.play_top_layout) {
-//            @Override
-//            public void onBindViewHolder(BaseViewHolder holder, int position) {
-//                super.onBindViewHolder(holder, position);
-//                webView = holder.getView(R.id.webview_audio);
-//                rvCourseTab = holder.getView(R.id.rv_audio_play_tab);
-//                tvAudioPlayShowAll = holder.getView(R.id.tv_audio_play_show_all);
-//                tvAudioPlayTotalCourse = holder.getView(R.id.tv_audio_play_tab_total_course);
-//                String content = "<p><font color='red'>hello baidu!</font></p>";
-//                String htmll = "<html><header>" + html + "</header></body></html>";
-//
-//                webView.loadData(htmll, "text/html", "uft-8");
-//
-//                initRvCourseTab(holder);
-//
-//                tvPlayCourseName = holder.getView(R.id.tv_play_course_name);
-//                tvPlayCourseName.setText(sectionName);
-//
-//                tvAudioPlayTotalCourse.setText("共"+sectionInfoList.size()+"个课时");
-//                tvAudioPlayShowAll.setOnClickListener(AudioPlayerActivity.this);
-//            }
-//        };
-//        adapterList.add(adapterTop);
-//    }
 
-//    private void initRvCourseTab(BaseViewHolder holder) {
-//
-//
-//        CourseDetailBean.SectionsBean section = new CourseDetailBean.SectionsBean();
-//        section.setSection_name("发刊词:测试测试测试测试测试测试测试测试测试123456789");
-//        section.setDuration("26:39");
-//
-//
-////       adapterSectionInfo = new SectionInfoAdapter(mContext, sectionInfoList);
-//        rvCourseTab.setAdapter(adapterSectionInfo);
-//        smoothMoveToPosition(rvCourseTab, 2);
-////        rvCourseTab.smoothScrollToPosition(3);
-//    }
 
-    private int mToPosition;
-    private boolean mShouldScroll;
 
-    private void smoothMoveToPosition(RecyclerView mRecyclerView, final int position) {
-        // 第一个可见位置
-        int firstItem = mRecyclerView.getChildLayoutPosition(mRecyclerView.getChildAt(0));
-        // 最后一个可见位置
-        int lastItem = mRecyclerView.getChildLayoutPosition(mRecyclerView.getChildAt(mRecyclerView.getChildCount() - 1));
-        if (position < firstItem) {
-            // 第一种可能:跳转位置在第一个可见位置之前，使用smoothScrollToPosition
-            mRecyclerView.smoothScrollToPosition(position);
-        } else if (position <= lastItem) {
-            // 第二种可能:跳转位置在第一个可见位置之后，最后一个可见项之前
-            int movePosition = position - firstItem;
-            if (movePosition >= 0 && movePosition < mRecyclerView.getChildCount()) {
-                int top = mRecyclerView.getChildAt(movePosition).getTop();
-                // smoothScrollToPosition 不会有效果，此时调用smoothScrollBy来滑动到指定位置
-                mRecyclerView.smoothScrollBy(0, top);
-            }
-        } else {
-            // 第三种可能:跳转位置在最后可见项之后，则先调用smoothScrollToPosition将要跳转的位置滚动到可见位置
-            // 再通过onScrollStateChanged控制再次调用smoothMoveToPosition，执行上一个判断中的方法
-            mRecyclerView.smoothScrollToPosition(position);
-            mToPosition = position;
-            mShouldScroll = true;
-        }
-    }
 
 
 //    private void initComment() {
@@ -327,7 +387,6 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
         super.getBundleExtras(extras);
         section_id = extras.getString(EXTRA_SECTION_ID);
         course_id = extras.getString(EXTRA_COURSE_ID);
-        Log.d(TAG, "isPlaying:" + isPlaying);
         isPlaying = extras.getBoolean(EXTRA_IS_PLAYING);
     }
 
@@ -345,7 +404,8 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
         audioUrl = section.getUrl();
         audioDutaion = section.getDuration();
-        startService();
+        isPay = section.getIs_pay();
+        finalPrice = PriceFormater.formatPrice(section.getActivity_price(),section.getSale_price(),section.getPrice());
 
         setAudioUrl(audioUrl);
         Glide.with(mContext).load(bannerUrl).into(ivAudioPlayImage);
@@ -363,6 +423,7 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     }
 
     private void startService() {
+        Log.d(TAG,"startService");
         Intent intent = new Intent(AudioPlayerActivity.this, AudioPlayService.class);
         Bundle bundle = new Bundle();
         bundle.putString(AudioPlayService.EXTAR_AUDIO_URL, audioUrl);
@@ -372,7 +433,6 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     }
 
     private void setAudioUrl(String audioUrl) {
-        Log.d(TAG, "setAudioUrl");
         Map<String, String> params = new HashMap<>();
         params.put(Constants.EVENT_TAG.TAG_SECTION_ID, section_id);
         params.put("audio_url", audioUrl);
@@ -388,7 +448,7 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
     @Override
     public void getBuyCourseSuccess() {
-        Toast.makeText(mContext,"购买成功",Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, "购买成功", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -399,10 +459,10 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     @Override
     public void getLikeCommentSuccess() {
         Map<String, String> params = new HashMap<>();
-        params.put(CommentAdapter.LIKE_COMMENT_SUCCESS,getResources().getString(R.string.comment_like_success));
+        params.put(CommentAdapter.LIKE_COMMENT_SUCCESS, getResources().getString(R.string.comment_like_success));
         EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_COMMENT_LIKE_SUCCESS, params));
 
-        Toast.makeText(mContext,"点赞成功",Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, "点赞成功", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -412,7 +472,7 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
     @Override
     public void getUnlikeCommentSuccess() {
-        Toast.makeText(mContext,"取消点赞成功",Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, "取消点赞成功", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -427,11 +487,10 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
             case R.id.iv_audio_play_back:
                 onBackPressed();
                 break;
-            case R.id.iv_audio_play_share:
-                share();
-                break;
+
             case R.id.iv_audio_play_download:
-                download();
+                downloadTest();
+//                download();
                 break;
             case R.id.fl_audio_play_controller:
                 control();
@@ -442,6 +501,52 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
         }
     }
+
+    private void downloadTest() {
+
+        info  = new AliyunDownloadMediaInfo();
+        info.setQuality("FD");
+        info.setCoverUrl("https://vod-test2.cn-shanghai.aliyuncs.com/snapshot/9fb028c29acb421cb634c77cf4ebe07800003.jpg");
+        info.setTitle("zhe");
+//        info.setStatus(AliyunDownloadMediaInfo.Status.Idle);
+        info.setVid("14b625146e614be7b150d67e5cc2573b");
+//        info.setVid("50e27b06729c471582e9dc8cff4e0b01");
+        info.setFormat("m3u8");
+//        info.setEncripted(1);
+//        info.setSavePath(file.getPath());
+        addNewInfo(info);
+//        Log.d(TAG,info.getTitle());
+//        downloadManager.startDownloadMedia(info);
+    }
+
+    private void addNewInfo(AliyunDownloadMediaInfo info){
+        if (downloadManager != null && info != null) {
+//            downloadManager.setRefreshStsCallback(new MyRefreshStsCallback());
+
+            callDownloadPrepare(info.getVid(),info.getTitle());
+            downloadManager.addDownloadMedia(info);
+            downloadManager.startDownloadMedia(info);
+        }
+//        if (downloadView != null && info != null) {
+//            downloadView.addDownloadMediaInfo(info);
+//        }
+    }
+
+    private void callDownloadPrepare(String vid,String title){
+        AliyunVidSts vidSts =VidStsUtil.getVidSts(vid);
+
+//        AliyunVidSts vidSts = new AliyunVidSts();
+//        vidSts.setVid(vid);
+//        vidSts.setAcId("STS.NHEL6H8NDgNGh2MubBsPLvnxs");
+//        vidSts.setAkSceret("Cyzs2smtv92QPz3B4jGvzbbaKoFuHc2AttgVMGY2s5CF");
+//        vidSts.setSecurityToken("CAISjgJ1q6Ft5B2yfSjIr4vwB4z81ZFl0IysahT8kWIXf99gmavTkTz2IHtKenZsCegav/Q3nW1V7vsdlrBtTJNJSEnDKNF36pkS6g66eIvGvYmz5LkJ0BxUqZBCTkyV5tTbRsmkZu6/E67fUzKpvyt3xqSAO1fGdle5MJqPpId6Z9AMJGeRZiZHA9EkQGkPtsgWZzmzWPG2KUyo+B2yanBloQ1hk2hyxL2iy8mHkHrkgUb91/UeqvaaQPHmTbE1Z88kAofpgrcnJvKfiHYI0XUQqvcq1p4j0Czco9SQD2NW5xi7KOfO+rVtVlQiOPZlR/4c8KmszaQl57SOyJ6U1RFBMexQVD7YQI2wGDdS2XJ/9rwagAE5co5MqLUGrWT0G2Eq86k/AmecBF1e3QqBFBkx17Pnetdue5cr3ObzaSJ83vG0X9TqsETfS6DdOY/aX4sHtgmMhSZhdXffmk4IwClqfHdgc5CetEROCOAuhyWs/JbxTG0WI4Ivs3VBcix6Fhc64y13oNt5qzpbOnWrUovGQyXvNw==");
+//        vidSts.setAcId("");
+//        vidSts.setAkSceret("");
+//        vidSts.setSecurityToken("");
+//        vidSts.setTitle(title);
+        downloadManager.prepareDownloadMedia(vidSts);
+    }
+
 
     private void showAll() {
         Bundle bundle = new Bundle();
@@ -460,16 +565,13 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
                 seekBar.setProgress((int) currentLong);
                 break;
             case Constants.EVENT_TAG.TAG_SECTION_STATE_CHANGED:
-                Log.d(TAG, "TAG_SECTION_STATE_CHANGED");
                 String state = (String) ((HashMap) message.getData()).get(Constants.EVENT_TAG.TAG_SECTION_STATE);
                 if (state.equals("start")) {
-                    Log.d(TAG, "onEvent-start");
                     Glide.with(mContext).load(R.drawable.vector_pause).into(ivAudioPlayPlay);
 //                    ivAudioPlayPlay.setVisibility(View.INVISIBLE);
 //                    ivAudioPlayPause.setVisibility(View.VISIBLE);
                     isPlaying = true;
                 } else if (state.equals("pause")) {
-                    Log.d(TAG, "onEvent-pause");
                     Glide.with(mContext).load(R.drawable.vector_start).into(ivAudioPlayPlay);
 //                    ivAudioPlayPlay.setVisibility(View.VISIBLE);
 //                    ivAudioPlayPause.setVisibility(View.INVISIBLE);
@@ -477,23 +579,24 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
                 }
                 break;
             case Constants.EVENT_TAG.TAG_STOP_SERVICE:
-             Toast.makeText(mContext,"stop",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "stop", Toast.LENGTH_SHORT).show();
                 break;
+
 //            case Constants.EVENT_TAG.TAG_PLAYER_DURATION:
 //                String duraion = (String) ((HashMap) message.getData()).get("duration");
 //                tvAudioPlayDuration.setText("/" + duraion);
 //                long durationLong = Long.parseLong((String) ((HashMap) message.getData()).get("duration_long"));
-//                Log.d(TAG, "duration:" + durationLong);
 //                seekBar.setMax((int) durationLong);
 //                break;
         }
     }
 
 
-    public void buy(){
-        audioPlayPresenter.requesetBuyCourse(accessToken,course_id);
+    public void buy() {
+        audioPlayPresenter.requesetBuyCourse(accessToken, course_id);
 
     }
+
     private void control() {
         mBinder.play();
 //        Map<String, String> params = new HashMap<>();
@@ -512,18 +615,59 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
     private void swithController() {
         if (isPlaying()) {
             ivAudioPlayPlay.setVisibility(View.INVISIBLE);
-            ivAudioPlayPause.setVisibility(View.VISIBLE);
+
         } else {
             ivAudioPlayPlay.setVisibility(View.VISIBLE);
-            ivAudioPlayPause.setVisibility(View.INVISIBLE);
         }
     }
 
     private void download() {
+        if (!isLogin()) {
+            goToLogin();
+        } else {
+            if (!(isPay.equals("1") || finalPrice.equals("免费"))) {
+                Toast.makeText(mContext, "请先购买课程", Toast.LENGTH_SHORT).show();
+            } else {
+                if (NetWatchdog.is4GConnected(mContext)) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    final AlertDialog dialogNoWifi = builder.create();
+                    View dialogView = View.inflate(mContext, R.layout.dialog_no_wifi, null);
+                    builder.setView(dialogView);
+                    builder.show();
+
+                    dialogView.findViewById(R.id.btn_no_wifi_cancel).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialogNoWifi.dismiss();
+                        }
+                    });
+                    dialogView.findViewById(R.id.btn_no_wifi_continue).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(mContext, "已开始下载课程", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    //                    builder.setTitle("当前无Wi-Fi，继续下载将使用流量")
+//                            .setNegativeButton("取消下载", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    }).setPositiveButton("继续下载", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            Toast.makeText(mContext, "已开始下载课程", Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                    builder.create().show();
+                } else {
+                    Toast.makeText(mContext, "已开始下载课程", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 
-    private void share() {
-    }
+
 
     private boolean isPlaying() {
         return mBinder.isPlaying();
@@ -533,7 +677,6 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 
 
     private void switchFragment(String sectionId) {
-
         Map<String, String> params = new HashMap<>();
         params.put(Constants.EVENT_TAG.TAG_SECTION_ID, sectionId);
         params.put(Constants.EVENT_TAG.TAG_SECTION_NAME, sectionName);
@@ -568,18 +711,18 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
 //        switchFragment(sectionId);
     }
 
-    public void likeComment(String commentId){
-        Log.d(TAG,commentId);
-        if (isLogin()){
-            audioPlayPresenter.likeComment(accessToken,commentId);
-        }else {
+    public void likeComment(String commentId) {
+        if (isLogin()) {
+            audioPlayPresenter.likeComment(accessToken, commentId);
+        } else {
             goToLogin();
         }
     }
-    public void unlikeComment(String commentId){
-        if (isLogin()){
-            audioPlayPresenter.unlikeComment(accessToken,commentId);
-        }else {
+
+    public void unlikeComment(String commentId) {
+        if (isLogin()) {
+            audioPlayPresenter.unlikeComment(accessToken, commentId);
+        } else {
             goToLogin();
         }
 
@@ -590,4 +733,6 @@ public class AudioPlayerActivity extends HuaShuBaseActivity implements AudioPlay
         audioPlayPresenter.sendComment(accessToken, course_id, content);
 
     }
+
+
 }

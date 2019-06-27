@@ -121,7 +121,8 @@ public class CourseDetailCommentFragment extends HuaShuBaseFragment {
             Glide.with(mContextActivity).load(comment.getHeade_img())
                     .apply(options)
                     .into(holder.imgAvatar);
-            holder.tvCommenterName.setText(comment.getNickname());
+
+            holder.tvCommenterName.setText(comment.getNickname().equals("")?comment.getMobile():comment.getNickname());
             holder.tvTime.setText(comment.getCreate_date());
             holder.tvLikeCount.setText(comment.getLike_count() + "");
             holder.tvComment.setText(comment.getContent());

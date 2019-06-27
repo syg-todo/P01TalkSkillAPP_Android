@@ -1,17 +1,14 @@
 package com.tuodanhuashu.app.course.ui;
 
 import android.app.Dialog;
-import android.app.IntentService;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -26,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -47,6 +43,8 @@ import com.liulishuo.filedownloader.FileDownloadQueueSet;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.tuodanhuashu.app.Constants.Constants;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseActivity;
@@ -56,10 +54,10 @@ import com.tuodanhuashu.app.course.presenter.CourseDetailPresenter;
 import com.tuodanhuashu.app.course.ui.fragment.CourseDetailAspectFragment;
 import com.tuodanhuashu.app.course.ui.fragment.CourseDetailCommentFragment;
 import com.tuodanhuashu.app.course.ui.fragment.CourseDetailDirectoryFragment;
-import com.tuodanhuashu.app.course.ui.fragment.PaymentChooseFragment;
 import com.tuodanhuashu.app.course.view.CourseDetailView;
 import com.tuodanhuashu.app.eventbus.EventMessage;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
+import com.tuodanhuashu.app.utils.NetWatchdog;
 import com.tuodanhuashu.app.utils.PriceFormater;
 
 import org.greenrobot.eventbus.EventBus;
@@ -68,6 +66,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import butterknife.BindView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -144,7 +143,6 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     private String accessToken = "";
     private CourseDetailModel model;
 
-
     private CourseDetailBean.CourseBean courseBean;
     private List<CourseDetailBean.RecommendCoursesBean> recommendCoursesBeanList = new ArrayList<>();
 
@@ -157,6 +155,19 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     private static final int TYPE_RECOMMEND = 4;
     private boolean isFirstRefresh = true;
 
+
+    private boolean isFreeOrPaid = false;
+
+    private FragmentManager fragmentManager;
+    private FragmentTransaction transaction;
+    private TabLayout tabLayout;
+    private CourseDetailCommentFragment fragmentComment;
+    private CourseDetailAspectFragment fragmentAspect;
+    private CourseDetailDirectoryFragment fragmentDirectory;
+    private List<Fragment> fragments = new ArrayList<>();
+    private List<String> titles = new ArrayList<>();
+
+    private MyTabSelectedListener tabSelectedListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,7 +195,13 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     }
 
     private void refresh() {
+//        for (DelegateAdapter.Adapter adapter:
+//             adapterList) {
+//            adapterList.remove(adapter);
+//        }
         courseDetailPresenter.requestCourseDetail(accessToken, courseId);
+        refreshLayoutCourseDetail.finishRefresh();
+        tabLayout.removeOnTabSelectedListener(tabSelectedListener);
     }
 
     @Override
@@ -192,7 +209,6 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         super.initView();
 
         initShareDialog();
-
         ivDownload.getDrawable().setTint(getResources().getColor(R.color.black));
         ivShare.getDrawable().setTint(getResources().getColor(R.color.black));
 
@@ -218,7 +234,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
         ivBack.getDrawable().setTint(getResources().getColor(R.color.black));
 
-
+        tabSelectedListener = new MyTabSelectedListener();
         adapterList = new ArrayList<>();
         refresheaderCourseDetail.setColorSchemeColors(mContext.getResources().getColor(R.color.colorAccent));
         VirtualLayoutManager layoutManager = new VirtualLayoutManager(mContext);
@@ -227,15 +243,18 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         recyclerView.setRecycledViewPool(viewPool);
         viewPool.setMaxRecycledViews(0, 10);
         delegateAdapter = new DelegateAdapter(layoutManager, true);
-        recyclerView.setAdapter(delegateAdapter);
 
-//        initCourseTop();
-//        initMasterRow();
-//      initCourseTab();
-//        initRecommendation();
-//        delegateAdapter.setAdapters(adapterList);
+
+        refreshLayoutCourseDetail.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                refresh();
+            }
+        });
+
 
     }
+
 
 //    private void initRecommendation() {
 //
@@ -322,64 +341,104 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
     }
 
-    private void initCourseTab() {
+    private void initCourseTab(final boolean isFirstRefresh) {
+        Log.d(TAG, "initCourseTab");
         HomeAdapter adapterCourseTab = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_COURSE_TAB, R.layout.course_detail_tab_layout) {
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
-                TabLayout tabLayout = holder.getView(R.id.tablayout_course_detail);
+                tabLayout = holder.getView(R.id.tablayout_course_detail);
 
-                final List<String> titles = new ArrayList<>();
+
+                titles.clear();
                 titles.add("详情");
                 titles.add("目录");
                 titles.add("评论");
-                final List<Fragment> fragments = new ArrayList<>();
+                fragments.clear();
+                fragments.add(fragmentAspect);
+                fragments.add(fragmentDirectory);
+                fragments.add(fragmentComment);
 
-                fragments.add(new CourseDetailAspectFragment());
-                fragments.add(new CourseDetailDirectoryFragment());
-                fragments.add(new CourseDetailCommentFragment());
 
-                for (String title : titles) {
-                    tabLayout.addTab(tabLayout.newTab().setText(title));
-                }
+                if (tabLayout.getTabCount() == 0) {
 
-                for (int i = 0; i < titles.size(); i++) {
-                    if (i == 0) {
-                        tabLayout.getTabAt(i).select();
+                    for (String title : titles) {
+                        Log.d(TAG, "addTab");
+                        tabLayout.addTab(tabLayout.newTab().setText(title));
                     }
-                    View customView = getTabView(mContext, titles.get(i), DisplayUtil.dp2px(18), DisplayUtil.dp2px(2), tabLayout.getTabAt(i).isSelected());
-                    tabLayout.getTabAt(i).setCustomView(customView);
 
                 }
 
-                final FragmentManager fragmentManager = getSupportFragmentManager();
-                final FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.add(R.id.frame_course_detail, fragments.get(0)).commit();
-                tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-                    @Override
-                    public void onTabSelected(TabLayout.Tab tab) {
-                        changeTabStatus(tab, true);
-                        fragmentManager.beginTransaction().replace(R.id.frame_course_detail, fragments.get(tab.getPosition())).commit();
-                    }
+                if (isFirstRefresh){
 
-                    @Override
-                    public void onTabUnselected(TabLayout.Tab tab) {
-                        changeTabStatus(tab, false);
-                    }
-
-                    @Override
-                    public void onTabReselected(TabLayout.Tab tab) {
+                    for (int i = 0; i < titles.size(); i++) {
+                        if (i == 0) {
+                            tabLayout.getTabAt(i).select();
+                        }
+                        View customView = getTabView(mContext, titles.get(i), DisplayUtil.dp2px(18), DisplayUtil.dp2px(2), tabLayout.getTabAt(i).isSelected());
+                        if (tabLayout.getTabAt(i).getCustomView() == null) {
+                            tabLayout.getTabAt(i).setCustomView(customView);
+                        }
 
                     }
-                });
+
+                }
+
+                fragmentManager = getSupportFragmentManager();
+                tabLayout.addOnTabSelectedListener(tabSelectedListener);
+//                tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+//                    @Override
+//                    public void onTabSelected(TabLayout.Tab tab) {
+//                        changeTabStatus(tab, true);
+//                        fragmentManager.beginTransaction().replace(R.id.frame_course_detail, fragments.get(tab.getPosition())).commit();
+//                    }
+//
+//                    @Override
+//                    public void onTabUnselected(TabLayout.Tab tab) {
+//                        changeTabStatus(tab, false);
+//                    }
+//
+//                    @Override
+//                    public void onTabReselected(TabLayout.Tab tab) {
+//
+//                    }
+//                });
+
+                transaction = fragmentManager.beginTransaction();
+                if (!fragmentAspect.isAdded()) {
+                    transaction.add(R.id.frame_course_detail, fragmentAspect).commit();
+                }
 
             }
         };
-        adapterList.add(adapterCourseTab);
+        if (isFirstRefresh) {
+            adapterList.add(adapterCourseTab);
+        }
+
 
     }
 
+    private class MyTabSelectedListener implements TabLayout.OnTabSelectedListener {
+
+        @Override
+        public void onTabSelected(TabLayout.Tab tab) {
+            changeTabStatus(tab, true);
+            fragmentManager.beginTransaction().replace(R.id.frame_course_detail, fragments.get(tab.getPosition())).commit();
+        }
+
+        @Override
+        public void onTabUnselected(TabLayout.Tab tab) {
+            changeTabStatus(tab, false);
+        }
+
+        @Override
+        public void onTabReselected(TabLayout.Tab tab) {
+
+        }
+    }
+
     private void changeTabStatus(TabLayout.Tab tab, boolean selected) {
+        Log.d(TAG, "changeTabStatus");
         View view = tab.getCustomView();
         TextView txtTabTitle = view.findViewById(R.id.tab_item_text);
         View indicator = view.findViewById(R.id.tab_item_indicator);
@@ -445,7 +504,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
                 final TextView txtMasterName = holder.getView(R.id.tv_course_detail_course_master_name);
                 txtMasterName.setText(courseBean.getMaster_name());
-                txtMasterName.setOnClickListener(new View.OnClickListener() {
+                holder.getView(R.id.layout_course_detail_master).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Bundle bundle = new Bundle();
@@ -494,12 +553,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                                     isCheckout = "1";
                                     break;
                             }
-//                            }
-//                            isCheckout = isCheckout.equals("1") ? "2" : "1";
-//                            Toast.makeText(mContext, "click" + isCheckout, Toast.LENGTH_SHORT).show();
-//                            txtFollow.setText(isCheckout.equals("1") ? "已关注" : "关注");
-//                            txtFollow.setSelected(isCheckout.equals("1"));
-//                            txtFollow.setTextColor(isCheckout.equals("1") ? Color.parseColor("#BFBFBF") : Color.parseColor("#FF6969"));
+
                         } else {
                             goToLogin();
                         }
@@ -509,24 +563,22 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                 });
             }
         };
-        adapterList.add(adapterMasterRow);
+
+        if (isFirstRefresh) {
+            adapterList.add(adapterMasterRow);
+
+        }
 
     }
 
     private void initCourseTop() {
+        Log.d(TAG, "initCourseTop");
         HomeAdapter adapterCourseTop = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_TOP, R.layout.course_detail_top_layout) {
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
 
-                masterAvatarUrl = courseBean.getMaster_avatar_url();
-                mediaType = courseBean.getMedia_type();
-                mCourseSalePrice = courseBean.getSale_price();
 
-                Log.d(TAG, isPay);
-                imageUrl = courseBean.getImage_url();
-                activityPrice = courseBean.getActivity_price();
-                price = courseBean.getPrice();
                 ImageView ivCourseDetailImage = holder.getView(R.id.iv_course_detail_top);
                 TextView tvCourseDetailPrice = holder.getView(R.id.tv_course_detail_course_price);//原价
                 TextView tvCourseDetailSalePrice = holder.getView(R.id.tv_course_detail_course_sale_price);//销售价
@@ -537,13 +589,12 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 //                TextView tvCourseDetailCourseFree = holder.getView(R.id.tv_course_detail_course_free);//免费
                 TextView tvCourseDetailCourseBuy = holder.getView(R.id.tv_course_detail_course_buy);//购买
                 TextView tvCourseDetailMediaType = holder.getView(R.id.tv_course_detail_course_audio);
-                tvCourseDetailPrice.setText("￥" + price);
+                tvCourseDetailPrice.setText(finalPrice.equals("免费")?"":price + " " + getResources().getString(R.string.love_money));
                 tvCourseDetailPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
 
-                tvCourseDetailSalePrice.setText("￥" + courseBean.getSale_price());
+//                tvCourseDetailSalePrice.setText(courseBean.getSale_price()+getResources().getString(R.string.love_money));
 
-                finalPrice = PriceFormater.formatPrice(activityPrice, salePrice, price);
-                tvCourseDetailSalePrice.setText(finalPrice);
+                tvCourseDetailSalePrice.setText(finalPrice.equals("免费") ? finalPrice : finalPrice + " " + getResources().getString(R.string.love_money));
                 if (finalPrice.equals(getResources().getString(R.string.free))) {
                     tvCourseDetailCourseBuy.setVisibility(View.GONE);
                 } else {
@@ -567,12 +618,16 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
                 tvCourseDetailCourseBuy.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
                         createOrder();
                     }
                 });
             }
         };
-        adapterList.add(adapterCourseTop);
+        if (isFirstRefresh) {
+
+            adapterList.add(adapterCourseTop);
+        }
     }
 
     @Override
@@ -586,14 +641,26 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     public void getCourseDetailSuccess(CourseDetailBean courseDetailBean) {
         if (courseBean != null) {
             courseBean = null;
+
         }
         recommendCoursesBeanList = courseDetailBean.getRecommendCourses();
         courseBean = courseDetailBean.getCourse();
+
+        masterAvatarUrl = courseBean.getMaster_avatar_url();
+        mediaType = courseBean.getMedia_type();
+        mCourseSalePrice = courseBean.getSale_price();
+        imageUrl = courseBean.getImage_url();
+        activityPrice = courseBean.getActivity_price();
+        price = courseBean.getPrice();
         isCheckout = courseBean.getIs_checkout();
         salePrice = courseBean.getSale_price();
+
+        finalPrice = PriceFormater.formatPrice(activityPrice, salePrice, price);
+
         shareUrl = courseBean.getShare_url();
         courseName = courseBean.getCourse_name();
         Log.d(TAG, accessToken + "\n" + courseId);
+
         List<CourseDetailBean.SectionsBean> sectionsBeanList = courseDetailBean.getSections();
         for (int i = 0; i < sectionsBeanList.size(); i++) {
             URLS.add(sectionsBeanList.get(i).getUrl());
@@ -601,23 +668,41 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
         model.setCourseDetail(courseDetailBean);
         model.setIsPlaying(true);
         isPay = courseBean.getIs_pay();
-        firstSectionId = courseDetailBean.getSections().get(0).getId();
-        if (isPay.equals("1")) {
+        isFreeOrPaid = (isPay.equals("1") || finalPrice.equals("免费"));
+
+        if (courseDetailBean.getSections().size() != 0) {
+            firstSectionId = courseDetailBean.getSections().get(0).getId();
+
+        }
+
+        if (isFreeOrPaid) {
             layoutCourseDetailBottom.setVisibility(View.GONE);
         }
-        tvJoinNow.setText("立即参加:" + salePrice + "元");
+        tvJoinNow.setText("立即参加:" + finalPrice + " " + getResources().getString(R.string.love_money));
         tvTitle.setText(courseName);
         if (isFirstRefresh) {
+            if (fragmentAspect == null) {
+                fragmentAspect = new CourseDetailAspectFragment();
+
+            }
+            if (fragmentComment == null) {
+                fragmentComment = new CourseDetailCommentFragment();
+            }
+            if (fragmentDirectory == null) {
+                fragmentDirectory = new CourseDetailDirectoryFragment();
+            }
+
             initCourseTop();
             initMasterRow();
-            initCourseTab();
-//        initRecommendation();
+            initCourseTab(isFirstRefresh);
+
             delegateAdapter.setAdapters(adapterList);
-//        initCourseTab();
             isFirstRefresh = false;
         } else {
             delegateAdapter.notifyDataSetChanged();
         }
+        recyclerView.setAdapter(delegateAdapter);
+        refreshLayoutCourseDetail.finishRefresh();
     }
 
     @Override
@@ -635,7 +720,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     @Override
     public void getBuyCourseFail(String msg) {
         Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
-        readyGo(OrderActivity.class);
+        readyGo(LoveCountRechargeActivity.class);
     }
 
     @Override
@@ -663,6 +748,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_course_detail_join_now:
+
                 createOrder();
                 break;
             case R.id.iv_course_detail_head_download:
@@ -693,8 +779,11 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     }
 
     private void closeFloat() {
-
 //        EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_STOP_SERVICE, null));
+        Map<String, String> params = new HashMap<>();
+
+        params.put(Constants.EVENT_TAG.TAG_SECTION_STATE, "start");
+        EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_SECTION_STATE_CHANGING, params));
         layoutFloat.setVisibility(View.INVISIBLE);
     }
 
@@ -717,11 +806,7 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
     }
 
     private void share() {
-        if (!isLogin()) {
-            goToLogin();
-        } else {
-            shareDialog.show();
-        }
+        shareDialog.show();
     }
 
     private void download() {
@@ -731,15 +816,76 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
             if (!(isPay.equals("1") || finalPrice.equals("免费"))) {
                 Toast.makeText(mContext, "请先购买课程", Toast.LENGTH_SHORT).show();
             } else {
-                startMultiTask();
-                Toast.makeText(mContext, "已开始下载课程", Toast.LENGTH_SHORT).show();
+                if (NetWatchdog.is4GConnected(mContext)) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    final AlertDialog dialogNoWifi = builder.create();
+                    View dialogView = View.inflate(mContext, R.layout.dialog_no_wifi, null);
+
+
+                    Window dialogWindow = dialogNoWifi.getWindow();
+                    WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+                    dialogWindow.setGravity(Gravity.LEFT | Gravity.TOP);
+
+                    lp.x = 100; // 新位置X坐标
+                    lp.y = 100; // 新位置Y坐标
+                    lp.width = 300; // 宽度
+                    lp.height = 600; // 高度
+                    lp.alpha = 0.7f; // 透明度
+
+                    dialogWindow.setAttributes(lp);
+
+                    builder.setView(dialogView);
+                    builder.show();
+
+                    dialogView.findViewById(R.id.btn_no_wifi_cancel).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialogNoWifi.dismiss();
+                        }
+                    });
+                    dialogView.findViewById(R.id.btn_no_wifi_continue).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(mContext, "已开始下载课程", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    //                    builder.setTitle("当前无Wi-Fi，继续下载将使用流量")
+//                            .setNegativeButton("取消下载", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    }).setPositiveButton("继续下载", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            Toast.makeText(mContext, "已开始下载课程", Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                    builder.create().show();
+                } else {
+                    Toast.makeText(mContext, "已开始下载课程", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
 
     private void createOrder() {
-        PaymentChooseFragment fragment = new PaymentChooseFragment();
-        fragment.show(getSupportFragmentManager(), "PaymentChooseFragment");
+        if (!isLogin()) {
+            goToLogin();
+        } else {
+            Bundle bundle = new Bundle();
+            bundle.putString(OrderConfirmActivity.EXTRA_COURSE_NAME, courseName);
+            bundle.putString(OrderConfirmActivity.EXTRA_FINAL_PRICE, finalPrice);
+            bundle.putString(OrderConfirmActivity.EXTRA_COURSE_IMAGE_URL, imageUrl);
+            bundle.putString(OrderConfirmActivity.EXTRA_LOVE_COUNT, PreferencesUtils.getString(mContext, CommonConstants.KEY_LOVE_COUNT));
+            bundle.putString(OrderConfirmActivity.EXTRA_COURSE_ID, courseId);
+            readyGo(OrderConfirmActivity.class, bundle);
+
+        }
+
+
+//        PaymentChooseFragment fragment = new PaymentChooseFragment();
+//        fragment.show(getSupportFragmentManager(), "PaymentChooseFragment");
 
 //        if (isLogin()) {
 //            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -804,7 +950,6 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
 
 
     public void likeComment(String commentId) {
-        Log.d(TAG, commentId);
         courseDetailPresenter.likeComment(accessToken, commentId);
     }
 
@@ -927,6 +1072,5 @@ public class CourseDetailActivity extends HuaShuBaseActivity implements CourseDe
             }
         };
     }
-
 
 }

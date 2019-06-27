@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/layout_course_detail_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/white">
+
+            <ImageView
+                android:id="@+id/iv_course_detail_head_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="@dimen/dp_10"
+                android:src="@drawable/vector_back_black"
+                android:visibility="visible"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_goneMarginLeft="20dp" />
+
+            <TextView
+                android:id="@+id/common_head_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="@dimen/dp_10"
+                android:ellipsize="end"
+                android:maxWidth="136dp"
+                android:maxLines="1"
+                android:text="页面标题页面标题页面标题页面标题"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_course_detail_head_download"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginRight="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/vector_download"
+                app:layout_constraintRight_toLeftOf="@id/iv_course_detail_head_share"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <ImageView
+                android:id="@+id/iv_course_detail_head_share"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginRight="16dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/vector_share"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/refresh_course_detail">
+
+            <com.scwang.smartrefresh.header.MaterialHeader
+                android:id="@+id/refresheader_course_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:paddingBottom="20dp">
+
+                    <ImageView
+                        android:id="@+id/iv_course_detail_top"
+                        android:layout_width="match_parent"
+                        android:layout_height="210dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/test"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_course_detail_course_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_marginRight="15dp"
+                        android:text="施琪嘉创伤30讲：走出心理阴影，重塑强大内心"
+                        android:textColor="#ff000000"
+                        android:textSize="17sp"
+                        app:layout_constraintTop_toBottomOf="@id/iv_course_detail_top" />
+
+                    <TextView
+                        android:id="@+id/tv_course_detail_course_brief"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_marginRight="15dp"
+                        android:maxLines="2"
+                        android:text="一幅画千言万语一幅画千言万语一幅画千言万语一幅画千言万语一幅画千言万语，一棵树别样人生"
+                        android:textColor="#ff999999"
+                        android:textSize="12sp"
+                        app:layout_constraintHorizontal_weight="1"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_course_detail_course_name" />
+
+                    <TextView
+                        android:id="@+id/tv_course_detail_course_audio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/shape_text_red_hollow_border"
+                        android:padding="2dp"
+                        android:text="音频"
+                        android:textColor="#ffff6666"
+                        android:textSize="12sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_course_detail_course_brief" />
+
+                    <TextView
+                        android:id="@+id/tv_course_detail_course_join"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="21dp"
+                        android:text="2361人参加"
+                        android:textColor="#ff999999"
+                        android:textSize="12sp"
+                        app:layout_constraintLeft_toRightOf="@id/tv_course_detail_course_audio"
+                        app:layout_constraintTop_toBottomOf="@id/tv_course_detail_course_brief" />
+
+                    <TextView
+                        android:id="@+id/tv_course_detail_course_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="15dp"
+                        android:layout_marginTop="22dp"
+                        android:layout_marginRight="5dp"
+                        android:text="￥199"
+                        android:textColor="#ff999999"
+                        android:textSize="11sp"
+                        app:layout_constraintRight_toLeftOf="@id/tv_course_detail_course_sale_price"
+                        app:layout_constraintTop_toBottomOf="@id/tv_course_detail_course_brief" />
+
+                    <TextView
+                        android:id="@+id/tv_course_detail_course_sale_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginRight="5dp"
+                        android:text="￥99"
+                        android:textColor="#ffff6666"
+                        android:textSize="14sp"
+                        app:layout_constraintRight_toLeftOf="@+id/fl_course_detail_purchase_status"
+                        app:layout_constraintTop_toBottomOf="@id/tv_course_detail_course_brief" />
+
+
+                    <FrameLayout
+                        android:id="@+id/fl_course_detail_purchase_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:layout_marginRight="15dp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_course_detail_course_brief">
+
+
+                        <TextView
+                            android:id="@+id/tv_course_detail_course_bought"
+                            android:layout_width="45dp"
+                            android:layout_height="21dp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="已购买"
+                            android:textColor="#ffff6969"
+                            android:textSize="15sp"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/tv_course_detail_course_buy"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/shape_text_red_solid_border"
+                            android:paddingLeft="12dp"
+                            android:paddingTop="4dp"
+                            android:paddingRight="12dp"
+                            android:paddingBottom="4dp"
+                            android:text="@string/buy"
+                            android:textColor="#ffffffff"
+                            android:textSize="13sp"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tv_course_detail_course_brief" />
+
+
+                    </FrameLayout>
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/round"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toRightOf="@id/tv_course_detail_course_join" />
+                </android.support.constraint.ConstraintLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:background="@color/white"
+                    android:paddingBottom="@dimen/dp_10">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/img_course_detail_master"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="@dimen/dp_10"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_course_detail_course_master_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="20dp"
+                        android:text="施琪嘉"
+                        android:textColor="#ff000000"
+                        android:textSize="14sp"
+                        app:layout_constraintLeft_toRightOf="@id/img_course_detail_master_tag"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/img_course_detail_master_tag"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        app:layout_constraintBottom_toBottomOf="@id/img_course_detail_master"
+                        app:layout_constraintRight_toRightOf="@id/img_course_detail_master" />
+
+                    <TextView
+                        android:id="@+id/tv_course_detail_follow"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="17dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/shape_text_red_hollow_border_clickable"
+                        android:clickable="true"
+                        android:gravity="center"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:textColor="#ffff6969"
+                        android:textSize="13sp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <android.support.design.widget.TabLayout
+                        android:id="@+id/tablayout_course_detail"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:background="@drawable/shape_tablayout_border"
+                        app:tabIndicatorColor="@color/colorAccent"
+                        app:tabIndicatorHeight="0dp"
+                        app:tabSelectedTextColor="@color/colorAccent"
+                        app:tabTextColor="#EEEEEE"
+
+                        />
+
+                    <FrameLayout
+                        android:id="@+id/frame_course_detail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/layout_course_detail_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom">
+
+        <LinearLayout
+            android:id="@+id/layout_audition"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:background="#ffffff">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="15dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="17dp"
+                android:src="@mipmap/audition" />
+
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="21dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="14dp"
+                android:text="@string/audition"
+                android:textColor="#ff666666"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_course_detail_join_now"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape_course_detail_participate_immediately"
+            android:gravity="center"
+            android:text="立即参加：99元"
+            android:textColor="#ffffffff"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

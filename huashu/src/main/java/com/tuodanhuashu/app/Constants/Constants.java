@@ -35,6 +35,8 @@ public class Constants {
 
         public static final String COLLEGE_COURSE_CHOICENESS_LIST = "/api/course/choiceness_list";
 
+        public static final String COLLEGE_COURSE_RECOMMEND_LIST = "/api/course/recommend_list";
+
         public static final String COLLEGE_COURSE_ACTIVITY_LIST = "/api/cactivity/newlist";
 
         public static final String COLLEGE_COURSE_MASTER_LIST_URL = "/api/master/list";
@@ -123,6 +125,8 @@ public class Constants {
         public static final String COLLEGE_BUY_COURSE_URL = "/api/courseuser/buy_course";
 
         public static final String GET_LOVE_GOODS_LIST_URL = "/api/courseuser/lovegoods";
+
+        public static final String ADD_CORDER = "/api/order/add_corder";
     }
 
     public static class PREFERENCE {

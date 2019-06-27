@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="20dp"
@@ -70,7 +71,7 @@
 
     <TextView
         android:id="@+id/tv_course_detail_course_price"
-        android:layout_width="30dp"
+        android:layout_width="wrap_content"
         android:layout_height="15dp"
         android:text="￥199"
         android:textColor="#ff999999"
@@ -83,14 +84,14 @@
     <TextView
         android:id="@+id/tv_course_detail_course_sale_price"
         android:layout_width="wrap_content"
-        android:layout_height="19dp"
-        android:text="￥99"
+        android:layout_height="16dp"
         android:layout_marginTop="20dp"
         android:layout_marginRight="5dp"
-        app:layout_constraintRight_toLeftOf="@+id/fl_course_detail_purchase_status"
-        app:layout_constraintTop_toBottomOf="@id/tv_course_detail_course_brief"
+        android:text="￥99"
         android:textColor="#ffff6666"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        app:layout_constraintRight_toLeftOf="@+id/fl_course_detail_purchase_status"
+        app:layout_constraintTop_toBottomOf="@id/tv_course_detail_course_brief" />
 
 
     <FrameLayout

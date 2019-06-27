@@ -130,7 +130,7 @@ public class VideoPlayerView extends RelativeLayout {
         //初始化提示view
         initTipsView();
         //初始化网络监听器
-        initNetWatchdog();
+//        initNetWatchdog();
 //        //初始化屏幕方向监听
 //        initOrientationWatchdog();
 //        //初始化手势对话框控制
@@ -146,6 +146,7 @@ public class VideoPlayerView extends RelativeLayout {
         mNetWatchdog = new NetWatchdog(context);
         mNetWatchdog.setNetChangeListener(new MyNetChangeListener(this));
         mNetWatchdog.setNetConnectedListener(new MyNetConnectedListener(this));
+
     }
 
 
@@ -1057,10 +1058,10 @@ public class VideoPlayerView extends RelativeLayout {
 //            }
 //        }
 
-        if (mNetWatchdog != null) {
-            Log.d(TAG,"mNetWatchDog!=null");
-            mNetWatchdog.startWatch();
-        }
+//        if (mNetWatchdog != null) {
+//            Log.d(TAG,"mNetWatchDog!=null");
+//            mNetWatchdog.startWatch();
+//        }
 
 //        if (mOrientationWatchDog != null) {
 //            mOrientationWatchDog.startWatch();

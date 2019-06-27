@@ -31,6 +31,7 @@ import com.tuodanhuashu.app.MemberCenter.presenter.MemberCenterPresenter;
 import com.tuodanhuashu.app.MemberCenter.view.MemberCenterView;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseFragment;
+import com.tuodanhuashu.app.course.ui.LoveCountRechargeActivity;
 import com.tuodanhuashu.app.huashu.ui.MyHuaShuListActivity;
 import com.tuodanhuashu.app.pay.ui.VipPayActivity;
 import com.tuodanhuashu.app.user.ui.LoginActivity;
@@ -86,7 +87,8 @@ public class MemberCenterFragment extends HuaShuBaseFragment implements MemberCe
     TextView memberCenterLoveCountTv;
     @BindView(R.id.user_level_tv)
     TextView userLevelTv;
-
+    @BindView(R.id.menber_my_love_count)
+    TextView myLoveCountTv;
 
     private MemberCenterBean memberCenterBean;
 
@@ -234,6 +236,19 @@ public class MemberCenterFragment extends HuaShuBaseFragment implements MemberCe
                 readyGo(CommonWebActivity.class, bundle);
             }
         });
+
+        myLoveCountTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isLogin()){
+                    Bundle bundle = new Bundle();
+                    bundle.putString(LoveCountRechargeActivity.EXTRA_LOVE_COUNT,memberCenterBean.getUserinfo().getLove_count());
+                    readyGo(LoveCountRechargeActivity.class,bundle);
+                }else {
+                    goToLogin();
+                }
+            }
+        });
     }
 
 
@@ -307,7 +322,8 @@ public class MemberCenterFragment extends HuaShuBaseFragment implements MemberCe
         }
 
         Glide.with(mContext).load(memberCenterBean.getUserinfo().getHeade_img()).into(userAvatarIv);
-        memberCenterLoveCountTv.setText(memberCenterBean.getUserinfo().getLove_count());
+        PreferencesUtils.putString(mContext,CommonConstants.KEY_LOVE_COUNT,memberCenterBean.getUserinfo().getLove_count());
+        memberCenterLoveCountTv.setText(memberCenterBean.getUserinfo().getLove_count()+" 恋爱币");
     }
 
     @Override

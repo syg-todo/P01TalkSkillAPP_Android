@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_main_bg"
+    android:orientation="vertical"
+    tools:context=".MemberCenter.ui.UserProfileActivity">
+    <include layout="@layout/common_head_layout"/>
+    <RelativeLayout
+        android:id="@+id/update_head_rl"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/white">
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:text="头像"
+            />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/update_head_civ"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="14dp"
+            android:src="@drawable/zhanwei"/>
+    </RelativeLayout>
+    <RelativeLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/white">
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:text="昵称"
+            />
+        <EditText
+            android:id="@+id/update_name_et"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="14dp"
+            android:textSize="15sp"
+            android:hint="请输入昵称"
+            android:gravity="right"
+            android:textColorHint="@color/color_unselected"
+            android:singleLine="true"
+            android:background="@null"/>
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="14dp"
+        android:background="@color/divider_color"/>
+    <RelativeLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+
+        android:background="@color/white">
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:text="性别"
+            />
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="14dp"
+            android:textSize="15sp"
+            android:hint="女"
+            android:background="@null"/>
+        <CheckBox
+            android:id="@+id/update_sex_nv_cb"
+            android:background="@drawable/selector_checkbox"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="37dp"
+            android:textSize="15sp"
+
+            android:button="@null"
+
+            android:textColor="@color/black"
+            />
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="14dp"
+            android:textSize="15sp"
+            android:text="女"
+            android:textColor="@color/black"
+            android:background="@null"/>
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="78dp"
+            android:textSize="15sp"
+            android:text="男"
+            android:textColor="@color/black"
+            android:background="@null"/>
+        <CheckBox
+            android:id="@+id/update_sex_nan_cb"
+            android:background="@drawable/selector_checkbox"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="100dp"
+            android:textSize="15sp"
+
+            android:button="@null"
+
+            android:textColor="@color/black"
+            />
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="14dp"
+        android:background="@color/divider_color"/>
+    <RelativeLayout
+        android:id="@+id/update_sign_rl"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+
+        android:background="@color/white">
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:text="个性签名"
+            />
+        <EditText
+            android:id="@+id/update_sign_et"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="14dp"
+            android:textSize="15sp"
+            android:singleLine="true"
+            android:gravity="right"
+            android:textColorHint="@color/color_unselected"
+            android:hint="这个人很懒,什么都没留下"
+            android:background="@null"/>
+    </RelativeLayout>
+    <Button
+        android:id="@+id/update_info_submit_btn"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:text="确认提交"
+        android:background="@drawable/shape_user_btn"/>
+</LinearLayout>

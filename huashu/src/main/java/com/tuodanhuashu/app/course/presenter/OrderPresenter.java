@@ -14,6 +14,7 @@ import com.tuodanhuashu.app.Constants.Constants;
 import com.tuodanhuashu.app.course.bean.LoveGoodBean;
 import com.tuodanhuashu.app.course.bean.OrderBean;
 import com.tuodanhuashu.app.course.biz.OrderBiz;
+import com.tuodanhuashu.app.course.view.OrderConfirmView;
 import com.tuodanhuashu.app.course.view.OrderView;
 import com.tuodanhuashu.app.pay.bean.WXPayBean;
 
@@ -24,9 +25,10 @@ public class OrderPresenter extends BasePresenter {
 
     private Context context;
 
-    private OrderView orderView;
+    private OrderConfirmView orderView;
 
     private OrderBiz orderBiz;
+
 
     private static final int TAG_GOODS_LIST = 1;
 
@@ -36,7 +38,9 @@ public class OrderPresenter extends BasePresenter {
 
     private static final int TAG_ALI_PAY = 4;
 
-    public OrderPresenter(Context context, OrderView orderView) {
+    private static final int TAG_ADD_CORDER = 5;
+
+    public OrderPresenter(Context context, OrderConfirmView orderView) {
         this.context = context;
         this.orderView = orderView;
         orderBiz = new OrderBiz(this, context);
@@ -62,8 +66,12 @@ public class OrderPresenter extends BasePresenter {
         orderBiz.requestLoveGoods(TAG_GOODS_LIST, accessToken);
     }
 
-    public void requestAddOrder(String accessToken, String goodsId) {
-        orderBiz.requestAddOrder(TAG_ADD_ORDER, accessToken, goodsId);
+    public void requestAddCorder(String accessToken, String courseId) {
+        orderBiz.requestAddCorder(TAG_ADD_CORDER, accessToken, courseId);
+    }
+
+    public void requestAddOrder(String accessToken, String courseId) {
+        orderBiz.requestAddOrder(TAG_ADD_ORDER, accessToken, courseId);
     }
 
     @Override
@@ -82,23 +90,14 @@ public class OrderPresenter extends BasePresenter {
             case TAG_WX_PAY:
                 WXPayBean wxPayBean = JsonUtils.getJsonToBean(serverResponse.getData(), WXPayBean.class);
                 orderView.getWXPayParamsSuccess(wxPayBean);
-
-//                IWXAPI api = WXAPIFactory.createWXAPI(context, Constants.WEIXIN.WX_APP_ID);
-//
-//                // 将应用的appId注册到微信
-//
-//                PayReq request = new PayReq();
-//                request.appId = wxPayBean.getAppid();
-//                request.partnerId = wxPayBean.getPartnerid();
-//                request.prepayId= wxPayBean.getPrepayid();
-//                request.packageValue = wxPayBean.getPackageValue();
-//                request.nonceStr= wxPayBean.getNoncestr();
-//                request.timeStamp= wxPayBean.getTimestamp()+"";
-//                request.sign= wxPayBean.getSign();
-//                api.sendReq(request);
                 break;
             case TAG_ALI_PAY:
                 orderView.getAliPayParamsSuccess(serverResponse.getData());
+                break;
+
+            case TAG_ADD_CORDER:
+                OrderBean corderBean = JsonUtils.getJsonToBean(serverResponse.getData(),OrderBean.class);
+                orderView.getCorderOsnSuccess(corderBean);
                 break;
         }
     }
@@ -113,6 +112,10 @@ public class OrderPresenter extends BasePresenter {
             case TAG_ALI_PAY:
                 orderView.getAliPayParamsFail(msg);
                 break;
+            case TAG_ADD_CORDER:
+                orderView.getCorderOsnFail(msg);
+                break;
         }
     }
+
 }

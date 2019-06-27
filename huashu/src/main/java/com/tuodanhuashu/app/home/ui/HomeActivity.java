@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -35,19 +36,24 @@ import com.tuodanhuashu.app.Constants.Constants;
 import com.tuodanhuashu.app.MemberCenter.ui.MemberCenterFragment;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseActivity;
+import com.tuodanhuashu.app.course.ui.AudioPlayerActivity;
 import com.tuodanhuashu.app.eventbus.EventMessage;
 import com.tuodanhuashu.app.home.biz.HomeBiz;
 import com.tuodanhuashu.app.service.MyService;
 
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class HomeActivity extends HuaShuBaseActivity implements OnRequestListener,OnDownloadListener{
+public class HomeActivity extends HuaShuBaseActivity implements OnRequestListener, OnDownloadListener {
 
     @BindView(R.id.main_header_left_iv)
     ImageView mainHeaderLeftIv;
@@ -63,6 +69,21 @@ public class HomeActivity extends HuaShuBaseActivity implements OnRequestListene
     BottomBarLayout bbl;
     @BindView(R.id.main_head_container)
     RelativeLayout mainHeadContainer;
+    @BindView(R.id.layout_float)
+    ConstraintLayout layoutFloat;
+    @BindView(R.id.iv_float_course_play)
+    ImageView ivFloatPlay;
+    @BindView(R.id.tv_float_section_duration)
+    TextView tvFloatSectionDuration;
+    @BindView(R.id.tv_float_section_name)
+    TextView tvFloatSectionName;
+    @BindView(R.id.tv_float_course_current)
+    TextView tvFloatCurrent;
+    @BindView(R.id.iv_float_course_image)
+    ImageView ivFloatImage;
+    @BindView(R.id.iv_float_close)
+    ImageView ivFloatClose;
+
 
     private Fragment mCurrentFragment;
 
@@ -76,10 +97,13 @@ public class HomeActivity extends HuaShuBaseActivity implements OnRequestListene
 
     private MemberCenterFragment memberCenterFragment;
 
-//    private ZhuanLanFragment zhuanLanFragment;
+    private boolean isPlaying;
+    private String courseId;
+    //    private ZhuanLanFragment zhuanLanFragment;
     private CollegeFragment collegeFragment;
-
+    private String currentSectionId;
     private HomeBiz homeBiz;
+
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.activity_home;
@@ -88,7 +112,7 @@ public class HomeActivity extends HuaShuBaseActivity implements OnRequestListene
 
     @Override
     protected void initData() {
-        homeBiz = new HomeBiz(this,mContext);
+        homeBiz = new HomeBiz(this, mContext);
         mfragmentList = new ArrayList<>();
         homeFragment = new HomeFragment();
         huaShuFragment = new HuaShuFragment();
@@ -104,21 +128,21 @@ public class HomeActivity extends HuaShuBaseActivity implements OnRequestListene
         mFragmentManager.beginTransaction().add(R.id.main_container_frl, homeFragment)
                 .commitAllowingStateLoss();
         mCurrentFragment = homeFragment;
-        if(!StringUtils.isEmpty(PreferencesUtils.getString(mContext,CommonConstants.KEY_ACCOUNT_ID))){
+        if (!StringUtils.isEmpty(PreferencesUtils.getString(mContext, CommonConstants.KEY_ACCOUNT_ID))) {
             registerHuanXin();
         }
-        String versionCode = PackageUtils.getVersionCode(mContext)+"";
-        homeBiz.requestCheckVersion(1,versionCode);
+        String versionCode = PackageUtils.getVersionCode(mContext) + "";
+        homeBiz.requestCheckVersion(1, versionCode);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(isWxLogin()){
-            String url = PreferencesUtils.getString(mContext,CommonConstants.KEY_IMG_URL,"");
+        if (isWxLogin()) {
+            String url = PreferencesUtils.getString(mContext, CommonConstants.KEY_IMG_URL, "");
 
             Glide.with(mContext).load(url).into(mainHeaderLeftIv);
-        }else{
+        } else {
             mainHeaderLeftIv.setVisibility(View.GONE);
         }
 
@@ -146,9 +170,9 @@ public class HomeActivity extends HuaShuBaseActivity implements OnRequestListene
                     headZhuanlanTv.setTextColor(getResources().getColor(R.color.black));
                 }
 
-                if(i1 == 2){
+                if (i1 == 2) {
                     mainHeadContainer.setVisibility(View.GONE);
-                }else{
+                } else {
                     mainHeadContainer.setVisibility(View.VISIBLE);
                 }
 
@@ -176,11 +200,30 @@ public class HomeActivity extends HuaShuBaseActivity implements OnRequestListene
         mainHeaderRightIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isLogin()){
+                if (isLogin()) {
+
                     goToIm();
-                }else{
+                } else {
                     goToLogin();
                 }
+            }
+        });
+
+        layoutFloat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString(AudioPlayerActivity.EXTRA_SECTION_ID, currentSectionId);
+                bundle.putString(AudioPlayerActivity.EXTRA_COURSE_ID, courseId);
+                bundle.putBoolean(AudioPlayerActivity.EXTRA_IS_PLAYING, isPlaying);
+                readyGo(AudioPlayerActivity.class, bundle);
+            }
+        });
+
+        ivFloatPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                play();
             }
         });
     }
@@ -209,23 +252,23 @@ public class HomeActivity extends HuaShuBaseActivity implements OnRequestListene
         }
     }
 
-    private void registerHuanXin(){
-        String accountId = PreferencesUtils.getString(mContext, CommonConstants.KEY_ACCOUNT_ID,"");
-        String md5AccoundId = MD5Utils.MD5Encode(accountId,"utf-8");
+    private void registerHuanXin() {
+        String accountId = PreferencesUtils.getString(mContext, CommonConstants.KEY_ACCOUNT_ID, "");
+        String md5AccoundId = MD5Utils.MD5Encode(accountId, "utf-8");
         ChatClient.getInstance().register(accountId, md5AccoundId, new Callback() {
             @Override
             public void onSuccess() {
-                Log.e("huanxin","环信注册成功！！");
+                Log.e("huanxin", "环信注册成功！！");
             }
 
             @Override
             public void onError(int i, String s) {
-                Log.e("huanxin",s);
+                Log.e("huanxin", s);
             }
 
             @Override
             public void onProgress(int i, String s) {
-                Log.e("huanxin",s);
+                Log.e("huanxin", s);
             }
         });
     }
@@ -234,12 +277,21 @@ public class HomeActivity extends HuaShuBaseActivity implements OnRequestListene
     @Override
     public void onEvent(EventMessage message) {
         super.onEvent(message);
-        switch (message.getTag()){
+        switch (message.getTag()) {
             case Constants.EVENT_TAG.TAG_WX_PAY_SUCCESS:
                 showToast("支付成功");
                 break;
             case Constants.EVENT_TAG.TAG_WX_PAY_FAIL:
                 showToast("支付失败");
+                break;
+            case Constants.EVENT_TAG.TAG_SECTION_CHOSEN:
+                layoutFloat.setVisibility(View.VISIBLE);
+//                TextView textView = layoutFloat.findViewById(R.id.tv_float_course_name);
+//                textView.setText((String)message.getData());
+                currentSectionId = (String) ((HashMap) message.getData()).get(AudioPlayerActivity.EXTRA_SECTION_ID);
+                tvFloatSectionDuration.setText("/" + (String) ((HashMap) message.getData()).get(Constants.EVENT_TAG.TAG_SECTION_DURATION));
+                tvFloatSectionName.setText((String) ((HashMap) message.getData()).get(Constants.EVENT_TAG.TAG_SECTION_NAME));
+                Glide.with(mContext).load((String) ((HashMap) message.getData()).get(Constants.EVENT_TAG.TAG_SECTION_BANNER_URL)).into(ivFloatImage);
                 break;
         }
     }
@@ -248,9 +300,9 @@ public class HomeActivity extends HuaShuBaseActivity implements OnRequestListene
     public void OnSuccess(ServerResponse serverResponse, int tag) {
         final JSONObject jsonObject = JSON.parseObject(serverResponse.getData());
         int isVersion = jsonObject.getInteger("is_version");
-        if(isVersion==0){
+        if (isVersion == 0) {
             return;
-        }else{
+        } else {
 
             AlertDialog dialog = new AlertDialog.Builder(this).create();
             dialog.setIcon(R.mipmap.huashu_icon);//设置图标
@@ -262,29 +314,39 @@ public class HomeActivity extends HuaShuBaseActivity implements OnRequestListene
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                     String destDir = Environment.getExternalStorageDirectory() + File.separator + Constants.FILE_PATH.APK_PATH;
-                    String fileName = "tuodanhuashu_"+jsonObject.getString("verison_no")+".apk";
-                    File destFile = new File(destDir,fileName);
+                    String fileName = "tuodanhuashu_" + jsonObject.getString("verison_no") + ".apk";
+                    File destFile = new File(destDir, fileName);
                     if (!destFile.getParentFile().exists()) {
                         destFile.getParentFile().mkdirs();
                     }
                     Intent intent = new Intent(mContext, MyService.class);
-                    intent.putExtra(MyService.EXTRA_DOWN_URL,jsonObject.getString("url"));
-                    intent.putExtra(MyService.EXTRA_FILE_DIR,destDir);
-                    intent.putExtra(MyService.EXTRA_FILE_NAME,fileName);
+                    intent.putExtra(MyService.EXTRA_DOWN_URL, jsonObject.getString("url"));
+                    intent.putExtra(MyService.EXTRA_FILE_DIR, destDir);
+                    intent.putExtra(MyService.EXTRA_FILE_NAME, fileName);
                     startService(intent);
                 }
             });
             dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "以后再说", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                    dialog.dismiss();
                 }
             });
             dialog.show();
 
-
             //OkNetUtils.downLoadFile(jsonObject.getString("url"),destFile.getParent(),destFile.getName(),this);
         }
+    }
+
+    private void play() {
+        Map<String, String> params = new HashMap<>();
+        if (isPlaying) {
+            params.put(Constants.EVENT_TAG.TAG_SECTION_STATE, "start");
+        } else {
+            params.put(Constants.EVENT_TAG.TAG_SECTION_STATE, "pause");
+
+        }
+        EventBus.getDefault().post(new EventMessage<Map>(Constants.EVENT_TAG.TAG_SECTION_STATE_CHANGING, params));
     }
 
     @Override
@@ -304,7 +366,7 @@ public class HomeActivity extends HuaShuBaseActivity implements OnRequestListene
 
     @Override
     public void onProgeress(float frac) {
-            Log.e("download progress",frac+"");
+        Log.e("download progress", frac + "");
     }
 
     @Override

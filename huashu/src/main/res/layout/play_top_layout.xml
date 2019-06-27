@@ -90,8 +90,6 @@
             android:id="@+id/rv_audio_play_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-            android:orientation="horizontal"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginTop="@dimen/dp_10"
             app:layout_constraintTop_toBottomOf="@id/tv_audio_play_tab_total_course"

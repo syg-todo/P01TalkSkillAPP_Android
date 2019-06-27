@@ -12,15 +12,15 @@
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"
          />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_section"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="18dp"
-        android:layout_marginBottom="20dp"
-        android:scaleType="fitXY"
-        app:layout_anchor="@id/rv_course_detail_directory"
-        app:layout_anchorGravity="right|bottom"
-        android:src="@drawable/vector_arrow_upward"
-        app:layout_behavior=".course.ScrollAwareFABBehavior" />
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/fab_section"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginRight="18dp"-->
+        <!--android:layout_marginBottom="20dp"-->
+        <!--android:scaleType="fitXY"-->
+        <!--app:layout_anchor="@id/rv_course_detail_directory"-->
+        <!--app:layout_anchorGravity="right|bottom"-->
+        <!--android:src="@drawable/vector_arrow_upward"-->
+        <!--app:layout_behavior=".course.ScrollAwareFABBehavior" />-->
 </android.support.design.widget.CoordinatorLayout>

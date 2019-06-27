@@ -22,6 +22,7 @@ import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.course.ui.CourseDetailActivity;
 import com.tuodanhuashu.app.course.ui.CourseListActivity;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
+import com.tuodanhuashu.app.utils.PriceFormater;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +47,14 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
     @Override
     public void onBindViewHolder(@NonNull final CourseListAdapter.CourseListHolder holder, int position) {
         final HomeCourseBean course = courseBeanList.get(position);
-
+        String activityPrice = course.getActivity_price();
+        String salePrice = course.getSale_price();
+        String price = course.getPrice();
+        String finalPrice = PriceFormater.formatPrice(activityPrice,salePrice,price);
         Glide.with(mContext).load(course.getImage_url()).into(holder.imgItemCourseImage);
         holder.tvItemCourseName.setText(course.getCourse_name());
-        holder.tvItemCoursePrice.setText(String.valueOf(course.getPrice()));
-        holder.tvItemCourseSalePrice.setText(String.valueOf(course.getSale_price()));
+        holder.tvItemCoursePrice.setText(PriceFormater.tranStringToInt(price)+" "+mContext.getResources().getString(R.string.love_money));
+        holder.tvItemCourseSalePrice.setText(finalPrice.equals("免费")?finalPrice : finalPrice+" "+mContext.getResources().getString(R.string.love_money));
         holder.tvItemCourseJoinCount.setText(course.getJoin_count() + "人参加");
 
         holder.tvItemCoursePrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);

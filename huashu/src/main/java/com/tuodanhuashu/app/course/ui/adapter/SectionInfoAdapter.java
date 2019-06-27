@@ -56,15 +56,13 @@ public class SectionInfoAdapter extends RecyclerView.Adapter<SectionInfoAdapter.
             holder.layout.setSelected(true);
             holder.tvCoursePlaying.setVisibility(View.VISIBLE);
             holder.tvCourseDuration.setVisibility(View.INVISIBLE);
-            holder.tvCourseType.setTextColor(context.getResources().getColor(R.color.white));
-            holder.tvCourseType.setBackground(context.getResources().getDrawable(R.drawable.shape_text_red_solid_border));
+
             holder.tvCourseName.setTextColor(context.getResources().getColor(R.color.colorAccent));
         } else {
             holder.layout.setSelected(false);
             holder.tvCoursePlaying.setVisibility(View.INVISIBLE);
             holder.tvCourseDuration.setVisibility(View.VISIBLE);
-            holder.tvCourseType.setTextColor(context.getResources().getColor(R.color.text_gray));
-            holder.tvCourseType.setBackground(context.getResources().getDrawable(R.drawable.shape_text_gray_solid_border));
+
             holder.tvCourseName.setTextColor(context.getResources().getColor(R.color.text_gray));
         }
 
@@ -105,7 +103,6 @@ public class SectionInfoAdapter extends RecyclerView.Adapter<SectionInfoAdapter.
     class CourseTabHolder extends RecyclerView.ViewHolder {
         TextView tvCourseName;
         ConstraintLayout layout;
-        TextView tvCourseType;
         TextView tvCoursePlaying;
         TextView tvCourseDuration;
         ImageView ivCourseLock;
@@ -114,7 +111,6 @@ public class SectionInfoAdapter extends RecyclerView.Adapter<SectionInfoAdapter.
             super(itemView);
             tvCourseName = itemView.findViewById(R.id.tv_item_course_tab_name);
             layout = itemView.findViewById(R.id.layout_item_course_tab);
-            tvCourseType = itemView.findViewById(R.id.tv_item_course_tab_type);
             tvCoursePlaying = itemView.findViewById(R.id.tv_item_course_tab_playing);
             tvCourseDuration = itemView.findViewById(R.id.tv_item_course_tab_duration);
             ivCourseLock = itemView.findViewById(R.id.iv_item_course_tab_lock);

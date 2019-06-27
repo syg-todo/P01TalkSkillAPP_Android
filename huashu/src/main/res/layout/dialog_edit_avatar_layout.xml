@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/edit_avatar_take_photo_tv"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:gravity="center"
+        android:textSize="17sp"
+        android:textColor="@color/black"
+        android:background="@color/white"
+        android:text="拍照"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_unselected"/>
+
+    <TextView
+        android:id="@+id/edit_avatar_album_tv"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:gravity="center"
+        android:textSize="17sp"
+        android:background="@color/white"
+        android:textColor="@color/black"
+        android:text="从相册选择"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_unselected"/>
+    <TextView
+        android:id="@+id/edit_avatar_cencel_tv"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:gravity="center"
+        android:textSize="17sp"
+        android:background="@color/white"
+        android:textColor="@color/holo_red_light"
+        android:text="取消"/>
+</LinearLayout>

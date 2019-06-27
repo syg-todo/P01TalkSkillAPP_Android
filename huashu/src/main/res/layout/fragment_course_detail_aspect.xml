@@ -22,6 +22,7 @@
         android:layout_marginLeft="23dp"
         android:layout_marginTop="20dp"
         android:text="更多推荐"
+        android:textStyle="bold"
         android:textColor="#ff000000"
         android:textSize="14sp"
         app:layout_constraintLeft_toLeftOf="parent"

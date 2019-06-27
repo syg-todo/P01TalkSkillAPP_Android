@@ -40,6 +40,12 @@ public class MoreActivityPresenter extends BasePresenter {
     }
 
     @Override
+    public void onFail(String msg, int code, int tag) {
+        super.onFail(msg, code, tag);
+        moreActivityView.getMoreActivityFail(msg);
+    }
+
+    @Override
     public BaseView getBaseView() {
         return moreActivityView;
     }

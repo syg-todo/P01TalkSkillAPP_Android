@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_bg_color"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/common_head_order_confirm"
+        layout="@layout/common_head_layout" />
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingBottom="20dp">
+
+        <TextView
+            android:id="@+id/tv_choose_payment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/choose_payment"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_wechat_pay"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/icon64_wx_logo"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_ali_pay"
+            app:layout_goneMarginLeft="10dp" />
+
+        <ImageView
+            android:id="@+id/iv_ali_pay"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/alipay"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_choose_payment"
+            app:layout_goneMarginLeft="10dp" />
+
+
+        <ImageView
+            android:id="@+id/iv_balance_pay"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/love_icon"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_wechat_pay"
+            app:layout_goneMarginLeft="10dp" />
+
+        <TextView
+            android:id="@+id/tv_ali_pay"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/ali_pay"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toRightOf="@id/iv_wechat_pay"
+            app:layout_constraintTop_toBottomOf="@id/tv_choose_payment" />
+
+        <TextView
+            android:id="@+id/tv_wechat_pay"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/wechat_pay"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toRightOf="@id/iv_wechat_pay"
+            app:layout_constraintTop_toBottomOf="@id/tv_ali_pay" />
+
+
+        <TextView
+            android:id="@+id/tv_balance_pay"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/balance_pay"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toRightOf="@id/iv_wechat_pay"
+            app:layout_constraintTop_toBottomOf="@id/tv_wechat_pay" />
+
+        <TextView
+            android:id="@+id/tv_love_count"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:textColor="@color/text_gray"
+            android:textSize="12sp"
+            app:layout_constraintLeft_toRightOf="@id/tv_balance_pay"
+            app:layout_constraintTop_toBottomOf="@id/tv_wechat_pay" />
+
+        <CheckBox
+            android:id="@+id/cb_ali"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_choose_payment" />
+
+        <CheckBox
+            android:id="@+id/cb_wechat"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cb_ali" />
+
+
+        <CheckBox
+            android:id="@+id/cb_balance"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cb_wechat" />
+
+        <!--<ImageView-->
+        <!--android:id="@+id/iv_balance_arrow"-->
+        <!--android:layout_width="30dp"-->
+        <!--android:layout_height="30dp"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/cb_wechat"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_marginTop="20dp"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--android:src="@drawable/arror_right" />-->
+
+
+    </android.support.constraint.ConstraintLayout>
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        android:paddingBottom="20dp">
+
+        <ImageView
+            android:id="@+id/iv_order_confirm_course_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/color_main_bg"
+            android:src="@drawable/test"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_order_confirm_course_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="心探社全年成长计划心探社全年成长计划心探社全年成长计划心探社全年成长计划"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toRightOf="@id/iv_order_confirm_course_image"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--<TextView-->
+        <!--android:id="@+id/tv_order_confirm_course_info"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--android:ellipsize="end"-->
+        <!--android:maxLines="1"-->
+        <!--android:text="一心理专业导师团队：11位国内外导师团11位国内外导师团"-->
+        <!--android:textColor="@color/text_gray"-->
+        <!--android:textSize="12sp"-->
+        <!--app:layout_constraintHorizontal_weight="1"-->
+        <!--app:layout_constraintLeft_toRightOf="@id/iv_order_confirm_course_image"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/tv_order_confirm_course_name" />-->
+
+        <TextView
+            android:id="@+id/tv_order_confirm_course_final_price"
+            android:layout_width="wrap_content"
+            android:layout_height="17dp"
+            android:layout_marginRight="20dp"
+            android:text="￥520"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tv_order_confirm_pay"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/shape_user_btn"
+        android:gravity="center"
+        android:text="支付￥520"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+</LinearLayout>

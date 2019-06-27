@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.course.bean.LoveGoodBean;
-import com.tuodanhuashu.app.course.ui.OrderActivity;
+import com.tuodanhuashu.app.course.ui.LoveCountRechargeActivity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,11 +20,11 @@ import butterknife.ButterKnife;
 
 public class LoveGoodAdapter extends RecyclerView.Adapter<LoveGoodAdapter.LoveGoodHolder> {
 
-    private OrderActivity context;
+    private LoveCountRechargeActivity context;
     private List<LoveGoodBean> loveGoodBeanList;
     private Map<Integer, Boolean> map = new HashMap<>();
 
-    public LoveGoodAdapter(OrderActivity context, List<LoveGoodBean> loveGoodBeanList) {
+    public LoveGoodAdapter(LoveCountRechargeActivity context, List<LoveGoodBean> loveGoodBeanList) {
         this.context = context;
         this.loveGoodBeanList = loveGoodBeanList;
 
@@ -52,7 +52,6 @@ public class LoveGoodAdapter extends RecyclerView.Adapter<LoveGoodAdapter.LoveGo
 
         holder.tvGoodCount.setText(loveGoodBean.getLove_count() + "恋爱币");
         holder.tvGoodPrice.setText("￥" + loveGoodBean.getPrice());
-        holder.tvGoodName.setText(loveGoodBean.getName());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,8 +77,7 @@ public class LoveGoodAdapter extends RecyclerView.Adapter<LoveGoodAdapter.LoveGo
     class LoveGoodHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tv_good_love_count)
         TextView tvGoodCount;
-        @BindView(R.id.tv_good_name)
-        TextView tvGoodName;
+
         @BindView(R.id.tv_good_price)
         TextView tvGoodPrice;
 

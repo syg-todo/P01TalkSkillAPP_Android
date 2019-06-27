@@ -15,12 +15,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.company.common.utils.DisplayUtil;
 import com.ms.banner.Banner;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseActivity;
 import com.tuodanhuashu.app.course.bean.CourseClassBean;
@@ -30,6 +34,7 @@ import com.tuodanhuashu.app.course.presenter.CourseListPresenter;
 import com.tuodanhuashu.app.course.view.CourseListView;
 import com.tuodanhuashu.app.home.bean.CollegeActivityBean;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
+import com.tuodanhuashu.app.utils.PriceFormater;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,9 +60,11 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
 
     public static final String EXTRA_ENTER_TYPE = "enter_type";//1:分类 2社群 3：私教 4:精品课程 5：更多推荐 6:最新活动
 
-
     private int enterType = 1;
 
+    public static final String EXTRA_COURSE_ID = "course_id";
+
+    private String courseId;
     private int page_size = 10;
     private int page = 1;
     private int classId;
@@ -79,6 +86,67 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
     protected void initView() {
         super.initView();
         commonHeadBackIv.getDrawable().setTint(getResources().getColor(R.color.black));
+
+        refreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull final RefreshLayout refreshLayout) {
+
+                loadMore();
+                refreshLayout.finishLoadMore();
+//                refreshLayout.getLayout().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        refreshLayout.finishRefresh();
+//                        refreshLayout.resetNoMoreData();//setNoMoreData(false);//恢复上拉状态
+//                    }
+//                }, 2000);
+
+            }
+
+            @Override
+            public void onRefresh(@NonNull final RefreshLayout refreshLayout) {
+                refresh();
+                refreshLayout.setEnableLoadMore(true);
+//                loadMore();
+//                refreshLayout.finishLoadMore();
+            }
+
+        });
+
+    }
+
+    private void refresh() {
+        page =1;
+        switch (enterType) {
+            case 4:
+
+                courseListPresenter.requestChoicenessList(String.valueOf(page),String.valueOf(page_size));
+                break;
+            case 5:
+                courseListPresenter.requestRecommendationList(courseId, String.valueOf(1), String.valueOf(page_size));
+                break;
+            case 6:
+                courseListPresenter.requestActivityList(String.valueOf(1), String.valueOf(page_size));
+                break;
+        }
+    }
+
+    private void loadMore() {
+        switch (enterType) {
+            case 4:
+                page++;
+                courseListPresenter.requestChoicenessList(String.valueOf(page),String.valueOf(page_size));
+                break;
+            case 5:
+                page++;
+                courseListPresenter.requestRecommendationList(courseId, String.valueOf(page), String.valueOf(page_size));
+                break;
+            case 6:
+                page++;
+                courseListPresenter.requestActivityList(String.valueOf(page), String.valueOf(page_size));
+                break;
+        }
+//        courseListPresenter.requestCourseListByMaterId();
     }
 
     @Override
@@ -93,7 +161,6 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
                 tablayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
-//                        page = 1;
                         courseBeanList.clear();
                         classId = courseClassList.get(tab.getPosition()).getId();
                         courseListPresenter.requestCourseListByClassId(classId + "", page + "", page_size + "");
@@ -150,21 +217,20 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
 
             case 5:
                 commonHeadTitleTv.setText("更多推荐");
-                courseListPresenter.requestRecommendationList(page + "", page_size + "");
+                courseListPresenter.requestRecommendationList(courseId, page + "", page_size + "");
                 tablayout.setVisibility(View.GONE);
                 banner.setVisibility(View.GONE);
                 break;
 
-//            case 6:
-//                commonHeadTitleTv.setText("最近活动");
-//                courseListPresenter.requestActivityList(page + "", page_size + "");
-//                tablayout.setVisibility(View.GONE);
-//                recyclerView.setVisibility(View.GONE);
-//                banner.setVisibility(View.GONE);
-//                break;
+            case 6:
+                commonHeadTitleTv.setText("最近活动");
+                courseListPresenter.requestActivityList(page + "", page_size + "");
+                tablayout.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
+                banner.setVisibility(View.GONE);
+                break;
         }
 
-//        courseListPresenter.requestCourseListByClassId("1", "1", "10");
         adapterCourse = new CourseListAdapter(mContext, courseBeanList);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
@@ -219,14 +285,25 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
 
     @Override
     public void getCourseListSuccess(List<HomeCourseBean> courseBeanList) {
+
         if (page == 1) {
             this.courseBeanList.clear();
+            Log.d("111",courseBeanList.size()+"");
+            this.courseBeanList.addAll(courseBeanList);
+            adapterCourse.setCourseBeanList(this.courseBeanList);
+            recyclerView.setAdapter(adapterCourse);
+            refreshLayout.finishRefresh();
+        } else {
+            if (courseBeanList.size()==0){
+                Toast.makeText(mContext,"已经没有更多内容了!",Toast.LENGTH_SHORT).show();
+                refreshLayout.setEnableLoadMore(false);
+            }else {
 
+                adapterCourse.loadMore(courseBeanList);
+                refreshLayout.finishLoadMore();
+            }
         }
-        this.courseBeanList.addAll(courseBeanList);
 
-        adapterCourse.setCourseBeanList(this.courseBeanList);
-        recyclerView.setAdapter(adapterCourse);
     }
 
     @Override
@@ -296,6 +373,7 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
     protected void getBundleExtras(Bundle extras) {
         super.getBundleExtras(extras);
         enterType = extras.getInt(EXTRA_ENTER_TYPE, 1);
+        courseId = extras.getString(EXTRA_COURSE_ID, "");
     }
 
 
@@ -324,14 +402,19 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
         @Override
         public void onBindViewHolder(@NonNull final CourseListHolder holder, int position) {
             final HomeCourseBean course = courseBeanList.get(position);
-
+            String activityPrice = course.getActivity_price();
+            String salePrice = course.getSale_price();
+            String price = course.getPrice();
+            String finalPrice = PriceFormater.formatPrice(activityPrice, salePrice, price);
             RequestOptions options = new RequestOptions().override(DisplayUtil.dp2px(158), DisplayUtil.dp2px(90));
             Glide.with(mContext).load(course.getImage_url())
                     .apply(options)
                     .into(holder.imgItemCourseImage);
             holder.tvItemCourseName.setText(course.getCourse_name());
-            holder.tvItemCoursePrice.setText(String.valueOf(course.getPrice()));
-            holder.tvItemCourseSalePrice.setText(String.valueOf(course.getSale_price()));
+            holder.tvItemCoursePrice.setText(finalPrice.equals("免费")?"":course.getPrice()+" "+getResources().getString(R.string.love_money));
+
+
+            holder.tvItemCourseSalePrice.setText(finalPrice.equals("免费")?finalPrice:finalPrice+" "+getResources().getString(R.string.love_money));
             holder.tvItemCourseJoinCount.setText(course.getJoin_count() + "人参加");
 
             holder.tvItemCoursePrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
@@ -350,6 +433,11 @@ public class CourseListActivity extends HuaShuBaseActivity implements CourseList
         @Override
         public int getItemCount() {
             return courseBeanList.size();
+        }
+
+        public void loadMore(List<HomeCourseBean> list) {
+            this.courseBeanList.addAll(list);
+            notifyDataSetChanged();
         }
 
         class CourseListHolder extends RecyclerView.ViewHolder {

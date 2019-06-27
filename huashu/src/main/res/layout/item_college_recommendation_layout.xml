@@ -21,20 +21,20 @@
         android:textColor="#ff000000"
         android:textSize="15sp"
         />
+
     <TextView
         android:id="@+id/tv_recommend_master_name"
-        android:layout_width="33dp"
+        android:layout_width="wrap_content"
         android:layout_height="16dp"
         android:text="施琪嘉"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:textColor="#ff999999"
         android:textSize="11sp"
-        />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
         android:id="@+id/tv_recommend_price"
-        android:layout_width="52dp"
+        android:layout_width="wrap_content"
         android:layout_height="19dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/img_recommend_image"

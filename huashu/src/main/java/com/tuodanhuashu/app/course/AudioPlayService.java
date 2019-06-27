@@ -51,23 +51,9 @@ public class AudioPlayService extends Service {
         super.onCreate();
         Log.d(TAG, "onCreate");
         isFirst = false;
-        //这里只执行一次，用于准备播放器
         EventBus.getDefault().register(this);
 
-//        player = MediaPlayer.create(this, R.raw.honor);
-//        try {
-//            player.setDataSource(path);
-//            //准备资源
-//            player.prepare();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-//            @Override
-//            public void onCompletion(MediaPlayer mp) {
-//
-//            }
-//        });
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

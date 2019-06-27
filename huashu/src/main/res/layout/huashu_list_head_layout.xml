@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/white">
+    <ImageView
+        android:id="@+id/huashu_list_back_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="12dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/vector_back"/>
+    
+    <Button
+        android:id="@+id/huashu_list_search_btn"
+        android:layout_width="57dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:background="@drawable/shape_huashu_list_search"
+        android:textSize="15sp"
+        android:textColor="@color/white"
+        android:text="搜索">
+
+    </Button>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/huashu_list_back_iv"
+        android:layout_toLeftOf="@id/huashu_list_search_btn"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="10dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+
+        android:background="@drawable/shape_huashu_list_search_et">
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="18dp"
+            android:layout_marginLeft="12dp"
+            android:layout_gravity="center_vertical|left"
+            android:src="@drawable/sousuo"/>
+        <EditText
+            android:id="@+id/huashu_list_search_et"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|left"
+            android:layout_marginLeft="36dp"
+            android:background="@null"
+            android:singleLine="true"
+            android:textColorHint="#626262"
+            android:hint="请输入搜索内容"
+            android:textSize="15sp"/>
+    </FrameLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_bottom_divider"/>
+</RelativeLayout>

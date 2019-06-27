@@ -52,7 +52,6 @@ public class RVRecommendationAdapter extends RecyclerView.Adapter<RVRecommendati
         Glide.with(mContext).load(courseBeanList.get(position).getImage_url())
                 .apply(options)
                 .into(holder.imgImage);
-        holder.tvPrice.setText("￥" + recommendCoursesBean.getPrice());
         holder.tvPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
 
 
@@ -60,7 +59,9 @@ public class RVRecommendationAdapter extends RecyclerView.Adapter<RVRecommendati
         String salePrice = recommendCoursesBean.getSale_price();
         String price = recommendCoursesBean.getPrice();
         String finalPrice = PriceFormater.formatPrice(activityPrice,salePrice,price);
-        holder.tvSalePrice.setText((finalPrice.equals(mContext.getResources().getString(R.string.free))?finalPrice:"￥"+finalPrice));
+        holder.tvSalePrice.setText((finalPrice.equals(mContext.getResources().getString(R.string.free))?finalPrice:finalPrice +" "+mContext.getResources().getString(R.string.love_money)));
+        holder.tvPrice.setText(finalPrice.equals(mContext.getResources().getString(R.string.free))?"":PriceFormater.tranStringToInt(recommendCoursesBean.getPrice()) + " "+mContext.getResources().getString(R.string.love_money));
+
         holder.tvJoinCount.setText(recommendCoursesBean.getJoin_count() + "人参加");
         holder.tvCourseName.setText(recommendCoursesBean.getCourse_name());
 

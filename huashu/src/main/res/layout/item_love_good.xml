@@ -1,25 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_good"
-    android:layout_width="100dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/dp_10"
-    android:layout_marginTop="20dp"
-    android:layout_marginRight="@dimen/dp_10"
+    android:layout_marginTop="10dp"
     android:orientation="vertical"
     android:background="@drawable/shape_vip"
-    android:paddingBottom="@dimen/dp_10">
+   >
 
 
-    <TextView
-        android:id="@+id/tv_good_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="14dp"
-        android:textColor="#ff202020"
-        android:text="套餐一"
-        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/tv_good_love_count"
@@ -29,6 +19,7 @@
         android:layout_marginTop="14dp"
         android:text="100恋爱币"
         android:textColor="#ff202020"
+        android:textStyle="bold"
         android:textSize="14sp" />
 
     <TextView
@@ -36,9 +27,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="14dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginTop="10dp"
         android:text="￥299.00"
+        android:textStyle="bold"
+        android:layout_marginBottom="14dp"
         android:textColor="#ffff6666"
-        android:textSize="18sp" />
+        android:textSize="14sp" />
 </LinearLayout>

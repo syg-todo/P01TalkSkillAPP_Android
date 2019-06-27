@@ -41,8 +41,8 @@ import butterknife.BindView;
 public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
     @BindView(R.id.rv_course_detail_directory)
     RecyclerView recyclerView;
-    @BindView(R.id.fab_section)
-    FloatingActionButton fabSection;
+//    @BindView(R.id.fab_section)
+//    FloatingActionButton fabSection;
 
     private CourseDetailModel model;
     private List<CourseDetailBean.SectionsBean> sectionsBeanList = new ArrayList<>();
@@ -64,12 +64,12 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
 
         model = ViewModelProviders.of(getActivity()).get(CourseDetailModel.class);
 
-        fabSection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(mContext, "fab", Toast.LENGTH_SHORT).show();
-            }
-        });
+//        fabSection.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(mContext, "fab", Toast.LENGTH_SHORT).show();
+//            }
+//        });
         courseDetailBean = model.getCourseDetail().getValue();
 //        isPlaying = model.getIsPlaying().getValue();
         sectionsBeanList = courseDetailBean.getSections();
@@ -87,7 +87,6 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
         switch (eventMessage.getTag()) {
             case Constants.EVENT_TAG.TAG_SECTION_STATE_CHANGING:
                 isPlaying = !eventMessage.getData().get(Constants.EVENT_TAG.TAG_SECTION_STATE).equals("start");
-                Log.d("111","isPlaying:"+isPlaying);
                 break;
         }
     }
@@ -122,6 +121,7 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
             String time = String.format("%02d:%02d", minutes, seconds);
             holder.tvTime.setText(time);
 
+            holder.tvPosition.setText(String.valueOf(position+1));
             String finalPrice = PriceFormater.formatPrice(courseDetailBean.getCourse().getActivity_price(),courseDetailBean.getCourse().getSale_price(),courseDetailBean.getCourse().getPrice());
             if (isPay.equals("1")||finalPrice.equals("免费")) {//已支付
                 holder.ivPause.setVisibility(View.GONE);
@@ -173,7 +173,7 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
             bundle.putString(AudioPlayerActivity.EXTRA_SECTION_ID, directory.getId());
             bundle.putString(AudioPlayerActivity.EXTRA_COURSE_ID, directory.getCourse_id());
             bundle.putBoolean(AudioPlayerActivity.EXTRA_IS_PLAYING, isPlaying);
-            Log.d("111","isplaying:"+isPlaying);
+
             readyGo(AudioPlayerActivity.class, bundle);
         }
 
@@ -189,7 +189,7 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
             ImageView ivPause;
             ImageView ivLock;
             TextView tvAudition;
-
+            TextView tvPosition;
             public DirectoryHolder(View itemView) {
                 super(itemView);
                 tvName = itemView.findViewById(R.id.tv_item_course_detail_directory_name);
@@ -198,6 +198,7 @@ public class CourseDetailDirectoryFragment extends HuaShuBaseFragment {
                 ivPause = itemView.findViewById(R.id.iv_course_detail_section_pause);
                 ivLock = itemView.findViewById(R.id.iv_course_detail_section_lock);
                 tvAudition = itemView.findViewById(R.id.tv_course_detail_section_audition);
+                tvPosition = itemView.findViewById(R.id.tv_item_course_detail_directory_position);
             }
         }
     }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:layout_marginTop="14dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+   >
+    <ImageView
+        android:id="@+id/huashu_ad_iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:scaleType="fitXY"
+        android:src="@drawable/timg"/>
+</FrameLayout>

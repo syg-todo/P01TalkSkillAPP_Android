@@ -31,7 +31,7 @@ import com.tuodanhuashu.app.course.bean.LoveGoodBean;
 import com.tuodanhuashu.app.course.bean.OrderBean;
 import com.tuodanhuashu.app.course.presenter.OrderPresenter;
 import com.tuodanhuashu.app.course.ui.adapter.LoveGoodAdapter;
-import com.tuodanhuashu.app.course.view.OrderView;
+import com.tuodanhuashu.app.course.view.OrderConfirmView;
 import com.tuodanhuashu.app.pay.bean.WXPayBean;
 
 import java.util.ArrayList;
@@ -40,14 +40,15 @@ import java.util.Map;
 
 import butterknife.BindView;
 
-public class OrderActivity extends HuaShuBaseActivity implements View.OnClickListener, OrderView {
+public class LoveCountRechargeActivity extends HuaShuBaseActivity implements View.OnClickListener, OrderConfirmView {
 
-    private final String TAG = OrderActivity.class.getSimpleName();
+    private final String TAG = LoveCountRechargeActivity.class.getSimpleName();
     @BindView(R.id.common_head_back_iv)
     ImageView ivHeadBack;
     @BindView(R.id.common_head_title_tv)
     TextView tvHeadTitle;
-
+    @BindView(R.id.tv_love_count_balance)
+    TextView tvLoveCountBalance;
     @BindView(R.id.pay_btn)
     Button btnPay;
     @BindView(R.id.rv_love_goods)
@@ -58,17 +59,9 @@ public class OrderActivity extends HuaShuBaseActivity implements View.OnClickLis
     public static final String EXTAR_COURSE_ID = "course_id";
     private String courseId = "";
 
-    public static final String EXTAR_COURSE_NAME = "course_name";
-    private String courseName = "";
+    public static final String EXTRA_LOVE_COUNT = "love_count";
+    private String loveCount;
 
-    public static final String EXTAR_COURSE_PRICE = "course_price";
-    private String coursePrice = "";
-
-    public static final String EXTRA_COURSE_MASTER_IMAGE = "course_master";
-    private String courseImageUrl = "";
-
-    public static final String EXTRA_COURSE_JOIN_COUNT = "course_join_count";
-    private String courseJoinCount;
 
     private String accessToken = "";
 
@@ -113,9 +106,9 @@ public class OrderActivity extends HuaShuBaseActivity implements View.OnClickLis
         ivHeadBack.setOnClickListener(this);
         btnPay.setOnClickListener(this);
         ivHeadBack.getDrawable().setTint(getResources().getColor(R.color.black));
-        rvLoveGoods.setLayoutManager(new GridLayoutManager(mContext,3));
-
-        tvHeadTitle.setText("创建订单");
+        rvLoveGoods.setLayoutManager(new GridLayoutManager(mContext, 3));
+        tvLoveCountBalance.setText(loveCount +" " +getResources().getString(R.string.love_money));
+        tvHeadTitle.setText("我的恋爱币");
 
     }
 
@@ -131,9 +124,9 @@ public class OrderActivity extends HuaShuBaseActivity implements View.OnClickLis
             @Override
             public void onClick(View v) {
                 if (!StringUtils.isEmpty(osn)) {
-                    Toast.makeText(mContext,osn,Toast.LENGTH_LONG).show();
-                    orderPresenter.requestWXPay(accessToken,osn);
-            }
+                    Toast.makeText(mContext, osn, Toast.LENGTH_LONG).show();
+                    orderPresenter.requestWXPay(accessToken, osn);
+                }
                 dialog.dismiss();
             }
         });
@@ -141,7 +134,7 @@ public class OrderActivity extends HuaShuBaseActivity implements View.OnClickLis
             @Override
             public void onClick(View v) {
                 if (!StringUtils.isEmpty(osn)) {
-                    orderPresenter.requestAliPay(accessToken,osn);
+                    orderPresenter.requestAliPay(accessToken, osn);
                 }
                 dialog.dismiss();
 
@@ -162,7 +155,7 @@ public class OrderActivity extends HuaShuBaseActivity implements View.OnClickLis
         loveGoodBeanList = loveGoodBeans;
         setCurrentGoodId(loveGoodBeanList.get(0).getId());
 
-        adapterLoveGood = new LoveGoodAdapter(OrderActivity.this, loveGoodBeanList);
+        adapterLoveGood = new LoveGoodAdapter(LoveCountRechargeActivity.this, loveGoodBeanList);
 
         rvLoveGoods.setAdapter(adapterLoveGood);
     }
@@ -188,18 +181,18 @@ public class OrderActivity extends HuaShuBaseActivity implements View.OnClickLis
     @Override
     public void getOrderIdSuccess(OrderBean orderBean) {
         this.osn = orderBean.getOsn();
-        Log.d(TAG,osn);
+        Log.d(TAG, osn);
         dialog.show();
     }
 
     @Override
     public void getOrderIdFail(String msg) {
-        Log.d(TAG,msg);
+        Log.d(TAG, msg);
     }
 
     @Override
     public void getWXPayParamsSuccess(WXPayBean wxPayBean) {
-        Toast.makeText(mContext,"wxsuccess",Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, "wxsuccess", Toast.LENGTH_LONG).show();
         IWXAPI api = WXAPIFactory.createWXAPI(mContext, Constants.WEIXIN.WX_APP_ID);
 
         // 将应用的appId注册到微信
@@ -207,17 +200,17 @@ public class OrderActivity extends HuaShuBaseActivity implements View.OnClickLis
         PayReq request = new PayReq();
         request.appId = wxPayBean.getAppid();
         request.partnerId = wxPayBean.getPartnerid();
-        request.prepayId= wxPayBean.getPrepayid();
+        request.prepayId = wxPayBean.getPrepayid();
         request.packageValue = wxPayBean.getPackageValue();
-        request.nonceStr= wxPayBean.getNoncestr();
-        request.timeStamp= wxPayBean.getTimestamp()+"";
-        request.sign= wxPayBean.getSign();
+        request.nonceStr = wxPayBean.getNoncestr();
+        request.timeStamp = wxPayBean.getTimestamp() + "";
+        request.sign = wxPayBean.getSign();
         api.sendReq(request);
     }
 
     @Override
     public void getWXPayParamsFail(String msg) {
-        Toast.makeText(mContext,"wxfail:"+msg,Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, "wxfail:" + msg, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -227,7 +220,7 @@ public class OrderActivity extends HuaShuBaseActivity implements View.OnClickLis
             @Override
             public void run() {
                 //新建任务
-                PayTask alipay = new PayTask(OrderActivity.this);
+                PayTask alipay = new PayTask(LoveCountRechargeActivity.this);
                 //获取支付结果
                 Map<String, String> result = alipay.payV2(data, true);
                 Message msg = new Message();
@@ -245,11 +238,20 @@ public class OrderActivity extends HuaShuBaseActivity implements View.OnClickLis
 
     }
 
+    @Override
+    public void getCorderOsnSuccess(OrderBean orderBean) {
+
+    }
+
+    @Override
+    public void getCorderOsnFail(String msg) {
+
+    }
+
 
     @Override
     protected void initData() {
         super.initData();
-        Log.d(TAG, "initData");
         payHandler = new PayHandler();
         accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN);
         orderPresenter = new OrderPresenter(mContext, this);
@@ -262,10 +264,7 @@ public class OrderActivity extends HuaShuBaseActivity implements View.OnClickLis
     protected void getBundleExtras(Bundle extras) {
         super.getBundleExtras(extras);
         courseId = extras.getString(EXTAR_COURSE_ID);
-        courseName = extras.getString(EXTAR_COURSE_NAME);
-        courseImageUrl = extras.getString(EXTRA_COURSE_MASTER_IMAGE);
-        coursePrice = extras.getString(EXTAR_COURSE_PRICE);
-        courseJoinCount = extras.getString(EXTRA_COURSE_JOIN_COUNT);
+        loveCount = extras.getString(EXTRA_LOVE_COUNT);
     }
 
     @Override
@@ -280,12 +279,11 @@ public class OrderActivity extends HuaShuBaseActivity implements View.OnClickLis
         }
     }
 
-    public void setCurrentGoodId(String goodId){
+    public void setCurrentGoodId(String goodId) {
         this.currentGoodId = goodId;
     }
 
     private void pay() {
-        orderPresenter.requestAddOrder(accessToken,currentGoodId);
-//        orderPresenter.requestAddOrder(accessToken, osn);
+        orderPresenter.requestAddOrder(accessToken, currentGoodId);
     }
 }

@@ -77,8 +77,12 @@ public class CourseListPresenter extends BasePresenter {
         courseListBiz.requestChoicenessList(TAG_CHOICENESS_LIST, page, page_size);
     }
 
-    public void requestRecommendationList(String page, String page_size) {
-        courseListBiz.requestChoicenessList(TAG_CHOICENESS_LIST, page, page_size);
+    public void requestRecommendationList(String courseId,String page, String page_size) {
+        courseListBiz.requestRecommendList(TAG_RECOMMENDADTION_LIST, courseId,page, page_size);
+    }
+
+    public void requestActivityList(String page, String page_size) {
+        courseListBiz.requestActivityList(TAG_ACTIVITY_LIST, page, page_size);
     }
 
 
@@ -102,7 +106,6 @@ public class CourseListPresenter extends BasePresenter {
             case TAG_MASTER_LIST:
                 List<MasterBean> masterBeanList = JsonUtils.getJsonToList(serverResponse.getData(), MasterBean.class);
                 courseListView.getMasterListSuccess(masterBeanList);
-
                 break;
 
             case TAG_COURSE_PRIVATE:

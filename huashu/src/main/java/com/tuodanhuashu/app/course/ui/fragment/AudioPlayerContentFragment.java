@@ -93,7 +93,6 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
 
 
     private void initPlayTop() {
-        Log.d(TAG,"inirTop");
         HomeAdapter adapterTop = new HomeAdapter(mContext, new LinearLayoutHelper(), 1, TYPE_TOP, R.layout.play_top_layout) {
             @Override
             public void onBindViewHolder(BaseViewHolder holder, int position) {
@@ -103,12 +102,11 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
                 tvAudioPlayShowAll = holder.getView(R.id.tv_audio_play_show_all);
                 tvAudioPlayTotalCourse = holder.getView(R.id.tv_audio_play_tab_total_course);
 
-                Log.d(TAG,sectionIntro);
                 String content = "<p><font color='red'>hello baidu!</font></p>";
                 String htmll = "<html><header>" + sectionIntro + "</header></body></html>";
 
                 webView.loadData(htmll, "text/html", "uft-8");
-                Log.d(TAG,currentSectionId);
+                Log.d(TAG, currentSectionId);
                 initRvCourseTab(holder);
 //                ivPlayShare = holder.getView(R.id.iv_play_share);
 //                ivDownload = holder.getView(R.id.iv_play_download);
@@ -122,7 +120,7 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
                     public void onClick(View v) {
                         Intent intent = new Intent(mContext, CourseDetailActivity.class);
                         Bundle bundle = new Bundle();
-                        bundle.putString(CourseDetailActivity.EXTRA_COURSE_ID,courseId);
+                        bundle.putString(CourseDetailActivity.EXTRA_COURSE_ID, courseId);
                         intent.putExtras(bundle);
                         getActivity().startActivity(intent);
                     }
@@ -139,7 +137,7 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
             public void onBindViewHolder(BaseViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
                 rvPlayComment = holder.getView(R.id.rv_play_comment);
-                adapterComment = new CommentAdapter((AudioPlayerActivity)getActivity(), commentsBeanList,accessToken);
+                adapterComment = new CommentAdapter((AudioPlayerActivity) getActivity(), commentsBeanList, accessToken);
                 rvPlayComment.setAdapter(adapterComment);
                 rvPlayComment.addItemDecoration(new SimpleItemDecoration());
                 rvPlayComment.setLayoutManager(new LinearLayoutManager(mContext));
@@ -152,7 +150,7 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
     protected void initView(View view) {
         super.initView(view);
         model = ViewModelProviders.of(getActivity()).get(SectionInfoModel.class);
-        accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN,"");
+        accessToken = PreferencesUtils.getString(mContext, CommonConstants.KEY_TOKEN, "");
         SectionBean section = model.getSection().getValue();
 
         isPay = section.getIs_pay();
@@ -168,7 +166,7 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
         salePrice = section.getSale_price();
         activityPrice = section.getActivity_price();
         price = section.getPrice();
-        finalPrice = PriceFormater.formatPrice(activityPrice,salePrice,price);
+        finalPrice = PriceFormater.formatPrice(activityPrice, salePrice, price);
         adapterList = new ArrayList<>();
         VirtualLayoutManager layoutManager = new VirtualLayoutManager(mContext);
         recyclerView.setLayoutManager(layoutManager);
@@ -176,10 +174,10 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
         recyclerView.setRecycledViewPool(viewPool);
         viewPool.setMaxRecycledViews(0, 10);
         delegateAdapter = new DelegateAdapter(layoutManager, true);
-        if (isPay.equals("1")||finalPrice.equals("免费")){
+        if (isPay.equals("1") || finalPrice.equals("免费")) {
             layoutSend.setVisibility(View.VISIBLE);
             tvAudioJoin.setVisibility(View.GONE);
-        }else {
+        } else {
             layoutSend.setVisibility(View.GONE);
             tvAudioJoin.setVisibility(View.VISIBLE);
         }
@@ -190,27 +188,25 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
                     goToLogin();
                 } else {
                     CommentDialogFragment dialogFragment = new CommentDialogFragment();
-                    dialogFragment.show(getFragmentManager(),"tag");
+                    dialogFragment.show(getFragmentManager(), "tag");
                 }
             }
         });
 
 
-
-
         tvAudioJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isLogin()){
+                if (!isLogin()) {
                     goToLogin();
-                }else {
+                } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     builder.setTitle("确定购买吗")
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
 //                                    courseDetailPresenter.requesetBuyCourse(accessToken,courseId);
-                                    ((AudioPlayerActivity)getActivity()).buy();
+                                    ((AudioPlayerActivity) getActivity()).buy();
                                 }
                             })
                             .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -225,7 +221,6 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
         });
         initPlayTop();
         initComment();
-        Log.d(TAG,"HERE");
         delegateAdapter.setAdapters(adapterList);
         recyclerView.setAdapter(delegateAdapter);
 
@@ -244,10 +239,17 @@ public class AudioPlayerContentFragment extends HuaShuBaseFragment {
 
 
     private void initRvCourseTab(BaseViewHolder holder) {
-        adapterSectionInfo = new SectionInfoAdapter((AudioPlayerActivity) getActivity(), sectionInfoList,currentSectionId,courseId,isPay,finalPrice);
+        adapterSectionInfo = new SectionInfoAdapter((AudioPlayerActivity) getActivity(), sectionInfoList, currentSectionId, courseId, isPay, finalPrice);
         rvCourseTab.setAdapter(adapterSectionInfo);
-//        smoothMoveToPosition(rvCourseTab, 2);
-//        rvCourseTab.smoothScrollToPosition(3);
+        LinearLayoutManager manager = new LinearLayoutManager(mContext);
+        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        rvCourseTab.setLayoutManager(manager);
+        List<String> ids = new ArrayList<>();
+        for (SectionBean.SectionInfo sectionInfo : sectionInfoList) {
+            ids.add(sectionInfo.getId());
+        }
+        int position = ids.indexOf(currentSectionId);
+        manager.scrollToPosition(position);
     }
 
     public AudioPlayerContentFragment() {

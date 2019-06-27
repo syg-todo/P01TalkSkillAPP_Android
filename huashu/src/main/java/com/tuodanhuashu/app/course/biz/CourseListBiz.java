@@ -1,6 +1,7 @@
 package com.tuodanhuashu.app.course.biz;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.company.common.net.OkNetUtils;
 import com.company.common.net.OnRequestListener;
@@ -59,6 +60,22 @@ public class CourseListBiz {
         params.put("page_size",page_size);
         OkNetUtils.get(tag, Constants.URL.BASE_URL+Constants.URL.COLLEGE_COURSE_CHOICENESS_LIST,params,context,listener);
     }
+
+    public void requestRecommendList(int tag,String course_id,String page,String page_size){
+        Map<String,String> params = new HashMap<>();
+        params.put("course_id",course_id);
+        params.put("page",page);
+        params.put("page_size",page_size);
+        OkNetUtils.get(tag, Constants.URL.BASE_URL+Constants.URL.COLLEGE_COURSE_RECOMMEND_LIST,params,context,listener);
+    }
+
+    public void requestActivityList(int tag,String page,String page_size){
+        Map<String,String> params = new HashMap<>();
+        params.put("page",page);
+        params.put("page_size",page_size);
+        OkNetUtils.get(tag, Constants.URL.BASE_URL+Constants.URL.COLLEGE_COURSE_ACTIVITY_LIST,params,context,listener);
+    }
+
 
 
 }

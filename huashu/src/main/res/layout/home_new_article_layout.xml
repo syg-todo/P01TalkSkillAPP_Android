@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="24dp"
+    android:orientation="vertical">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginLeft="24dp"
+
+        android:layout_marginRight="22dp"
+
+        >
+        <TextView
+            android:id="@+id/home_new_article_top_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:text="最新文章"/>
+        <TextView
+            android:id="@+id/home_article_more_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="更多"
+            android:textColor="#ffd1d1d1"
+            android:textSize="13sp"/>
+
+    </FrameLayout>
+
+
+
+        <TextView
+            android:id="@+id/home_new_article_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="34dp"
+            android:layout_gravity="left"
+            android:text="2019-1-10"
+            android:textColor="#ffb0b0b0"
+            android:textSize="13sp"/>
+
+
+    <ListView
+        android:id="@+id/home_new_article_lv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:scrollbars="none"
+        android:divider="@null"
+        android:background="@drawable/shape_home_funtion">
+
+    </ListView>
+    <LinearLayout
+        android:id="@+id/home_new_article_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="vertical"
+        android:background="@drawable/shape_home_funtion">
+
+    </LinearLayout>
+    <FrameLayout
+        android:id="@+id/home_new_article_zhanwei_fr"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+
+        >
+
+    </FrameLayout>
+</LinearLayout>

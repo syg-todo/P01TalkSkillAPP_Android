@@ -32,15 +32,16 @@
 
     <TextView
         android:id="@+id/tv_master_detail_brief"
-        android:layout_width="180dp"
+        android:layout_width="wrap_content"
         android:layout_height="17dp"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
         android:ellipsize="end"
-        android:text="一幅画千言万语，一棵树别样人生"
+        android:text="一幅画千言万语，一棵树别样人生一棵树别样人生一棵树别样人生"
         android:textColor="#ff999999"
         android:textSize="12sp"
         app:layout_constraintLeft_toLeftOf="parent"
+
         app:layout_constraintTop_toBottomOf="@id/tv_master_detail_name" />
 
 

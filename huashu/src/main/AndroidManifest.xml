@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tuodanhuashu.app">
+
+    <!-- if you want to load images from the internet -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- if you want to load images from a file OR from the internet -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+      />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    <application
+        android:name=".HuaShuApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/huashu_icon"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".home.ui.HomeActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".base.HuaShuBaseActivity" />
+        <activity android:name=".huashu.ui.HuaShuaListActivity" />
+        <activity android:name=".zhuanlan.ui.ZhuanLanListActivity" />
+        <activity android:name=".course.ui.CourseListActivity"/>
+        <activity android:name=".course.ui.CourseDetailActivity"/>
+        <activity android:name=".user.ui.LoginActivity" />
+        <activity android:name=".user.ui.PhoneNumberLoginActivity" />
+        <activity android:name=".user.ui.RegisterActivity" />
+        <activity android:name=".user.ui.ForgetPasswordActivity" />
+        <activity android:name=".user.ui.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".zhuanlan.ui.ZhuanLanDetailActivity" />
+        <activity android:name=".teacher.ui.TeacherListActivity" />
+        <activity android:name=".zhuanlan.ui.ZhuanLanSearchActivity" />
+        <activity android:name=".pay.ui.VipPayActivity" />
+        <activity android:name=".MemberCenter.ui.MemberSettingActivity" />
+        <activity android:name=".MemberCenter.ui.JoinUsActivity" />
+        <activity android:name=".MemberCenter.ui.ResetPwdActivty" />
+        <activity android:name=".MemberCenter.ui.ResetPhoneNumberActivity" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.tuodanhuashu.app.file_provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <activity android:name=".MemberCenter.ui.UserProfileActivity" />
+        <activity android:name=".huashu.ui.MyHuaShuListActivity" />
+        <activity android:name=".MemberCenter.ui.MyCourseActivity"/>
+        <activity android:name=".course.ui.MasterDetailActivity"/>
+        <activity android:name=".course.ui.VideoActivity"/>
+        <activity android:name=".course.ui.VideoPlayerActivity"/>
+        <activity android:name=".course.ui.CourseDetailActivity2"/>
+        <!-- <activity -->
+        <!-- android:name=".wxapi.WXPayEntryActivity" -->
+        <!-- android:configChanges="keyboardHidden|orientation|screenSize" -->
+        <!-- android:exported="true"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.VIEW" /> -->
+
+
+        <!-- <category android:name="android.intent.category.DEFAULT" /> -->
+
+
+        <!-- <data android:scheme="wxd3563efd9c2f7ec0" /> -->
+        <!-- </intent-filter> -->
+        <!-- </activity> -->
+        <activity android:name=".web.CommonWebActivity" />
+        <activity android:name=".home.ui.MoreActivity"/>
+        <receiver
+            android:name=".receiver.HuaShuReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+
+                <!-- Required 用户注册 SDK 的 intent -->
+                <action android:name="cn.jpush.android.intent.REGISTRATION" />
+                <!-- Required 用户接收 SDK 消息的 intent -->
+                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" />
+                <!-- Required 用户接收 SDK 通知栏信息的 intent -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />
+                <!-- Required 用户打开自定义通知栏的 intent -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
+                <!-- 接收网络变化 连接/断开 since 1.6.3 -->
+                <action android:name="cn.jpush.android.intent.CONNECTION" />
+
+                <category android:name="com.tuodanhuashu.app" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:taskAffinity="com.tuodanhuashu.app"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="wxd3563efd9c2f7ec0" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".course.ui.AudioPlayerActivity"/>
+        <activity android:name=".MemberCenter.ui.FeedBackActivity" />
+        <activity android:name=".teacher.ui.TeacherIntroduceActivity" />
+        <activity android:name=".course.ui.AudioPlayActivity"
+         />
+        <activity android:name=".course.ui.LoveCountRechargeActivity"/>
+        <activity android:name=".course.ui.OrderConfirmActivity"/>
+        <service android:name=".course.AudioPlayService"/>
+        <service
+            android:name=".service.MyService"
+            android:enabled="true"
+            android:exported="true"></service>
+    </application>
+
+</manifest>

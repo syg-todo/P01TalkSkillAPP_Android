@@ -2,50 +2,28 @@ package com.tuodanhuashu.app.home.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.widget.BaseAdapter;
-import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.VirtualLayoutManager;
-import com.alibaba.android.vlayout.layout.GridLayoutHelper;
 import com.alibaba.android.vlayout.layout.LinearLayoutHelper;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseViewHolder;
-import com.company.common.CommonConstants;
 import com.company.common.utils.DisplayUtil;
-import com.company.common.utils.KeyboardUtils;
-import com.company.common.utils.PreferencesUtils;
-import com.company.common.utils.RandomUntil;
-import com.company.common.utils.StringUtils;
-import com.github.siyamed.shapeimageview.mask.PorterShapeImageView;
 import com.ms.banner.Banner;
 import com.ms.banner.BannerConfig;
 import com.ms.banner.holder.BannerViewHolder;
@@ -53,36 +31,28 @@ import com.ms.banner.holder.HolderCreator;
 import com.ms.banner.listener.OnBannerClickListener;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.tuodanhuashu.app.Constants.Constants;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.tuodanhuashu.app.R;
 import com.tuodanhuashu.app.base.HuaShuBaseFragment;
-import com.tuodanhuashu.app.course.bean.CourseDetailBean;
 import com.tuodanhuashu.app.course.ui.CourseDetailActivity;
+import com.tuodanhuashu.app.course.ui.CourseDetailActivity2;
 import com.tuodanhuashu.app.course.ui.CourseListActivity;
 import com.tuodanhuashu.app.course.ui.MasterDetailActivity;
-import com.tuodanhuashu.app.course.ui.OrderActivity;
-import com.tuodanhuashu.app.course.ui.VideoActivity;
-import com.tuodanhuashu.app.course.ui.VideoPlayerActivity;
 import com.tuodanhuashu.app.home.adapter.HomeAdapter;
 import com.tuodanhuashu.app.home.adapter.HomeBannerViewHolder;
 import com.tuodanhuashu.app.home.bean.HomeBannerBean;
 import com.tuodanhuashu.app.home.bean.HomeCollegePageBean;
 import com.tuodanhuashu.app.home.bean.HomeCourseBean;
-import com.tuodanhuashu.app.home.bean.HomeZhuanLanPageBean;
 import com.tuodanhuashu.app.home.presenter.HomeCollegePresenter;
-import com.tuodanhuashu.app.home.presenter.HomeZhuanLanPresenter;
 import com.tuodanhuashu.app.home.view.HomeCollegeView;
 import com.tuodanhuashu.app.huashu.ui.HuaShuaListActivity;
 import com.tuodanhuashu.app.utils.PriceFormater;
 import com.tuodanhuashu.app.zhuanlan.ui.ZhuanLanDetailActivity;
-import com.tuodanhuashu.app.zhuanlan.ui.ZhuanLanListActivity;
 import com.tuodanhuashu.app.zhuanlan.ui.ZhuanLanSearchActivity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 
@@ -144,6 +114,15 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         super.initView(view);
         collegePresenter = new HomeCollegePresenter(this, mContext);
         adapterList = new ArrayList<>();
+
+
+        collegeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+
+                refresh();
+            }
+        });
         collegeRefresheader.setColorSchemeColors(mContext.getResources().getColor(R.color.colorAccent));
         VirtualLayoutManager layoutManager = new VirtualLayoutManager(mContext);
         collegeRlv.setLayoutManager(layoutManager);
@@ -152,18 +131,25 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         viewPool.setMaxRecycledViews(0, 10);
         delegateAdapter = new DelegateAdapter(layoutManager, true);
         collegeRlv.setAdapter(delegateAdapter);
-//        initBanner();
-//        initSearch();
-//        initArticle();
-//        initCategory();
-//        initAD();
-//        initArticleList();
+
 //        delegateAdapter.setAdapters(adapterList);
         collegePresenter.requestZhuanLanData();
     }
 
+    private void refresh() {
+        collegePresenter.requestZhuanLanData();
+        collegeRefreshLayout.finishRefresh();
+    }
+
     @Override
     public void getCollegeDataSuccess(HomeCollegePageBean collegePageBean) {
+        Log.d(TAG, collegePageBean.getChoicenessCourses().get(0).getSale_price());
+        if (this.collegePageBean != null) {
+            this.collegePageBean = null;
+        }
+        if (adapterList.size() != 0) {
+            adapterList.clear();
+        }
         this.collegePageBean = collegePageBean;
 //        if(collegePageBean.getRecommendedArticles()!=null&&zhuanLanPageBean.getRecommendedArticles().size()>=3){
 //            arr = RandomUntil.randomArr(new int[3],zhuanLanPageBean.getRecommendedArticles().size()-1);
@@ -177,19 +163,24 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
 //            arr[2] = 0;
 //        }
         if (isFirstRefresh) {
-            initBanner();
-            initSearch();
-            initCourse();
+        initBanner();
+        initSearch();
+        initCourse();
+        if (collegePageBean.getActivityCourse() != null){
+
             initActivity();
-            initChoicenessCourses();
-            initRecommendations();
+        }
+        initChoicenessCourses();
+        initRecommendations();
 //            initCategory();
 //            initAD();
 //            initArticleList();
-            delegateAdapter.setAdapters(adapterList);
+        delegateAdapter.setAdapters(adapterList);
+
             isFirstRefresh = false;
         } else {
 
+            delegateAdapter.notifyDataSetChanged();
         }
     }
 
@@ -200,8 +191,8 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                 super.onBindViewHolder(holder, position);
                 ImageView imageView = holder.getView(R.id.iv_college_activity);
                 HomeCollegePageBean.ActivityCourse activityCourse = collegePageBean.getActivityCourse();
-//                String imageUrl = activityCourse.getActivity_image_url();
-                String imageUrl = "https://imgsa.baidu.com/forum/w%3D580%3B/sign=96008d2a6e2762d0803ea4b790d709fa/6159252dd42a28340b77040256b5c9ea14cebfe1.jpg";
+                String imageUrl = activityCourse.getActivity_image_url();
+//                String imageUrl = "https://imgsa.baidu.com/forum/w%3D580%3B/sign=96008d2a6e2762d0803ea4b790d709fa/6159252dd42a28340b77040256b5c9ea14cebfe1.jpg";
                 Glide.with(mContext).load(imageUrl).into(imageView);
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -239,8 +230,8 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                     @Override
                     public void onClick(View v) {
                         Bundle bundle = new Bundle();
-                        bundle.putInt(CourseListActivity.EXTRA_ENTER_TYPE,5);
-                        readyGo(CourseListActivity.class,bundle);
+                        bundle.putInt(CourseListActivity.EXTRA_ENTER_TYPE, 5);
+                        readyGo(CourseListActivity.class, bundle);
                     }
                 });
 
@@ -248,27 +239,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                 RecyclerView recyclerView = holder.getView(R.id.college_more_recommendation_rv);
                 recyclerView.setAdapter(new RVRecommendationAdapter(mContext, recommendCourses));
                 recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-//                recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-//                    @Override
-//                    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-//                        super.getItemOffsets(outRect, view, parent, state);
-//                        int childCount = parent.getChildCount();
-//                        int actualCount = parent.getAdapter().getItemCount();
-//                        for (int i = 0; i < childCount; i++) {
-//                            View child = parent.getChildAt(i);
-//                            int index = parent.getChildAdapterPosition(child);
-//
-//                            if (index != actualCount - 1) {
-//                                outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
-//                                        DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 0));
-//                            } else {
-//                                outRect.set(DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20),
-//                                        DisplayUtil.dip2px(mContext, 10), DisplayUtil.dip2px(mContext, 20));
-//                            }
-//                        }
-//
-//                    }
-//                });
+
             }
         };
         adapterList.add(recommendationsAdapter);
@@ -292,8 +263,8 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                     public void onClick(View v) {
 //                        readyGo(CourseListActivity.class);
                         Bundle bundle = new Bundle();
-                        bundle.putInt(CourseListActivity.EXTRA_ENTER_TYPE,4);
-                        readyGo(CourseListActivity.class,bundle);
+                        bundle.putInt(CourseListActivity.EXTRA_ENTER_TYPE, 4);
+                        readyGo(CourseListActivity.class, bundle);
                     }
                 });
                 final List<HomeCourseBean> choicenessCourses = collegePageBean.getChoicenessCourses();
@@ -304,8 +275,6 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
         };
         adapterList.add(ChoicenessAdapter);
     }
-
-
 
     class RVChoicenessAdapter extends RecyclerView.Adapter<RVChoicenessAdapter.ChoicenessHolder> {
         private List<HomeCourseBean> courseBeanList;
@@ -329,7 +298,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
 
             HomeCourseBean course = courseBeanList.get(position);
             RequestOptions options = new RequestOptions()
-                    .override((mScreenWidth-DisplayUtil.dp2px(50))/2,DisplayUtil.dp2px(93))
+                    .override((mScreenWidth - DisplayUtil.dp2px(50)) / 2, DisplayUtil.dp2px(93))
                     .centerCrop();
 
             Glide.with(mContext).load(course.getImage_url())
@@ -340,15 +309,15 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
             String activityPrice = course.getActivity_price();
             String salePrice = course.getSale_price();
             String price = course.getPrice();
-            String finalPrice = PriceFormater.formatPrice(activityPrice,salePrice,price);
-            holder.txtCoursePrice.setText((finalPrice.equals(getResources().getString(R.string.free))?finalPrice:"￥"+finalPrice));
+            String finalPrice = PriceFormater.formatPrice(activityPrice, salePrice, price);
+            holder.txtCoursePrice.setText((finalPrice.equals(getResources().getString(R.string.free)) ? finalPrice : finalPrice + " "+getResources().getString(R.string.love_money)));
 
             holder.txtCourseMasterName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
                     bundle.putString(MasterDetailActivity.EXTRA_MASTER_NAME, courseBeanList.get(position).getMaster_name());
-                    bundle.putString(MasterDetailActivity.EXTRA_MASTER_ID,courseBeanList.get(position).getId());
+                    bundle.putString(MasterDetailActivity.EXTRA_MASTER_ID, courseBeanList.get(position).getId());
                     readyGo(MasterDetailActivity.class, bundle);
                 }
             });
@@ -358,7 +327,7 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
                     bundle.putString(CourseDetailActivity.EXTRA_COURSE_NAME, courseBeanList.get(position).getCourse_name());
-                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_ID,courseBeanList.get(position).getId());
+                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_ID, courseBeanList.get(position).getId());
                     readyGo(CourseDetailActivity.class, bundle);
                 }
             });
@@ -424,24 +393,25 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
             String activityPrice = courseBeanList.get(position).getActivity_price();
             String salePrice = courseBeanList.get(position).getSale_price();
             String price = courseBeanList.get(position).getPrice();
-            holder.txtCoursePrice.setText(PriceFormater.formatPrice(activityPrice,salePrice,price));
+            String finalPrice = PriceFormater.formatPrice(activityPrice, salePrice, price);
+            holder.txtCoursePrice.setText(finalPrice.equals("免费") ? finalPrice : finalPrice + " "+getResources().getString(R.string.love_money));
 
             holder.txtCourseMasterName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
                     bundle.putString(MasterDetailActivity.EXTRA_MASTER_NAME, courseBeanList.get(position).getMaster_name());
-                    bundle.putString(MasterDetailActivity.EXTRA_MASTER_ID,courseBeanList.get(position).getId());
+                    bundle.putString(MasterDetailActivity.EXTRA_MASTER_ID, courseBeanList.get(position).getId());
                     readyGo(MasterDetailActivity.class, bundle);
                 }
             });
 
-            holder.txtCourseName.setOnClickListener(new View.OnClickListener() {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
                     bundle.putString(CourseDetailActivity.EXTRA_COURSE_NAME, courseBeanList.get(position).getCourse_name());
-                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_ID,courseBeanList.get(position).getId());
+                    bundle.putString(CourseDetailActivity.EXTRA_COURSE_ID, courseBeanList.get(position).getId());
                     readyGo(CourseDetailActivity.class, bundle);
                 }
             });
@@ -560,8 +530,8 @@ public class CollegeFragment extends HuaShuBaseFragment implements HomeCollegeVi
                                 startActivity(i);
                                 break;
                             case "4":
-                                i.setClass(mContext,CourseDetailActivity.class);
-                                b.putString(CourseDetailActivity.EXTRA_COURSE_ID,homeBannerBeanList.get(position).getCourseId());
+                                i.setClass(mContext, CourseDetailActivity.class);
+                                b.putString(CourseDetailActivity.EXTRA_COURSE_ID, homeBannerBeanList.get(position).getCourseId());
                                 i.putExtras(b);
                                 startActivity(i);
                                 break;

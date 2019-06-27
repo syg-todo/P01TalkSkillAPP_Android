@@ -1,33 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="70dp"
     android:background="@color/white">
 
     <TextView
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/tv_item_course_detail_directory_position"
+        android:text="1"
+        android:paddingLeft="15dp"
+        android:gravity="center_vertical"/>
+    <TextView
         android:id="@+id/tv_item_course_detail_directory_name"
-        android:layout_width="278dp"
+        android:layout_width="0dp"
+        app:layout_constraintHorizontal_weight="1"
         android:layout_height="18dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
         android:ellipsize="end"
         android:maxLines="1"
+
         android:text="01 发刊词：创伤自我疗愈，是每个人的人生必是每个人的人生必"
         android:textColor="#ff000000"
         android:textSize="13sp"
         android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/tv_item_course_detail_directory_position"
+        app:layout_constraintRight_toLeftOf="@id/layout_section_type"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/iv_item_course_detail_directory_clock"
         android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:layout_marginLeft="15dp"
+        android:layout_height="6dp"
         android:layout_marginTop="11dp"
         android:src="@mipmap/clock"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/tv_item_course_detail_directory_position"
         app:layout_constraintTop_toBottomOf="@id/tv_item_course_detail_directory_name" />
 
     <TextView
@@ -44,12 +55,13 @@
 
 
     <FrameLayout
+        android:id="@+id/layout_section_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
         android:layout_marginRight="15dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView
             android:id="@+id/tv_course_detail_section_audition"
@@ -82,10 +94,10 @@
 
 
         <ImageView
-            android:layout_width="22dp"
+            android:id="@+id/iv_course_detail_section_pause"
+            android:layout_width="17dp"
             android:layout_height="22dp"
-            android:src="@mipmap/section_pause"
-            android:id="@+id/iv_course_detail_section_pause"/>
+            android:src="@mipmap/section_pause" />
 
     </FrameLayout>
 

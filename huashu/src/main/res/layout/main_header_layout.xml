@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_head_container"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/white">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/main_header_left_iv"
+        android:layout_width="27dp"
+        android:layout_height="27dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="15dp"
+        />
+    <ImageView
+        android:id="@+id/main_header_right_iv"
+        android:layout_width="23dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="15dp"
+
+        android:src="@drawable/home_im_icon"/>
+    <RelativeLayout
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
+        <TextView
+            android:id="@+id/head_huashu_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:text="@string/text_huashu"/>
+        <View
+            android:layout_width="2dp"
+            android:layout_height="20dp"
+            android:layout_centerInParent="true"
+            android:background="@color/colorAccent"/>
+        <TextView
+            android:id="@+id/head_zhuanlan_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:text="@string/text_college"/>
+    </RelativeLayout>
+</RelativeLayout>
